@@ -27,7 +27,7 @@ public class SecurityGUI extends JPanel {
         text = new JTextArea();
         JButton button = new JButton("Clear");
         button.addActionListener(e -> INSTANCE.text.setText(""));
-        abilityUse.add(TomatoGUI.createTextArea(text), BorderLayout.CENTER);
+        abilityUse.add(TomatoGUI.createTextArea(text, true), BorderLayout.CENTER);
         abilityUse.add(button, BorderLayout.SOUTH);
     }
 

@@ -23,7 +23,7 @@ public class StringDpsGUI extends DisplayDpsGUI {
 
         setLayout(new BorderLayout());
         textAreaDPS = new JTextArea();
-        add(TomatoGUI.createTextArea(textAreaDPS), BorderLayout.CENTER);
+        add(TomatoGUI.createTextArea(textAreaDPS, true), BorderLayout.CENTER);
         textAreaDPS.setEnabled(false);
 
         button = new JButton("Freeze");

@@ -106,7 +106,7 @@ public class TomatoGUI {
      * @param textArea Text area object.
      * @return Scroll pane object to add to a parent object.
      */
-    public static JScrollPane createTextArea(JTextArea textArea) {
+    public static JScrollPane createTextArea(JTextArea textArea, boolean stayAtTop) {
         textArea.setEnabled(true);
         textArea.setEditable(false);
         textArea.setLineWrap(true);
@@ -114,7 +114,11 @@ public class TomatoGUI {
         JScrollPane scrollChat = new JScrollPane(textArea);
         scrollChat.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
         scrollChat.setAutoscrolls(true);
-        new SmartScroller(scrollChat);
+        if (stayAtTop) {
+            new SmartScroller(scrollChat, 0);
+        } else {
+            new SmartScroller(scrollChat);
+        }
         return scrollChat;
     }
 

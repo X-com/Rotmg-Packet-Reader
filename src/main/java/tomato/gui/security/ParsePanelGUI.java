@@ -44,7 +44,7 @@ public class ParsePanelGUI extends JPanel {
 
         JScrollPane scroll = new JScrollPane(charPanel);
         scroll.getVerticalScrollBar().setUnitIncrement(40);
-        new SmartScroller(scroll);
+        new SmartScroller(scroll, 0);
         add(scroll, BorderLayout.CENTER);
 
         JPanel bottons = new JPanel();

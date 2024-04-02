@@ -33,7 +33,7 @@ public class MyDamageGUI extends JPanel {
 
         textArea = new JTextArea();
         textArea.setEditable(false);
-        add(TomatoGUI.createTextArea(textArea), BorderLayout.CENTER);
+        add(TomatoGUI.createTextArea(textArea, true), BorderLayout.CENTER);
     }
 
     public static void updatePlayer(Entity player) {

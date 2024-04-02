@@ -17,7 +17,7 @@ public class ChatGUI extends JPanel {
     public ChatGUI() {
         setLayout(new BorderLayout());
         textAreaChat = new JTextArea();
-        add(TomatoGUI.createTextArea(textAreaChat));
+        add(TomatoGUI.createTextArea(textAreaChat, false));
     }
 
     /**
