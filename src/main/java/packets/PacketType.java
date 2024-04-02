@@ -168,6 +168,8 @@ public enum PacketType { //ChristmasTree™   ⛧   <-crown
                         UNKNOWN170(-86, Incoming, UnknownPacket170::new),
                         UNKNOWN171(-85, Incoming, UnknownPacket171::new),
                         UNKNOWN172(-84, Incoming, UnknownPacket172::new),
+                        UNKNOWN180(-76, Outgoing, UnknownPacket180::new),
+                        UNKNOWN181(-75, Incoming, UnknownPacket181::new),
                   CRUCIBLE_REQUEST(-74, Outgoing, CrucibleRequestPacket::new),
                  CRUCIBLE_RESPONSE(-73, Incoming, CrucibleResponsePacket::new),
                        IP_ADDRESS(1000, Incoming, IpAddress::new);

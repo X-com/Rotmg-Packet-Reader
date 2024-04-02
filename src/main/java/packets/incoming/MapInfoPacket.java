@@ -73,6 +73,10 @@ public class MapInfoPacket extends Packet {
      * String of all modifiers the dungeon has.
      */
     public String[] dungeonModifiers;
+    /**
+     * Unknown Bytes
+     */
+    byte[] unknownBytes;
 
     @Override
     public void deserialize(BufferReader buffer) throws Exception {
@@ -93,6 +97,7 @@ public class MapInfoPacket extends Packet {
         unknownInt = buffer.readInt();
         String dungeonMods = buffer.readString();
         dungeonModifiers = dungeonMods.split(";");
+        unknownBytes = buffer.readBytes(2);
     }
 
     @Override
@@ -113,6 +118,7 @@ public class MapInfoPacket extends Packet {
                 "\n   gameOpenedTime=" + gameOpenedTime +
                 "\n   buildVersion=" + buildVersion +
                 "\n   unknownInt=" + unknownInt +
-                "\n   dungeonModifiers=" + Arrays.toString(dungeonModifiers);
+                "\n   dungeonModifiers=" + Arrays.toString(dungeonModifiers) +
+                "\n   unknownBytes=" + Arrays.toString(unknownBytes);
     }
 }
