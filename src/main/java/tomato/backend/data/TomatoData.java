@@ -276,6 +276,9 @@ public class TomatoData {
             for (int j = p.bulletId; j < p.bulletId + p.bulletCount; j++) {
                 projectiles[j % 256 + 256] = projectile;
             }
+        } else if (p.bulletId > 255 && p.bulletId < 512) {
+            Projectile projectile = new Projectile(p.damage, p.containerType);
+            projectiles[p.bulletId] = projectile;
         }
     }
 
