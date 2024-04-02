@@ -90,6 +90,7 @@ public class RealmCharacterStats {
     public int pirate_cave;
     public int puppet_masters_encore;
     public int puppet_masters_theatre;
+    public int queen_bunny_chamber;
     public int rainbow_road;
     public int santas_workshop;
     public int secluded_thicket;
@@ -126,8 +127,8 @@ public class RealmCharacterStats {
             try {
                 boolean[] bitArray = parseBits(reader);
 //                for (int i = 0; i < bitArray.length; i++) {
-//                    if (CharacterStatistics.getName(i) == null && bitArray[i]) {
-//                        System.out.printf("%3d %s\n", i, CharacterStatistics.getName(i));
+//                    if (CharacterStatistics.PC_NAME.get(i) == null && bitArray[i]) {
+//                        System.out.printf("%3d %s\n", i, CharacterStatistics.PC_NAME.get(i));
 //                    }
 //                }
                 parseStats(reader, bitArray);
@@ -216,6 +217,7 @@ public class RealmCharacterStats {
                 pirate_cave,
                 puppet_masters_encore,
                 puppet_masters_theatre,
+                queen_bunny_chamber,
                 rainbow_road,
                 santas_workshop,
                 secluded_thicket,
@@ -534,10 +536,14 @@ public class RealmCharacterStats {
         if (readStat(bitArray, CharacterStatistics.THE_TAVERN.getPcStatId())) {
             the_tavern = reader.readCompressedInt();
         }
+        if (readStat(bitArray, CharacterStatistics.QUEEN_BUNNY_CHAMBER.getPcStatId())) {
+            queen_bunny_chamber = reader.readCompressedInt();
+        }
     }
 
     public int getDungeonInfoByName(String dungeonName) {
         int index = CharacterStatistics.getDungeonIndex(dungeonName);
+        if(index == -1) return -1;
         return dungeonStats[index];
     }
 
@@ -622,6 +628,7 @@ public class RealmCharacterStats {
                 "\n   pirate_cave=" + pirate_cave +
                 "\n   puppet_masters_encore=" + puppet_masters_encore +
                 "\n   puppet_masters_theatre=" + puppet_masters_theatre +
+                "\n   queen_bunny_chamber=" + queen_bunny_chamber +
                 "\n   rainbow_road=" + rainbow_road +
                 "\n   santas_workshop=" + santas_workshop +
                 "\n   secluded_thicket=" + secluded_thicket +
