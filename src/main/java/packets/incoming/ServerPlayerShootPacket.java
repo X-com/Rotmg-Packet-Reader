@@ -33,9 +33,9 @@ public class ServerPlayerShootPacket extends Packet {
      */
     public short damage;
     /**
-     * Unknown int
+     * Summoner id of the summoned entity shooting
      */
-    public int unknownInt;
+    public int summonerId;
     /**
      * Unknown byte 1
      */
@@ -61,7 +61,7 @@ public class ServerPlayerShootPacket extends Packet {
         startingPos = new WorldPosData().deserialize(buffer);
         angle = buffer.readFloat();
         damage = buffer.readShort();
-        unknownInt = buffer.readInt();
+        summonerId = buffer.readInt();
         unknownByte1 = buffer.readByte();
         if(buffer.getRemainingBytes() > 4) {
             spellBulletData = true;
@@ -82,7 +82,7 @@ public class ServerPlayerShootPacket extends Packet {
                 "\n startingPos=" + startingPos +
                 "\n angle=" + angle +
                 "\n damage=" + damage +
-                "\n unknownInt=" + unknownInt +
+                "\n summonerId=" + summonerId +
                 "\n unknownByte1=" + unknownByte1 +
                 "\n extraData=" + spellBulletData +
                 "\n bulletCount=" + bulletCount +
