@@ -9,14 +9,16 @@ import java.io.Serializable;
 public class Projectile implements Serializable {
 
     private int damage;
+    private int summonerId;
     private boolean armorPiercing;
 
     public Projectile(int damage) {
         this.damage = damage;
     }
 
-    public Projectile(short damage, int containerType) {
+    public Projectile(short damage, int containerType, int summonerId) {
         this.damage = damage;
+        this.summonerId = summonerId;
         try {
             armorPiercing = IdToAsset.getIdProjectileArmorPierces(containerType, 0);
         } catch (Exception e) {
@@ -117,6 +119,10 @@ public class Projectile implements Serializable {
 
     public boolean isArmorPiercing() {
         return armorPiercing;
+    }
+
+    public int getSummonerId() {
+        return summonerId;
     }
 
     public void clear() {

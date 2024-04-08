@@ -272,12 +272,12 @@ public class TomatoData {
      */
     public void serverPlayerShoot(ServerPlayerShootPacket p) {
         if (p.spellBulletData) {
-            Projectile projectile = new Projectile(p.damage, p.containerType);
+            Projectile projectile = new Projectile(p.damage, p.containerType, p.summonerId);
             for (int j = p.bulletId; j < p.bulletId + p.bulletCount; j++) {
                 projectiles[j % 256 + 256] = projectile;
             }
         } else if (p.bulletId > 255 && p.bulletId < 512) {
-            Projectile projectile = new Projectile(p.damage, p.containerType);
+            Projectile projectile = new Projectile(p.damage, p.containerType, p.summonerId);
             projectiles[p.bulletId] = projectile;
         }
     }
@@ -291,7 +291,11 @@ public class TomatoData {
         Projectile projectile = projectiles[p.bulletId];
         int id = p.targetId;
         Entity target = entityList.computeIfAbsent(id, idd -> new Entity(this, idd, timePc));
-        Entity attacker = playerList.get(p.shooterID);
+        int shooterId = p.shooterID;
+        if (projectile.getSummonerId() != 0) {
+            shooterId = projectile.getSummonerId();
+        }
+        Entity attacker = playerList.get(shooterId);
         target.userProjectileHit(attacker, projectile, timePc);
         if (!entityHitList.containsKey(id)) {
             entityHitList.put(id, target);
