@@ -116,7 +116,7 @@ public class ImageBuffer {
      * @return Outlined image with specific size
      */
     public static ImageIcon getOutlinedIcon(int id, int size) {
-        long l = (long) id << 10 + size;
+        long l = ((long) id << 10) + size;
         if (outlinedImages.containsKey(l)) return outlinedImages.get(l);
 
         BufferedImage img;
