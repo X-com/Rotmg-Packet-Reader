@@ -97,6 +97,7 @@ public class PacketRead {
         if (packet instanceof GotoAckPacket) return;
         if (packet instanceof SquareHitPacket) return;
         if (packet instanceof StasisPacket) return;
+        if (packet instanceof CreepMoveMessagePacket) return;
         // unknown
         if (packet instanceof UnknownPacket139) return;
         if (packet instanceof UnknownPacket165) return;

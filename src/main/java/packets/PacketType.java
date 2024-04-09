@@ -147,6 +147,7 @@ public enum PacketType { //ChristmasTree™   ⛧   <-crown
                         // Missing
                 CREEP_MOVE_MESSAGE(126, Outgoing, CreepMoveMessagePacket::new),
                         // Missing
+                       UNKNOWN133(-123, Incoming, UnknownPacket133::new),
                        UNKNOWN134(-122, Outgoing, UnknownPacket134::new),
                         // Missing
                              DASH(-119, Outgoing, DashPacket::new),
@@ -159,6 +160,7 @@ public enum PacketType { //ChristmasTree™   ⛧   <-crown
                 CLAIM_BATTLE_PASS(-107, Outgoing, ClaimBattlePassItemPacket::new),
         CLAIM_BP_MILESTONE_RESULT(-106, Incoming, ClaimBPMilestoneResultPacket::new),
                  CONVERT_SEASONAL(-102, Outgoing, ConvertSeasonalCharacterPacket::new),
+                    ABILITY_CHANGE(-99, Outgoing, AbilityChange::new),
                              EMOTE(-97, Outgoing, EmotePacket::new),
                         UNKNOWN163(-93, Outgoing, UnknownPacket163::new),
                         UNKNOWN164(-92, Incoming, UnknownPacket164::new),
