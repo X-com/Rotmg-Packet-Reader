@@ -68,25 +68,7 @@ public class Util {
         PrintWriter printWriterObject = printWriter.get(folderAndName);
         if (printWriterObject == null) {
             try {
-                DateTimeFormatter dateTimeFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH.mm.ss");
-                LocalDateTime dateTime = LocalDateTime.now();
-                String fileName;
-                if(folderAndName.endsWith("-")){
-                    fileName = folderAndName.substring(0, folderAndName.length() - 1);
-                }else{
-                    fileName = folderAndName + "-" + dateTimeFormat.format(dateTime) + ".data";
-                }
-                File file = new File(fileName);
-                if (!file.getParentFile().exists()) {
-                    if (!file.getParentFile().mkdirs()) {
-                        System.out.println("[X] Failed to create path for logfile '" + fileName + "'.");
-                    }
-                    if (!file.createNewFile()) {
-                        System.out.println("[X] Failed to create logfile '" + fileName + "'.");
-                    }
-                }
-                FileWriter fileWriter = new FileWriter(file);
-                printWriterObject = new PrintWriter(fileWriter);
+                printWriterObject = getPrintWriter(folderAndName);
                 printWriter.put(folderAndName, printWriterObject);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -95,6 +77,38 @@ public class Util {
         }
         printWriterObject.print(s + "\n");
         printWriterObject.flush();
+    }
+
+    /**
+     * Creates file and returns a PrintWriter object for printing text as output.
+     *
+     * @param folderAndName Name of file to be placed in folder where app is started.
+     *                      Add folder path separated with "/".
+     *                      Include "-" end of file to not include time stamp.
+     * @return Print writer object to write text into.
+     */
+    private static PrintWriter getPrintWriter(String folderAndName) throws IOException {
+        PrintWriter printWriterObject;
+        DateTimeFormatter dateTimeFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH.mm.ss");
+        LocalDateTime dateTime = LocalDateTime.now();
+        String fileName;
+        if(folderAndName.endsWith("-")){
+            fileName = folderAndName.substring(0, folderAndName.length() - 1);
+        }else{
+            fileName = folderAndName + "-" + dateTimeFormat.format(dateTime) + ".data";
+        }
+        File file = new File(fileName);
+        if (!file.getParentFile().exists()) {
+            if (!file.getParentFile().mkdirs()) {
+                System.out.println("[X] Failed to create path for logfile '" + fileName + "'.");
+            }
+            if (!file.createNewFile()) {
+                System.out.println("[X] Failed to create logfile '" + fileName + "'.");
+            }
+        }
+        FileWriter fileWriter = new FileWriter(file);
+        printWriterObject = new PrintWriter(fileWriter);
+        return printWriterObject;
     }
 
     /**
