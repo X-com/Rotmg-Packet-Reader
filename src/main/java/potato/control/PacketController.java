@@ -10,6 +10,8 @@ import potato.model.Config;
 import potato.model.DataModel;
 import potato.view.opengl.OpenGLPotato;
 
+import java.io.IOException;
+
 public class PacketController {
 
     private DataModel model;
@@ -56,7 +58,11 @@ public class PacketController {
         } else if (packet instanceof MapInfoPacket) {
             MapInfoPacket p = (MapInfoPacket) packet;
             if (Config.instance.saveMapInfo) {
-                model.saveMap();
+                try {
+                    model.saveMap();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
             }
 
             model.resetSaver(p);

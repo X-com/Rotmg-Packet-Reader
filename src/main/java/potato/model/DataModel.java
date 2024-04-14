@@ -10,6 +10,8 @@ import potato.control.ScreenLocatorController;
 import potato.control.ServerSynch;
 import util.Util;
 
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -446,36 +448,38 @@ public class DataModel {
         }
     }
 
-    public void saveMap() {
+    public void saveMap() throws IOException {
         if (saveData) {
             DateTimeFormatter dateTimeFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH.mm.ss");
             LocalDateTime dateTime = LocalDateTime.now();
             String time = dateTimeFormat.format(dateTime);
             String dungeon = inRealm ? ("Realm " + serverName + " " + realmName) : mapPacketData.name;
             String name = "mapData/" + dungeon + "." + time + ".mapdata2-";
-            Util.print(name, dungeon);
-            Util.print(name, mapPacketData.toString());
-            if (inRealm) Util.print(name, "MapIndex:" + (mapIndex + 1));
-            Util.print(name, "tiles");
+            PrintWriter printWriter = Util.getPrintWriter(name);
+            printWriter.println(dungeon);
+            printWriter.println(mapPacketData.toString());
+            if (inRealm) printWriter.println("MapIndex:" + (mapIndex + 1));
+            printWriter.println("tiles");
             for (int i = 0; i < 2048; i++) {
                 for (int j = 0; j < 2048; j++) {
                     int t = mapTiles[i][j];
                     if (t != 0) {
-                        Util.print(name, String.format("%d:%d:%d", i, j, t));
+                        printWriter.println(String.format("%d:%d:%d", i, j, t));
                     }
                 }
             }
-            Util.print(name, "objects");
+            printWriter.println("objects");
             for (ObjectData od : allEntitys.values()) {
                 StringBuilder s = new StringBuilder();
                 for (StatData sd : od.status.stats) {
                     s.append(";").append(sd.statValue).append(";").append(sd.statValueTwo).append(";").append(sd.stringStatValue).append(";").append(sd.statTypeNum);
                 }
-                Util.print(name, String.format("%d:%d:%f:%f:%s", od.status.objectId, od.objectType, od.status.pos.x, od.status.pos.y, s.substring(1)));
+                printWriter.println(String.format("%d:%d:%f:%f:%s", od.status.objectId, od.objectType, od.status.pos.x, od.status.pos.y, s.substring(1)));
             }
             for (int[] row : mapTiles) {
                 Arrays.fill(row, 0);
             }
+            printWriter.close();
         }
     }
 
