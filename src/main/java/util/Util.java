@@ -87,7 +87,7 @@ public class Util {
      *                      Include "-" end of file to not include time stamp.
      * @return Print writer object to write text into.
      */
-    private static PrintWriter getPrintWriter(String folderAndName) throws IOException {
+    public static PrintWriter getPrintWriter(String folderAndName) throws IOException {
         PrintWriter printWriterObject;
         DateTimeFormatter dateTimeFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH.mm.ss");
         LocalDateTime dateTime = LocalDateTime.now();
