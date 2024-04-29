@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
+import java.util.Arrays;
 import java.util.HashMap;
 
 public class SpriteFlatBuffer {
@@ -89,7 +90,6 @@ public class SpriteFlatBuffer {
     }
 
     public static void main(String[] args) throws IOException, AssetMissingException {
-        ImageBuffer.getImage(28822);
     }
 
     /**
@@ -134,8 +134,8 @@ public class SpriteFlatBuffer {
      * @param index Index of the sprite in the group.
      * @return Integer
      */
-    public int getSpriteColor(String name, int index) {
-        if (notLoaded) return -1;
+    public float[] getSpriteColor(String name, int index) {
+        if (notLoaded) return null;
         HashMap<Integer, Sprite> list = sprites.get(name);
         Sprite sprite = list.get(index);
         return sprite.colorAsInt();
@@ -154,10 +154,11 @@ public class SpriteFlatBuffer {
         int maskPositionH;
         int maskPositionX;
         int maskPositionY;
-        int mostCommonColorR;
-        int mostCommonColorG;
-        int mostCommonColorB;
-        int mostCommonColorA;
+        float mostCommonColorR;
+        float mostCommonColorG;
+        float mostCommonColorB;
+        float mostCommonColorA;
+        float[] color = new float[4];
 
         int animatedIndex;
         int animatedDirection;
@@ -179,14 +180,18 @@ public class SpriteFlatBuffer {
         }
 
         public void setColor(float r, float g, float b, float a) {
-            mostCommonColorR = (int) r;
-            mostCommonColorG = (int) g;
-            mostCommonColorB = (int) b;
-            mostCommonColorA = (int) a;
+            mostCommonColorR = r;
+            mostCommonColorG = g;
+            mostCommonColorB = b;
+            mostCommonColorA = a;
+            color[0] = r;
+            color[1] = g;
+            color[2] = b;
+            color[3] = a;
         }
 
-        public int colorAsInt() {
-            return mostCommonColorA << 24 | mostCommonColorB << 16 | mostCommonColorG << 8 | mostCommonColorR;
+        public float[] colorAsInt() {
+            return color;
         }
 
         public int index() {

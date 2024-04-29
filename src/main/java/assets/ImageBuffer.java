@@ -15,7 +15,7 @@ public class ImageBuffer {
 
     private static final HashMap<Long, ImageIcon> outlinedImages = new HashMap<>();
     private static HashMap<Integer, BufferedImage> images = new HashMap<>();
-    private static HashMap<Integer, Integer> colors = new HashMap<>();
+    private static HashMap<Integer, float[]> colors = new HashMap<>();
 //    private static final SpriteJson spriteJson = new SpriteJson();
     private static final SpriteFlatBuffer spriteFlatBuffer = new SpriteFlatBuffer();
     private static BufferedImage emptyImg;
@@ -55,14 +55,14 @@ public class ImageBuffer {
      * @param id Type ID of the tile.
      * @return Most common color of the tile.
      */
-    public static int getColor(int id) throws AssetMissingException {
-        if (id <= 0) return 0;
+    public static float[] getColor(int id) throws AssetMissingException {
+        if (id <= 0) return null;
         if (colors.containsKey(id)) return colors.get(id);
-        if (!IdToAsset.tileIdExists(id)) return 0;
+        if (!IdToAsset.tileIdExists(id)) return null;
         String name = IdToAsset.getTileTextureName(id, 0);
-        if (name == null) return 0;
+        if (name == null) return null;
         int index = IdToAsset.getTileTextureIndex(id, 0);
-        int color = spriteFlatBuffer.getSpriteColor(name, index);
+        float[] color = spriteFlatBuffer.getSpriteColor(name, index);
         colors.put(id, color);
         return color;
     }
