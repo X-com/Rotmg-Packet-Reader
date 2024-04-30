@@ -4,6 +4,7 @@ import packets.data.*;
 import packets.data.enums.NotificationEffectType;
 import packets.incoming.*;
 import potato.model.data.Entity;
+import potato.model.data.Pylons;
 import potato.view.opengl.OpenGLPotato;
 import potato.control.InputController;
 import potato.control.ScreenLocatorController;
@@ -36,6 +37,7 @@ public class DataModel {
     private boolean inRealm = false;
     private boolean isShatters = false;
     private boolean isCrystal = false;
+    private boolean newRealm = false;
 
     private boolean newRealmCheck = false;
     private long seed;
@@ -69,7 +71,7 @@ public class DataModel {
     private float zoomStep = 7.8f;
     private float zoomMax = 48f;
     private float zoom = 1f;
-    private int unknownPacket169;
+    private float realmScore;
 
 
     public DataModel() {
@@ -176,7 +178,6 @@ public class DataModel {
     public void setInRealm(String name, long s, long gameOpenedTime, int width, int height) {
         newRealmCheck = true;
         inRealm = true;
-        if (seed != s) castleTimer = 0;
         seed = s;
         openTime = gameOpenedTime;
         mapWidth = width;
@@ -199,10 +200,13 @@ public class DataModel {
     }
 
     public void reset() {
-        if (!inRealm) return;
-        server.stopSynch(myId);
-        inRealm = false;
+        OpenGLPotato.resetFirstDisplay();
+
+        if (inRealm) {
+            server.stopSynch(myId);
+        }
         renderer.renderMap(false);
+        renderer.renderNewRealm(false);
         heroesLeft = 0;
 
         for (int i = 0; i < mapHeroes[mapIndex].size(); i++) {
@@ -210,9 +214,15 @@ public class DataModel {
         }
         entityList.clear();
         heroDetect.reset();
+        inRealm = false;
         isShatters = false;
         isCrystal = false;
-        unknownPacket169 = 0;
+        newRealm = false;
+        realmScore = 0;
+    }
+
+    public void resetCastleTimer() {
+        castleTimer = 0;
     }
 
     private int findMapIndex(GroundTileData[] tiles) {
@@ -281,7 +291,6 @@ public class DataModel {
             if (!serverName.equals("")) setTpCooldown = true;
             serverName = name;
         }
-        castleTimer = 0;
         serverIp = ip;
     }
 
@@ -323,7 +332,7 @@ public class DataModel {
 
     public String getPlayerCoordString() {
         if (Config.instance.showPlayerCoords)
-            return String.format(" x:%d y:%d %d", getIntPlayerX(), getIntPlayerY(), unknownPacket169);
+            return String.format(" x:%d y:%d %d", getIntPlayerX(), getIntPlayerY(), realmScore);
         return "";
     }
 
@@ -351,6 +360,10 @@ public class DataModel {
 
     public boolean inRealm() {
         return inRealm;
+    }
+
+    public boolean isNewRealm() {
+        return newRealm;
     }
 
     public void dispose() {
@@ -391,6 +404,10 @@ public class DataModel {
                     System.out.println("Crystal boss added");
                     addEntity(od, "e", 1);
                 }
+            }
+        } else if (newRealm) {
+            for (ObjectData od : newObjects) {
+                Pylons.removePylon(od, entityList);
             }
         }
         for (int drop : drops) {
@@ -506,22 +523,39 @@ public class DataModel {
         isShatters = true;
         seed = s;
         openTime = gameOpenedTime;
-        entityList.clear();
         mapWidth = width;
         mapHeight = height;
         setZoom(width);
-        renderer.renderMap(true);
+        renderer.renderHeroes(true);
     }
 
     public void setInCrystal(long s, long gameOpenedTime, int width, int height) {
         isCrystal = true;
         seed = s;
         openTime = gameOpenedTime;
-        entityList.clear();
         mapWidth = width;
         mapHeight = height;
         setZoom(width);
-        renderer.renderMap(true);
+        renderer.renderHeroes(true);
+    }
+
+    public void setInNewRealm(long s, long gameOpenedTime, int width, int height) {
+        newRealm = true;
+        seed = s;
+        openTime = gameOpenedTime;
+        mapWidth = width;
+        mapHeight = height;
+        setZoom(width);
+        renderer.setMap(13);
+        renderer.setCamera(playerX, playerY, zoom);
+        renderer.renderNewRealm(true);
+        addPylons();
+    }
+
+    private void addPylons() {
+        for(int i = 0; i < Pylons.PYLONS.length; i+= 2) {
+            entityList.put(i/2, new Entity(Pylons.PYLONS[i], Pylons.PYLONS[i + 1], "c", 5));
+        }
     }
 
     public void addEntity(ObjectData od, String shape, float size) {
@@ -562,6 +596,10 @@ public class DataModel {
     }
 
     public void unknownPacket169(UnknownPacket169 p) {
-        unknownPacket169 = p.unknownInt / 1000;
+        realmScore = (float) p.unknownInt / 1500;
+    }
+
+    public float unknownPacket169() {
+        return realmScore;
     }
 }

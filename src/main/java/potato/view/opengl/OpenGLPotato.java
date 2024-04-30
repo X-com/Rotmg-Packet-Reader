@@ -8,6 +8,8 @@ import org.joml.Vector4f;
 import potato.model.Config;
 import potato.model.DataModel;
 
+import javax.swing.plaf.synth.SynthUI;
+
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
 
@@ -29,6 +31,7 @@ public class OpenGLPotato extends Thread {
     private static boolean showMap = false;
     private static boolean showHeroes = false;
     private boolean showHeroCount = false;
+    private boolean showRealmScore = false;
     public static boolean refresh = false;
 
     private static WindowGLFW window;
@@ -135,30 +138,32 @@ public class OpenGLPotato extends Thread {
 //            refresh = false;
 //        }
 
-        if (showMap && userShowMap && model.inRealm() && zoom != 1) {
+        if (showMap && userShowMap && (model.inRealm() || model.isNewRealm()) && zoom != 1) {
             renderMap.draw();
         }
 
-        if (showHeroes && userShowHeroes && model.inRealm() && zoom != 1) {
+        if (showHeroes && userShowHeroes && model.isNewRealm() && zoom != 1) {
+            heroes.drawShapes(model.mapEntitys(), mvp, mapSize);
+        } else if (showHeroes && userShowHeroes && model.inRealm() && zoom != 1) {
             heroes.drawHeros(model.mapHeroes(), mvp, mapSize);
             heroes.drawShapes(model.mapEntitys(), mvp, mapSize);
         } else if (showHeroes && userShowHeroes && model.isShatters() && zoom != 1) {
-            firstDisplay = false;
             heroes.drawShapes(model.mapEntitys(), mvp, mapSize);
         } else if (showHeroes && userShowHeroes && model.isCrystal() && zoom != 1) {
-            firstDisplay = false;
             heroes.drawCrystal(model.mapEntitys(), model.playerX, model.playerY, mvp, mapSize);
         }
 
-        if (firstDisplay && !model.inRealm()) {
+        if (firstDisplay) {
             renderHud.drawText2D("Enter any realm or re-enter if starting in a realm.", 5, 3, 10, bottomLeftVec, TextRenderer.TextBoundType.BOUNDING_BOX, mainTextColor);
-        } else if (userShowInfo && (Config.instance.alwaysShowCoords || model.inRealm())) {
-            firstDisplay = false;
+        } else if (userShowInfo && (Config.instance.alwaysShowCoords || model.inRealm() || model.isNewRealm())) {
             if (model.renderCastleTimer()) {
                 String s = String.format("%s%s", model.getCastleTimer(), Config.instance.saveMapInfo ? " R" : "");
                 renderHud.drawText2D(s, 5, Config.instance.mapHeight - 20, 20, bottomLeftVec, TextRenderer.TextBoundType.BOUNDING_BOX, mainTextColor);
             } else if (showHeroCount) {
                 String h = String.format("[%d] Heroes:%d %s%s", mapIndex + 1, model.getHeroesLeft(), !model.isServerOnline ? " Offline" : "", Config.instance.saveMapInfo ? " R" : "");
+                renderHud.drawText2D(h, 5, Config.instance.mapHeight - 23, 20, bottomLeftVec, TextRenderer.TextBoundType.BOUNDING_BOX, mainTextColor);
+            } else if (showRealmScore) {
+                String h = String.format("Score: %%%.2f %s", model.unknownPacket169(), Config.instance.saveMapInfo ? " R" : "");
                 renderHud.drawText2D(h, 5, Config.instance.mapHeight - 23, 20, bottomLeftVec, TextRenderer.TextBoundType.BOUNDING_BOX, mainTextColor);
             } else if (Config.instance.saveMapInfo) {
                 renderHud.drawText2D("R", 5, Config.instance.mapHeight - 23, 20, bottomLeftVec, TextRenderer.TextBoundType.BOUNDING_BOX, mainTextColor);
@@ -190,6 +195,16 @@ public class OpenGLPotato extends Thread {
         showMap = b;
         showHeroes = b;
         showHeroCount = b;
+    }
+
+    public void renderHeroes(boolean b) {
+        showHeroes = b;
+    }
+
+    public void renderNewRealm(boolean b) {
+        showMap = b;
+        showHeroes = b;
+        showRealmScore = b;
     }
 
     public static void setMapAlpha(int alpha) {
@@ -287,5 +302,9 @@ public class OpenGLPotato extends Thread {
         if (window != null) {
             window.toggleShowAll();
         }
+    }
+
+    public static void resetFirstDisplay() {
+        instance.firstDisplay = false;
     }
 }
