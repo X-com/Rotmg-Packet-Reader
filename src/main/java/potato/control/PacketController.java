@@ -70,12 +70,16 @@ public class PacketController {
             model.setRealmName(p.realmName);
             model.reset();
 
-            if (p.displayName.equals("{s.rotmg}")) {
+            if(p.realmName.contains("NewRealm") && p.displayName.equals("{s.rotmg}")) {
+                model.setInNewRealm(p.seed, p.gameOpenedTime, p.width, p.height);
+            } else if (p.displayName.equals("{s.rotmg}")) {
                 model.setInRealm(p.realmName, p.seed, p.gameOpenedTime, p.width, p.height);
             } else if (p.displayName.equals("The Shatters")) {
                 model.setInShatters(p.seed, p.gameOpenedTime, p.width, p.height);
             } else if (p.displayName.equals("Crystal Cavern")) {
                 model.setInCrystal(p.seed, p.gameOpenedTime, p.width, p.height);
+            } else if (p.displayName.equals("{s.nexus}")) {
+                model.resetCastleTimer();
             }
         } else if (packet instanceof CreateSuccessPacket) {
             CreateSuccessPacket p = (CreateSuccessPacket) packet;
