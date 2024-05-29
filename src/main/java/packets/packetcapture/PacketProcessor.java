@@ -138,7 +138,7 @@ public class PacketProcessor extends Thread implements PProcessor {
             }
         } catch (Exception e) {
             Util.printLogs("Buffer exploded: " + pData.getIndex() + "/" + pData.size());
-            debugPackets(type, data);
+            debugPackets(type, data.array());
             return;
         }
         Register.INSTANCE.emitPacketLogs(packetType);
@@ -147,17 +147,10 @@ public class PacketProcessor extends Thread implements PProcessor {
     /**
      * Helper for debugging packets
      */
-    private void debugPackets(int type, ByteBuffer data) {
+    private void debugPackets(int type, byte[] data) {
         Packet packetType = PacketType.getPacket(type).factory();
-        try {
-            Util.printLogs(PacketType.byOrdinal(type) + "");
-            data.position(5);
-            BufferReader pDebug = new BufferReader(data);
-            pDebug.printError(packetType);
-            packetType.deserialize(pDebug);
-        } catch (Exception e) {
-            Util.printLogs(Arrays.toString(e.getStackTrace()).replaceAll(", ", "\n"));
-        }
+        Util.printLogs(PacketType.byOrdinal(type) + " " + packetType);
+        Util.printLogs(Arrays.toString(data));
     }
 
     /**
