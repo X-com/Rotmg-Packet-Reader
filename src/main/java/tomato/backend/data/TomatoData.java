@@ -507,7 +507,7 @@ public class TomatoData {
      * @param packet Notification packet
      */
     public void notification(NotificationPacket packet) {
-        if (packet.effect == NotificationEffectType.Death) {
+        if (packet.effect == NotificationEffectType.PlayerDeath) {
             deathNotifications.add(packet);
         }
         KeypopGUI.packet(this, packet);
