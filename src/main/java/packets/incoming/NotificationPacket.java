@@ -29,6 +29,10 @@ public class NotificationPacket extends Packet {
      */
     public int uiExtra;
     /**
+     * Queueing message type
+     */
+    public int realmQueueMessageType;
+    /**
      * Position in the queue when queueing for servers
      */
     public int queuePos;
@@ -41,83 +45,80 @@ public class NotificationPacket extends Packet {
      */
     public int pictureType;
     /**
-     * unknown
+     * Player id of the player calling portal
      */
-    public int unknownInt1;
+    public int senderObjectId;
     /**
-     * unknown
+     * Player stars
      */
-    public short unknownShort1;
+    public int numberOfStars;
     /**
-     * unknown
+     * Progress bar max value
      */
-    public short unknownShort2;
+    public int progressMax;
     /**
-     * unknown
+     * Progress bar value
      */
-    public int unknownInt2;
+    public short progressValue;
     /**
-     * unknown
+     * Emote type
      */
-    public int unknownInt3;
-    /**
-     * unknown
-     */
-    public int unknownInt4;
-    /**
-     * unknown
-     */
-    public int unknownInt5;
+    public int emoteType;
 
     @Override
     public void deserialize(BufferReader buffer) throws Exception {
         effect = NotificationEffectType.byOrdinal(buffer.readByte());
         extra = buffer.readByte();
 
-        switch (effect.get()) {
-            case 0:
-            case 1:
-            case 2:
-            case 3:
-            case 9:
+        switch (effect) {
+            case StatIncrease:
+            case ServerMessage:
+            case ErrorMessage:
+            case StickyMessage:
+            case TeleportationError:
                 message = buffer.readString();
                 return;
-            case 4:
+            case Global:
                 message = buffer.readString();
                 uiExtra = buffer.readShort();
                 return;
-            case 5:
-                objectId = buffer.readInt();
+            case Queue:
+                realmQueueMessageType = buffer.readInt();
                 queuePos = buffer.readShort();
                 return;
-            case 6:
+            case ObjectText:
                 message = buffer.readString();
                 objectId = buffer.readInt();
                 color = buffer.readInt();
                 return;
-            case 7:
-            case 8:
+            case PlayerDeath:
+            case PortalOpened:
                 message = buffer.readString();
                 pictureType = buffer.readInt();
                 return;
-            case 10:
+            case PlayerCallout:
                 message = buffer.readString();
-                unknownInt1 = buffer.readInt();
-                unknownShort1 = buffer.readShort();
+                senderObjectId = buffer.readInt();
+                numberOfStars = buffer.readShort();
                 return;
-            case 11:
+            case ProgressBar:
+                if (extra == 0) {
+                    return;
+                } else if ((extra & 3) != 0) {
+                    message = buffer.readString();
+                }
+                progressMax = buffer.readInt();
+                progressValue = buffer.readShort();
+                return;
+            case Behavior:
                 message = buffer.readString();
-                unknownInt1 = buffer.readInt();
-//                unknownShort2 = buffer.readShort();
+                pictureType = buffer.readInt();
+                color = buffer.readInt();
                 return;
-            case 12:
-                message = buffer.readString();
-                unknownInt2 = buffer.readInt();
-                unknownInt3 = buffer.readInt();
+            case Emote:
+                objectId = buffer.readInt();
+                emoteType = buffer.readInt();
                 return;
-            case 13:
-                unknownInt4 = buffer.readInt();
-                unknownInt5 = buffer.readInt();
             default:
         }
     }
@@ -130,15 +131,14 @@ public class NotificationPacket extends Packet {
                 "\n   objectId=" + objectId +
                 "\n   message=" + message +
                 "\n   uiExtra=" + uiExtra +
+                "\n   realmQueueMessageType=" + realmQueueMessageType +
                 "\n   queuePos=" + queuePos +
                 "\n   color=" + color +
                 "\n   pictureType=" + pictureType +
-                "\n   unknownInt1=" + unknownInt1 +
-                "\n   unknownShort1=" + unknownShort1 +
-                "\n   unknownShort2=" + unknownShort2 +
-                "\n   unknownInt2=" + unknownInt2 +
-                "\n   unknownInt3=" + unknownInt3 +
-                "\n   unknownInt4=" + unknownInt4 +
-                "\n   unknownInt5=" + unknownInt5;
+                "\n   senderObjectId=" + senderObjectId +
+                "\n   numberOfStars=" + numberOfStars +
+                "\n   progressMax=" + progressMax +
+                "\n   progressValue=" + progressValue +
+                "\n   emoteType=" + emoteType;
     }
 }

@@ -2,6 +2,7 @@ package packets;
 
 import packets.Packet.IPacket;
 import packets.incoming.*;
+import packets.incoming.PartyActionResult;
 import packets.incoming.ip.IpAddress;
 import packets.incoming.pets.*;
 import packets.incoming.arena.*;
@@ -174,6 +175,16 @@ public enum PacketType { //ChristmasTree™   ⛧   <-crown
                         UNKNOWN181(-75, Incoming, UnknownPacket181::new),
                   CRUCIBLE_REQUEST(-74, Outgoing, CrucibleRequestPacket::new),
                  CRUCIBLE_RESPONSE(-73, Incoming, CrucibleResponsePacket::new),
+               PARTY_ACTION_RESULT(-52, Incoming, PartyActionResult::new),
+             PARTY_INVITE_RESPONSE(-47, Outgoing, PartyInviteResponse::new),
+             INCOMING_PARTY_INVITE(-48, Incoming, IncomingPartyInvite::new),
+                      PARTY_ACTION(-49, Outgoing, PartyAction::new),
+        INCOMING_PARTY_MEMBER_INFO(-46, Incoming, IncomingPartyMemberInfo::new),
+                PARTY_MEMBER_ADDED(-44, Incoming, PartyMemberAdded::new),
+                PARTY_LIST_MESSAGE(-42, Incoming, PartyListMessage::new),
+                PARTY_JOIN_REQUEST(-41, Incoming, PartyJoinRequest::new),
+            PARTY_REQUEST_RESPONSE(-39, Incoming, PartyRequestResponse::new),
+                        UNKNOWN218(-38, Incoming, UnknownPacket218::new),
                        IP_ADDRESS(1000, Incoming, IpAddress::new);
 
 

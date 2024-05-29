@@ -8,6 +8,7 @@ import packets.incoming.pets.ActivePetPacket;
 import packets.incoming.pets.HatchPetMessage;
 import packets.outgoing.*;
 import packets.outgoing.pets.ActivePetUpdateRequestPacket;
+import packets.outgoing.pets.PetUpgradeRequestPacket;
 import packets.packetcapture.PacketProcessor;
 import packets.packetcapture.register.Register;
 import util.Util;
@@ -98,9 +99,19 @@ public class PacketRead {
         if (packet instanceof SquareHitPacket) return;
         if (packet instanceof StasisPacket) return;
         if (packet instanceof CreepMoveMessagePacket) return;
+        if (packet instanceof PetUpgradeRequestPacket) return;
+        if (packet instanceof BuyResultPacket) return;
         // unknown
         if (packet instanceof UnknownPacket139) return;
         if (packet instanceof UnknownPacket165) return;
+        // party
+//        if (packet instanceof PartyAction) return;
+        if (packet instanceof PartyListMessage) return;
+        if (packet instanceof PartyInviteResponse) return;
+        if (packet instanceof IncomingPartyInvite) return;
+        if (packet instanceof IncomingPartyMemberInfo) return;
+        if (packet instanceof PartyAction) return;
+        if (packet instanceof PartyActionResult) return;
         // RealmHeroesLeftPacket
         if (packet instanceof RealmHeroesLeftPacket) return;
         if (packet instanceof CreateSuccessPacket) return;

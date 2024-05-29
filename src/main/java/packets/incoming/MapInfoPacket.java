@@ -76,7 +76,11 @@ public class MapInfoPacket extends Packet {
     /**
      * Unknown Bytes
      */
-    byte[] unknownBytes;
+    public byte[] unknownBytes;
+    /**
+     * Unkown Info
+     */
+    public String dungeonInfo;
 
     @Override
     public void deserialize(BufferReader buffer) throws Exception {
@@ -97,7 +101,8 @@ public class MapInfoPacket extends Packet {
         unknownInt = buffer.readInt();
         String dungeonMods = buffer.readString();
         dungeonModifiers = dungeonMods.split(";");
-        unknownBytes = buffer.readBytes(2);
+        dungeonInfo = buffer.readString();
+        unknownBytes = buffer.readBytes(buffer.getRemainingBytes());
     }
 
     @Override
@@ -119,6 +124,7 @@ public class MapInfoPacket extends Packet {
                 "\n   buildVersion=" + buildVersion +
                 "\n   unknownInt=" + unknownInt +
                 "\n   dungeonModifiers=" + Arrays.toString(dungeonModifiers) +
+                "\n   dungeonInfo=" + dungeonInfo +
                 "\n   unknownBytes=" + Arrays.toString(unknownBytes);
     }
 }
