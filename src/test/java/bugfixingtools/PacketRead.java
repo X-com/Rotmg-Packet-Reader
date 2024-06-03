@@ -57,6 +57,7 @@ public class PacketRead {
         if (packet instanceof GotoPacket) return;
         if (packet instanceof CrucibleRequestPacket) return;
         if (packet instanceof CrucibleResponsePacket) return;
+        if (packet instanceof StatsPacket) return;
         // death and create new char
         if (packet instanceof EditAccountListPacket) return;
         if (packet instanceof NewCharacterInfoPacket) return;
