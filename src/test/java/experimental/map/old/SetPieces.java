@@ -285,12 +285,7 @@ public class SetPieces extends JFrame {
     }
 
     private int getColor(int id) {
-        int color = 0;
-        try {
-            color = ImageBuffer.getColor(id);
-        } catch (AssetMissingException e) {
-            throw new RuntimeException(e);
-        }
+        int color = getIntColor(id);
         if (id == IdData.ENT_CHERRY_TREE) color = Color.PINK.getRGB();
         if (id == IdData.GRAY_WALL) color = Color.GRAY.getRGB();
         if (id == IdData.LAVA_PATH) color = Color.YELLOW.getRGB();
@@ -298,6 +293,20 @@ public class SetPieces extends JFrame {
         if (id == IdData.DEATH_TREE_MANOR) color = Color.ORANGE.getRGB();
         if (id == IdData.LILLYPAD) color = Color.ORANGE.getRGB();
         return color;
+    }
+
+    public static int getIntColor(int id) {
+        try {
+            float[] cc = ImageBuffer.getColor(id);
+            if(cc == null) return 0;
+            int r = (int) (cc[0] * 255.0);
+            int g = (int) (cc[1] * 255.0);
+            int b = (int) (cc[2] * 255.0);
+            int a = (int) (cc[3] * 255.0);
+            return a << 24 | r << 16 | g << 8 | b;
+        } catch (AssetMissingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private boolean findStructure(int i, int j, HeroLocations h) {
