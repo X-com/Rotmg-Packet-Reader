@@ -2,7 +2,6 @@ package packets.incoming;
 
 import packets.Packet;
 import packets.data.Party;
-import packets.data.PartyPlayer;
 import packets.reader.BufferReader;
 
 import java.util.Arrays;
@@ -10,7 +9,7 @@ import java.util.Arrays;
 /**
  * Unknown packet -42 / 214
  */
-public class PartyListMessage extends Packet {
+public class PartyListMessagePacket extends Packet {
 
     byte count;
     public Party[] parties;

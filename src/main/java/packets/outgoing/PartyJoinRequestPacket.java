@@ -4,23 +4,23 @@ import packets.Packet;
 import packets.reader.BufferReader;
 
 /**
- * Unknown packet -47 / 209
+ * Unknown packet -41 / 215
  */
-public class PartyInviteResponse extends Packet {
+public class PartyJoinRequestPacket extends Packet {
 
     public int partyId;
-    public byte acceptInvite;
+    public byte unknown;
 
     @Override
     public void deserialize(BufferReader buffer) throws Exception {
         partyId = buffer.readInt();
-        acceptInvite = buffer.readByte();
+        unknown = buffer.readByte();
     }
 
     @Override
     public String toString() {
-        return "PartyInviteResponse{" +
+        return "PartyJoinRequest{" +
                 "\n   partyId=" + partyId +
-                "\n   acceptInvite=" + acceptInvite;
+                "\n   unknown=" + unknown;
     }
 }

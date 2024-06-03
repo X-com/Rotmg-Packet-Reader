@@ -104,13 +104,14 @@ public class PacketRead {
         if (packet instanceof BuyResultPacket) return;
         // party
 //        if (packet instanceof PartyAction) return;
-        if (packet instanceof PartyListMessage) return;
-        if (packet instanceof PartyInviteResponse) return;
-        if (packet instanceof IncomingPartyInvite) return;
-        if (packet instanceof IncomingPartyMemberInfo) return;
-        if (packet instanceof PartyAction) return;
-        if (packet instanceof PartyActionResult) return;
+        if (packet instanceof PartyListMessagePacket) return;
+        if (packet instanceof PartyInviteResponsePacket) return;
+        if (packet instanceof IncomingPartyInvitePacket) return;
+        if (packet instanceof IncomingPartyMemberInfoPacket) return;
+        if (packet instanceof PartyActionPacket) return;
+        if (packet instanceof PartyActionResultPacket) return;
         // RealmHeroesLeftPacket
+        if (packet instanceof RealmScoreUpdatePacket) return;
         if (packet instanceof RealmHeroesLeftPacket) return;
         if (packet instanceof CreateSuccessPacket) return;
         if (packet instanceof AllyShootPacket) {

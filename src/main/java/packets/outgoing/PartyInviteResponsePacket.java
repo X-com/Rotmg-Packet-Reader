@@ -1,23 +1,26 @@
-package packets.incoming;
+package packets.outgoing;
 
 import packets.Packet;
 import packets.reader.BufferReader;
 
-public class IncomingPartyInvite extends Packet {
+/**
+ * Unknown packet -47 / 209
+ */
+public class PartyInviteResponsePacket extends Packet {
 
     public int partyId;
-    public String inviterName;
+    public byte acceptInvite;
 
     @Override
     public void deserialize(BufferReader buffer) throws Exception {
         partyId = buffer.readInt();
-        inviterName = buffer.readString();
+        acceptInvite = buffer.readByte();
     }
 
     @Override
     public String toString() {
-        return "IncomingPartyInvite{" +
+        return "PartyInviteResponse{" +
                 "\n   partyId=" + partyId +
-                "\n   inviterName=" + inviterName;
+                "\n   acceptInvite=" + acceptInvite;
     }
 }

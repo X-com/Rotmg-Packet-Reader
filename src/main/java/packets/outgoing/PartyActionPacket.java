@@ -1,13 +1,13 @@
-package packets.incoming;
+package packets.outgoing;
 
 import packets.Packet;
 import packets.data.enums.PartyActionType;
 import packets.reader.BufferReader;
 
 /**
- * Unknown packet -52 / 204
+ * Party action response packet -49 / 207
  */
-public class PartyActionResult extends Packet {
+public class PartyActionPacket extends Packet {
 
     public int playerId;
     public PartyActionType actionId;
@@ -20,7 +20,7 @@ public class PartyActionResult extends Packet {
 
     @Override
     public String toString() {
-        return "PartyActionResult{" +
+        return "PartyAction{" +
                 "\n   playerId=" + playerId +
                 "\n   actionId=" + actionId;
     }

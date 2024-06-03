@@ -2,13 +2,12 @@ package packets.incoming;
 
 import packets.Packet;
 import packets.data.enums.InviteState;
-import packets.data.enums.PartyActionType;
 import packets.reader.BufferReader;
 
 /**
  * Unknown packet -39 / 219
  */
-public class PartyRequestResponse extends Packet {
+public class PartyRequestResponsePacket extends Packet {
 
     public String playerName;
     public short classId;

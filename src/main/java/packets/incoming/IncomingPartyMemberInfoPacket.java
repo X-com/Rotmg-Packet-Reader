@@ -1,7 +1,6 @@
 package packets.incoming;
 
 import packets.Packet;
-import packets.data.ObjectData;
 import packets.data.PartyPlayer;
 import packets.reader.BufferReader;
 
@@ -10,7 +9,7 @@ import java.util.Arrays;
 /**
  * Unknown packet -46 / 210
  */
-public class IncomingPartyMemberInfo extends Packet {
+public class IncomingPartyMemberInfoPacket extends Packet {
 
     public int partyId;
     public short unknown;

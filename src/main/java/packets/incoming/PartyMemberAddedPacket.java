@@ -6,7 +6,7 @@ import packets.reader.BufferReader;
 /**
  * Unknown packet -44 / 212
  */
-public class PartyMemberAdded extends Packet {
+public class PartyMemberAddedPacket extends Packet {
 
     /**
      * Id of player that is invited
