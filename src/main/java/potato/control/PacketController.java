@@ -49,8 +49,8 @@ public class PacketController {
         } else if (packet instanceof NotificationPacket) {
             NotificationPacket p = (NotificationPacket) packet;
             model.teleportTimer(p);
-        } else if (packet instanceof UnknownPacket169) {
-            UnknownPacket169 p = (UnknownPacket169) packet;
+        } else if (packet instanceof RealmScoreUpdatePacket) {
+            RealmScoreUpdatePacket p = (RealmScoreUpdatePacket) packet;
             model.unknownPacket169(p);
         } else if (packet instanceof IpAddress) {
             IpAddress p = (IpAddress) packet;

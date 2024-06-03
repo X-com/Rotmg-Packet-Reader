@@ -80,7 +80,7 @@ public class PacketRead {
         }
         if (packet instanceof ReconnectPacket) return;
         if (packet instanceof ExaltationUpdatePacket) return;
-        if (packet instanceof ShootAckCounterPacket) return;
+        if (packet instanceof ShootAckPacket) return;
         if (packet instanceof NotificationPacket) return;
         if (packet instanceof ForgeUnlockedBlueprints) return;
         if (packet instanceof QuestFetchResponsePacket) return;
@@ -97,7 +97,7 @@ public class PacketRead {
         if (packet instanceof GroundDamagePacket) return;
         if (packet instanceof TeleportPacket) return;
         // unknown
-        if (packet instanceof UnknownPacket139) return;
+        if (packet instanceof StatsPacket) return;
         if (packet instanceof GotoAckPacket) return;
         // RealmHeroesLeftPacket
         if (packet instanceof RealmHeroesLeftPacket) return;
