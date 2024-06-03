@@ -1,18 +1,18 @@
 package packets.incoming;
 
 import packets.Packet;
-import packets.data.StatsState;
+import packets.data.StatsStateData;
 import packets.reader.BufferReader;
 
 public class StatsPacket extends Packet {
 
     public int charId;
-    public StatsState state;
+    public StatsStateData state;
 
     @Override
     public void deserialize(BufferReader buffer) throws Exception {
         charId = buffer.readCompressedInt();
-        state = new StatsState().deserialize(buffer);
+        state = new StatsStateData().deserialize(buffer);
     }
 
     @Override

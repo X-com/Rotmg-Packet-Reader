@@ -1,7 +1,7 @@
 package packets.incoming;
 
 import packets.Packet;
-import packets.data.Party;
+import packets.data.PartyData;
 import packets.reader.BufferReader;
 
 import java.util.Arrays;
@@ -12,14 +12,14 @@ import java.util.Arrays;
 public class PartyListMessagePacket extends Packet {
 
     byte count;
-    public Party[] parties;
+    public PartyData[] parties;
 
     @Override
     public void deserialize(BufferReader buffer) throws Exception {
         count = buffer.readByte();
-        parties = new Party[buffer.readShort()];
+        parties = new PartyData[buffer.readShort()];
         for (int i = 0; i < parties.length; i++)
-            parties[i] = new Party().deserialize(buffer);
+            parties[i] = new PartyData().deserialize(buffer);
     }
 
     @Override

@@ -4,14 +4,14 @@ import packets.reader.BufferReader;
 
 import java.io.Serializable;
 
-public class PartyPlayer implements Serializable {
+public class PartyPlayerData implements Serializable {
 
     public short id;
     public String name;
     public short objectId;
     public short unknown;
 
-    public PartyPlayer deserialize(BufferReader buffer) {
+    public PartyPlayerData deserialize(BufferReader buffer) {
         id = buffer.readShort();
         name = buffer.readString();
         objectId = buffer.readShort();

@@ -2,7 +2,7 @@ package packets.data;
 
 import packets.reader.BufferReader;
 
-public class StatsState {
+public class StatsStateData {
 
     public byte hp;
     public byte mp;
@@ -13,7 +13,7 @@ public class StatsState {
     public byte wisdom;
     public byte dexterity;
 
-    public StatsState deserialize(BufferReader buffer) {
+    public StatsStateData deserialize(BufferReader buffer) {
         hp = buffer.readByte();
         mp = buffer.readByte();
         attack = buffer.readByte();

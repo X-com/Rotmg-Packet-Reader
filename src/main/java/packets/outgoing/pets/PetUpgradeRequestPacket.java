@@ -29,13 +29,13 @@ public class PetUpgradeRequestPacket extends Packet {
      */
     public int objectId;
     /**
-     * The item which will be used to upgrade the pet
-     */
-    public SlotObjectData slotObject;
-    /**
      * The type of currency which will be used to purchase the upgrade
      */
     public PaymentType paymentType;
+    /**
+     * The items which will be used to upgrade the pet
+     */
+    public SlotObjectData[] slotObjects;
 
     @Override
     public void deserialize(BufferReader buffer) throws Exception {
@@ -43,8 +43,12 @@ public class PetUpgradeRequestPacket extends Packet {
         pIdOne = buffer.readInt();
         pIdTwo = buffer.readInt();
         objectId = buffer.readInt();
-        slotObject = new SlotObjectData().deserialize(buffer);
         paymentType = PaymentType.byOrdinal(buffer.readByte());
+
+        slotObjects = new SlotObjectData[buffer.readShort()];
+        for (int i = 0; i < slotObjects.length; i++) {
+            slotObjects[i] = new SlotObjectData().deserialize(buffer);
+        }
     }
 
     @Override
@@ -54,7 +58,7 @@ public class PetUpgradeRequestPacket extends Packet {
                 "\n   pIdOne=" + pIdOne +
                 "\n   pIdTwo=" + pIdTwo +
                 "\n   objectId=" + objectId +
-                "\n   slotObject=" + slotObject +
+                "\n   slotObjects=" + Arrays.toString(slotObjects) +
                 "\n   paymentType=" + paymentType;
     }
 }

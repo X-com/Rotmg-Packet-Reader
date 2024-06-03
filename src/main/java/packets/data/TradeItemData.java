@@ -4,7 +4,7 @@ import packets.reader.BufferReader;
 
 import java.io.Serializable;
 
-public class TradeItem implements Serializable {
+public class TradeItemData implements Serializable {
     /**
      * The item id
      */
@@ -21,6 +21,10 @@ public class TradeItem implements Serializable {
      * Whether or not the item is included in an active trade
      */
     public boolean included;
+    /**
+     * Enchantment data as string
+     */
+    public String uniqueData;
 
     /**
      * Deserializer method to extract data from the buffer.
@@ -28,11 +32,12 @@ public class TradeItem implements Serializable {
      * @param buffer Data that needs deserializing.
      * @return Returns this object after deserializing.
      */
-    public TradeItem deserialize(BufferReader buffer) {
+    public TradeItemData deserialize(BufferReader buffer) {
         item = buffer.readInt();
         slotType = buffer.readInt();
         tradeable = buffer.readBoolean();
         included = buffer.readBoolean();
+        uniqueData = buffer.readString();
 
         return this;
     }
@@ -43,6 +48,7 @@ public class TradeItem implements Serializable {
                 "\n   item=" + item +
                 "\n   slotType=" + slotType +
                 "\n   tradeable=" + tradeable +
-                "\n   included=" + included;
+                "\n   included=" + included +
+                "\n   uniqueData=" + uniqueData;
     }
 }

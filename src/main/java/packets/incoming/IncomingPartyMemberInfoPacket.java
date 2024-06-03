@@ -1,7 +1,7 @@
 package packets.incoming;
 
 import packets.Packet;
-import packets.data.PartyPlayer;
+import packets.data.PartyPlayerData;
 import packets.reader.BufferReader;
 
 import java.util.Arrays;
@@ -14,7 +14,7 @@ public class IncomingPartyMemberInfoPacket extends Packet {
     public int partyId;
     public short unknown;
     public byte maxSize;
-    public PartyPlayer[] partyPlayers;
+    public PartyPlayerData[] partyPlayers;
     public String description;
 
     @Override
@@ -22,9 +22,9 @@ public class IncomingPartyMemberInfoPacket extends Packet {
         partyId = buffer.readInt();
         unknown = buffer.readShort();
         maxSize = buffer.readByte();
-        partyPlayers = new PartyPlayer[buffer.readShort()];
+        partyPlayers = new PartyPlayerData[buffer.readShort()];
         for (int i = 0; i < partyPlayers.length; i++) {
-            partyPlayers[i] = new PartyPlayer().deserialize(buffer);
+            partyPlayers[i] = new PartyPlayerData().deserialize(buffer);
         }
         description = buffer.readString();
     }

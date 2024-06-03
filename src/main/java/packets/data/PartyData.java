@@ -4,7 +4,7 @@ import packets.reader.BufferReader;
 
 import java.io.Serializable;
 
-public class Party implements Serializable {
+public class PartyData implements Serializable {
 
     public String descripition;
     public int partyId;
@@ -16,7 +16,7 @@ public class Party implements Serializable {
     public byte requiredMaxedStats;
     public byte server;
 
-    public Party deserialize(BufferReader buffer) {
+    public PartyData deserialize(BufferReader buffer) {
         descripition = buffer.readString();
         partyId = buffer.readInt();
         powerlevel = buffer.readShort();
