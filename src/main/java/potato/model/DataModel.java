@@ -384,24 +384,20 @@ public class DataModel {
         if (inRealm) {
             for (ObjectData od : newObjects) {
                 if (od.objectType == 20800) { // Ethereal Shrine
-                    System.out.println("Ethereal Shrine added");
                     addEntity(od, "d", 8);
                 }
             }
         } else if (isShatters) {
             for (ObjectData od : newObjects) {
                 if (od.objectType == 33445) { // Shatters Void Phantasm
-                    System.out.println("Shatters Void Phantasm added");
                     addEntity(od, "e", 1);
                 } else if (od.objectType == 29054) { // Shatters Village Switch
-                    System.out.println("Shatters Village Switch added");
                     addEntity(od, "a", 1);
                 }
             }
         } else if (isCrystal) {
             for (ObjectData od : newObjects) {
                 if (od.objectType == 10025) { // Crystal Entity
-                    System.out.println("Crystal boss added");
                     addEntity(od, "e", 1);
                 }
             }
