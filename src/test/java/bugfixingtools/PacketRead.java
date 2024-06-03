@@ -101,9 +101,6 @@ public class PacketRead {
         if (packet instanceof CreepMovePacket) return;
         if (packet instanceof PetUpgradeRequestPacket) return;
         if (packet instanceof BuyResultPacket) return;
-        // unknown
-        if (packet instanceof UnknownPacket139) return;
-        if (packet instanceof UnknownPacket165) return;
         // party
 //        if (packet instanceof PartyAction) return;
         if (packet instanceof PartyListMessage) return;

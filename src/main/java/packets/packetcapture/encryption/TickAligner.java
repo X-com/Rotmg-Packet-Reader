@@ -43,7 +43,7 @@ public class TickAligner {
      * @param type          Type of the packet
      * @return Returns the state of the cipher alignment being synced.
      */
-    public boolean checkRC4Alignment(ByteBuffer encryptedData, int size, byte type) {
+    public boolean checkRC4Alignment(ByteBuffer encryptedData, int size, int type) {
         if (synced) {
             if (type == PacketType.NEWTICK.getIndex() || type == PacketType.MOVE.getIndex()) {
                 byte[] duplicate = Arrays.copyOfRange(encryptedData.array(), 5, encryptedData.capacity());

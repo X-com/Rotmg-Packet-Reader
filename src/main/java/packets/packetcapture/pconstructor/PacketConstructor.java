@@ -59,7 +59,7 @@ public class PacketConstructor {
     public void packetReceived(ByteBuffer encryptedData) {
         try {
             int size = encryptedData.getInt();
-            byte type = encryptedData.get();
+            int type = Byte.toUnsignedInt(encryptedData.get());
 
             boolean sync = tickAligner.checkRC4Alignment(encryptedData, size, type);
 

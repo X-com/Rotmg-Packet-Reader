@@ -4,10 +4,8 @@ import packets.Packet.IPacket;
 import packets.incoming.*;
 import packets.incoming.ip.IpAddress;
 import packets.incoming.pets.*;
-import packets.incoming.arena.*;
 import packets.outgoing.*;
 import packets.outgoing.pets.*;
-import packets.outgoing.arena.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -165,7 +163,7 @@ public enum PacketType { //ChristmasTree™   ⛧   <-crown
                 PARTY_LIST_MESSAGE(214, Incoming, PartyListMessage::new),
                 PARTY_JOIN_REQUEST(215, Incoming, PartyJoinRequest::new),
             PARTY_REQUEST_RESPONSE(217, Incoming, PartyRequestResponse::new),
-                      FOR_RECONNECT(218, Incoming, ForReconnectPacket::new),
+                     FOR_RECONNECT(218, Incoming, ForReconnectPacket::new),
                        IP_ADDRESS(1000, Incoming, IpAddress::new);
 
 

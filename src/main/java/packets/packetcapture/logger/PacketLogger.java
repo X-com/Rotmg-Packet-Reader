@@ -18,7 +18,7 @@ public class PacketLogger {
     private Log[] timeSlotsOut;
     private Log inTotal;
     private Log outTotal;
-    private HashMap<Byte, Log> packets = new HashMap<>();
+    private HashMap<Integer, Log> packets = new HashMap<>();
     private int inInterval = -1;
     private int outInterval = -1;
 
@@ -85,7 +85,7 @@ public class PacketLogger {
      * @param type Type of packet being logged
      * @param size Number of bytes the specified type has
      */
-    public void addPacket(byte type, int size) {
+    public void addPacket(int type, int size) {
         if (packets.containsKey(type)) {
             packets.get(type).add(size);
         } else {
@@ -149,7 +149,7 @@ public class PacketLogger {
     class Log implements Comparable<Log> {
         private int count;
         private int size;
-        private byte type;
+        private int type;
 
         public Log() {
             count = 0;
@@ -163,7 +163,7 @@ public class PacketLogger {
             type = -1;
         }
 
-        public Log(byte t, int s) {
+        public Log(int t, int s) {
             count = 1;
             size = s;
             type = t;

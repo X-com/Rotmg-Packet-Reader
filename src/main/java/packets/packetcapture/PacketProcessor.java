@@ -121,7 +121,7 @@ public class PacketProcessor extends Thread implements PProcessor {
      * @param size size of the packet.
      * @param data Constructed packet data.
      */
-    public void processPackets(byte type, int size, ByteBuffer data) {
+    public void processPackets(int type, int size, ByteBuffer data) {
         if (!PacketType.containsKey(type)) {
             System.err.println("Unknown packet type:" + type + " Data:" + Arrays.toString(data.array()));
             return;
