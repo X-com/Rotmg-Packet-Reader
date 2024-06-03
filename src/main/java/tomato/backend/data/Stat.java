@@ -16,9 +16,9 @@ public class Stat implements Serializable {
         setStats(s);
     }
 
-    public void setStats(StatData[] stats) {
-        for (StatData sd : stats) {
-            stats[sd.statTypeNum] = sd;
+    public void setStats(StatData[] sd) {
+        for (StatData s : sd) {
+            stats[s.statTypeNum] = s;
         }
     }
 
