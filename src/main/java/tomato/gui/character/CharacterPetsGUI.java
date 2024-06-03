@@ -5,6 +5,7 @@ import assets.IdToAsset;
 import assets.ImageBuffer;
 import packets.data.ObjectData;
 import packets.data.StatData;
+import packets.data.enums.StatType;
 import tomato.backend.data.Entity;
 import tomato.backend.data.Stat;
 import tomato.backend.data.TomatoData;
@@ -88,14 +89,14 @@ public class CharacterPetsGUI extends JPanel {
 
     private void add(ObjectData object) {
         Stat stat = new Stat(object.status.stats);
-        StatData id = stat.PET_INSTANCEID_STAT;
+        StatData id = stat.get(StatType.PET_INSTANCE_ID_STAT);
         if (id != null && petList.containsKey(id.statValue)) {
             Pet oldPet = petList.get(id.statValue);
             if (oldPet != null) {
                 if (
-                        oldPet.stat.PET_FIRSTABILITY_POINT_STAT.statValue != stat.PET_FIRSTABILITY_POINT_STAT.statValue ||
-                                oldPet.stat.PET_SECONDABILITY_POINT_STAT.statValue != stat.PET_SECONDABILITY_POINT_STAT.statValue ||
-                                oldPet.stat.PET_THIRDABILITY_POINT_STAT.statValue != stat.PET_THIRDABILITY_POINT_STAT.statValue
+                        oldPet.stat.get(StatType.PET_FIRST_ABILITY_POINT_STAT).statValue != stat.get(StatType.PET_FIRST_ABILITY_POINT_STAT).statValue ||
+                                oldPet.stat.get(StatType.PET_SECOND_ABILITY_POINT_STAT).statValue != stat.get(StatType.PET_SECOND_ABILITY_POINT_STAT).statValue ||
+                                oldPet.stat.get(StatType.PET_THIRD_ABILITY_POINT_STAT).statValue != stat.get(StatType.PET_THIRD_ABILITY_POINT_STAT).statValue
                 ) {
                     oldPet.update(object);
                 }
@@ -174,8 +175,8 @@ public class CharacterPetsGUI extends JPanel {
         }
 
         public Integer getId() {
-            if (stat.PET_INSTANCEID_STAT == null) return -1;
-            return stat.PET_INSTANCEID_STAT.statValue;
+            if (stat.get(StatType.PET_INSTANCE_ID_STAT) == null) return -1;
+            return stat.get(StatType.PET_INSTANCE_ID_STAT).statValue;
         }
 
         public JPanel getInfoPanel() {
@@ -183,23 +184,23 @@ public class CharacterPetsGUI extends JPanel {
         }
 
         public String name() {
-            if (stat.PET_NAME_STAT == null) return "---";
+            if (stat.get(StatType.PET_NAME_STAT) == null) return "---";
             try {
                 return IdToAsset.objectName(skin());
             } catch (AssetMissingException e) {
                 e.printStackTrace();
             }
-            return stat.PET_NAME_STAT.stringStatValue;
+            return stat.get(StatType.PET_NAME_STAT).stringStatValue;
         }
 
         public int skin() {
-            if (stat.SKIN_ID == null) return 1;
-            return stat.SKIN_ID.statValue;
+            if (stat.get(StatType.SKIN_ID) == null) return 1;
+            return stat.get(StatType.SKIN_ID).statValue;
         }
 
         public int sort() {
-            if (stat.PET_MAXABILITYPOWER_STAT == null) return 0;
-            return stat.PET_MAXABILITYPOWER_STAT.statValue;
+            if (stat.get(StatType.PET_MAX_ABILITY_POWER_STAT) == null) return 0;
+            return stat.get(StatType.PET_MAX_ABILITY_POWER_STAT).statValue;
         }
 
         public void updateLabels() {
@@ -215,19 +216,19 @@ public class CharacterPetsGUI extends JPanel {
             int maxLevel = 0;
             int cost = -1;
 
-            if (stat.PET_MAXABILITYPOWER_STAT != null) maxLevel = stat.PET_MAXABILITYPOWER_STAT.statValue;
+            if (stat.get(StatType.PET_MAX_ABILITY_POWER_STAT) != null) maxLevel = stat.get(StatType.PET_MAX_ABILITY_POWER_STAT).statValue;
             Integer cc = feedCost.get(maxLevel);
             if (cc != null) cost = cc;
 
-            if (stat.PET_FIRSTABILITY_POINT_STAT != null) a[0] = stat.PET_FIRSTABILITY_POINT_STAT.statValue;
-            if (stat.PET_SECONDABILITY_POINT_STAT != null) a[1] = stat.PET_SECONDABILITY_POINT_STAT.statValue;
-            if (stat.PET_THIRDABILITY_POINT_STAT != null) a[2] = stat.PET_THIRDABILITY_POINT_STAT.statValue;
-            if (stat.PET_FIRSTABILITY_POWER_STAT != null) a[3] = stat.PET_FIRSTABILITY_POWER_STAT.statValue;
-            if (stat.PET_SECONDABILITY_POWER_STAT != null) a[4] = stat.PET_SECONDABILITY_POWER_STAT.statValue;
-            if (stat.PET_THIRDABILITY_POWER_STAT != null) a[5] = stat.PET_THIRDABILITY_POWER_STAT.statValue;
-            if (stat.PET_FIRSTABILITY_TYPE_STAT != null) a[6] = stat.PET_FIRSTABILITY_TYPE_STAT.statValue;
-            if (stat.PET_SECONDABILITY_TYPE_STAT != null) a[7] = stat.PET_SECONDABILITY_TYPE_STAT.statValue;
-            if (stat.PET_THIRDABILITY_TYPE_STAT != null) a[8] = stat.PET_THIRDABILITY_TYPE_STAT.statValue;
+            if (stat.get(StatType.PET_FIRST_ABILITY_POINT_STAT) != null) a[0] = stat.get(StatType.PET_FIRST_ABILITY_POINT_STAT).statValue;
+            if (stat.get(StatType.PET_SECOND_ABILITY_POINT_STAT) != null) a[1] = stat.get(StatType.PET_SECOND_ABILITY_POINT_STAT).statValue;
+            if (stat.get(StatType.PET_THIRD_ABILITY_POINT_STAT) != null) a[2] = stat.get(StatType.PET_THIRD_ABILITY_POINT_STAT).statValue;
+            if (stat.get(StatType.PET_FIRST_ABILITY_POWER_STAT) != null) a[3] = stat.get(StatType.PET_FIRST_ABILITY_POWER_STAT).statValue;
+            if (stat.get(StatType.PET_SECOND_ABILITY_POWER_STAT) != null) a[4] = stat.get(StatType.PET_SECOND_ABILITY_POWER_STAT).statValue;
+            if (stat.get(StatType.PET_THIRD_ABILITY_POWER_STAT) != null) a[5] = stat.get(StatType.PET_THIRD_ABILITY_POWER_STAT).statValue;
+            if (stat.get(StatType.PET_FIRST_ABILITY_TYPE_STAT) != null) a[6] = stat.get(StatType.PET_FIRST_ABILITY_TYPE_STAT).statValue;
+            if (stat.get(StatType.PET_SECOND_ABILITY_TYPE_STAT) != null) a[7] = stat.get(StatType.PET_SECOND_ABILITY_TYPE_STAT).statValue;
+            if (stat.get(StatType.PET_THIRD_ABILITY_TYPE_STAT) != null) a[8] = stat.get(StatType.PET_THIRD_ABILITY_TYPE_STAT).statValue;
 
             for (int i = 0; i < 3; i++) {
                 String abilityName = petAbilitys.get(a[i + 6]);

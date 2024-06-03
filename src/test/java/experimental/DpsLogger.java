@@ -89,7 +89,7 @@ public class DpsLogger {
             ServerPlayerShootPacket p = (ServerPlayerShootPacket) packet;
             Bullet bullet = new Bullet(p);
             bullet.totalDmg = p.damage;
-            if (p.spellBulletData) {
+            if (p.bulletCount > 1) {
                 for (int j = p.bulletId; j < p.bulletId + p.bulletCount; j++) {
                     player.setBullet(p.bulletId, bullet);
                 }

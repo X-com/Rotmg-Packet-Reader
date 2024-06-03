@@ -1,7 +1,5 @@
 package bugfixingtools;
 
-import assets.AssetMissingException;
-import assets.IdToAsset;
 import packets.Packet;
 import packets.data.GroundTileData;
 import packets.data.ObjectData;
@@ -10,10 +8,6 @@ import packets.data.StatData;
 import packets.data.enums.StatType;
 import packets.incoming.*;
 import packets.incoming.ip.IpAddress;
-import packets.incoming.pets.ActivePetPacket;
-import packets.incoming.pets.HatchPetMessage;
-import packets.outgoing.*;
-import packets.outgoing.pets.ActivePetUpdateRequestPacket;
 import packets.packetcapture.PacketProcessor;
 import packets.packetcapture.register.Register;
 import tomato.realmshark.enums.CharacterClass;
@@ -36,95 +30,6 @@ public class PacketRead {
 
     public static void readAll(Packet packet) {
 
-        if (true) {
-            if (packet instanceof PingPacket) return;
-            if (packet instanceof PongPacket) return;
-            if (packet instanceof MovePacket) return;
-            if (packet instanceof PlayerShootPacket) return;
-            if (packet instanceof ServerPlayerShootPacket) return;
-            System.out.println(packet);
-            return;
-        }
-
-        // spammy
-        if (packet instanceof PingPacket) return;
-        if (packet instanceof PongPacket) return;
-        if (packet instanceof MovePacket) return;
-        if (packet instanceof PlayerShootPacket) return;
-        if (packet instanceof ServerPlayerShootPacket) return;
-        if (packet instanceof UpdateAckPacket) return;
-        // common
-        if (packet instanceof InvResultPacket) return;
-        if (packet instanceof InvDropPacket) return;
-        if (packet instanceof PlaySoundPacket) return;
-        if (packet instanceof ShowEffectPacket) return;
-        if (packet instanceof TextPacket) return;
-        if (packet instanceof ChangeAllyShootPacket) return;
-        if (packet instanceof EnemyShootPacket) return;
-        if (packet instanceof EnemyHitPacket) return;
-        if (packet instanceof DamagePacket) return;
-        if (packet instanceof OtherHitPacket) return;
-        if (packet instanceof AoePacket) return;
-        if (packet instanceof AoeAckPacket) return;
-        if (packet instanceof PlayerHitPacket) return;
-        if (packet instanceof PlayerTextPacket) return;
-        if (packet instanceof GotoPacket) return;
-        // death and create new char
-        if (packet instanceof EditAccountListPacket) return;
-        if (packet instanceof NewCharacterInfoPacket) return;
-        if (packet instanceof CreatePacket) return;
-        if (packet instanceof DeathPacket) return;
-        // pet
-        if (packet instanceof ActivePetPacket) return;
-        if (packet instanceof ActivePetUpdateRequestPacket) return;
-        if (packet instanceof HatchPetMessage) return;
-        // trade
-        if (packet instanceof TradeDonePacket) return;
-        if (packet instanceof AcceptTradePacket) return;
-        if (packet instanceof TradeAcceptedPacket) return;
-        if (packet instanceof TradeStartPacket) return;
-        if (packet instanceof RequestTradePacket) return;
-        if (packet instanceof TradeRequestedPacket) return;
-        // load packet
-        if (packet instanceof QuestObjectIdPacket) return;
-        if (packet instanceof LoadPacket) return;
-        if (packet instanceof ReconnectPacket) return;
-        if (packet instanceof ExaltationUpdatePacket) return;
-        if (packet instanceof ShootAckCounterPacket) return;
-        if (packet instanceof NotificationPacket) {
-//            filterNotificationPacket((NotificationPacket) packet);
-            return;
-        }
-        if (packet instanceof ForgeUnlockedBlueprints) return;
-        if (packet instanceof QuestFetchResponsePacket) return;
-        if (packet instanceof QueueInfoPacket) return;
-        if (packet instanceof FailurePacket) return;
-        if (packet instanceof HelloPacket) {
-            tileCounter = 0;
-//            System.out.println(((HelloPacket) packet).accessToken);
-            return;
-        }
-        // usage
-        if (packet instanceof UseItemPacket) return;
-        if (packet instanceof UsePortalPacket) return;
-        if (packet instanceof ClientStatPacket) return;
-        if (packet instanceof DashPacket) return;
-        if (packet instanceof DashAckPacket) return;
-        if (packet instanceof EscapePacket) return;
-        if (packet instanceof InvSwapPacket) return;
-        if (packet instanceof GroundDamagePacket) return;
-        if (packet instanceof TeleportPacket) return;
-        // unknown
-//        if (packet instanceof UnknownPacket139) return;
-        if (packet instanceof GotoAckPacket) return;
-        // RealmHeroesLeftPacket
-        if (packet instanceof RealmHeroesLeftPacket) return;
-        if (packet instanceof CreateSuccessPacket) return;
-        if (packet instanceof CreepMoveMessagePacket) return;
-        if (packet instanceof StasisPacket) return;
-        if (packet instanceof UnknownPacket139) return;
-        if (packet instanceof CrucibleRequestPacket) return;
-        if (packet instanceof CrucibleResponsePacket) return;
         if (packet instanceof IpAddress) {
             IpAddress p = (IpAddress) packet;
             ip = p.srcAddressAsInt;
@@ -160,10 +65,6 @@ public class PacketRead {
 //            countPots((VaultContentPacket) packet);
             return;
         }
-
-        //RealmHeroesLeftPacket
-
-        System.out.println(packet);
     }
 
     private static void filterNotificationPacket(NotificationPacket packet) {

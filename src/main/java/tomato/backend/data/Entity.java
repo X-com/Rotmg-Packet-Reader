@@ -5,6 +5,7 @@ import assets.IdToAsset;
 import assets.ImageBuffer;
 import packets.data.ObjectStatusData;
 import packets.data.WorldPosData;
+import packets.data.enums.StatType;
 import tomato.backend.StasisCheck;
 import tomato.gui.character.CharacterStatMaxingGUI;
 import tomato.gui.dps.DpsGUI;
@@ -87,13 +88,13 @@ public class Entity implements Serializable {
     }
 
     public int maxHp() {
-        if (stat.MAX_HP_STAT == null) return 0;
-        return stat.MAX_HP_STAT.statValue;
+        if (stat.get(StatType.MAX_HP_STAT) == null) return 0;
+        return stat.get(StatType.MAX_HP_STAT).statValue;
     }
 
     public int hp() {
-        if (stat.HP_STAT == null) return 0;
-        return stat.HP_STAT.statValue;
+        if (stat.get(StatType.HP_STAT) == null) return 0;
+        return stat.get(StatType.HP_STAT).statValue;
     }
 
     public long getLastDamageTaken() {
@@ -123,10 +124,10 @@ public class Entity implements Serializable {
      * @return damage multiplier from player stats.
      */
     public float playerStatsMultiplier() {
-        boolean weak = (stat.CONDITION_STAT.statValue & 0x40) != 0;
-        boolean damaging = (stat.CONDITION_STAT.statValue & 0x40000) != 0;
-        int attack = stat.ATTACK_STAT.statValue;
-        float exaltDmgBonus = (float) stat.EXALTATION_BONUS_DAMAGE.statValue / 1000;
+        boolean weak = (stat.get(StatType.CONDITION_STAT).statValue & 0x40) != 0;
+        boolean damaging = (stat.get(StatType.CONDITION_STAT).statValue & 0x40000) != 0;
+        int attack = stat.get(StatType.ATTACK_STAT).statValue;
+        float exaltDmgBonus = (float) stat.get(StatType.EXALTATION_BONUS_DAMAGE).statValue / 1000;
 
         if (weak) {
             return 0.5f;
@@ -143,9 +144,9 @@ public class Entity implements Serializable {
 
         int[] conditions = new int[2];
 
-        conditions[0] = stat.CONDITION_STAT == null ? 0 : stat.CONDITION_STAT.statValue;
-        conditions[1] = stat.NEW_CON_STAT == null ? 0 : stat.NEW_CON_STAT.statValue;
-        int defence = stat.DEFENSE_STAT == null ? 0 : stat.DEFENSE_STAT.statValue;
+        conditions[0] = stat.get(StatType.CONDITION_STAT) == null ? 0 : stat.get(StatType.CONDITION_STAT).statValue;
+        conditions[1] = stat.get(StatType.NEW_CON_STAT) == null ? 0 : stat.get(StatType.NEW_CON_STAT).statValue;
+        int defence = stat.get(StatType.DEFENSE_STAT) == null ? 0 : stat.get(StatType.DEFENSE_STAT).statValue;
 
         int dmg = Projectile.damageWithDefense(projectile.getDamage(), projectile.isArmorPiercing(), defence, conditions);
 
@@ -177,36 +178,36 @@ public class Entity implements Serializable {
     }
 
     private void bossPhaseDamage(Damage damage) {
-        damage.oryx3GuardDmg = objectType == ORYX_THE_MAD_GOD && stat.ANIMATION_ID != null && (stat.ANIMATION_ID.statValue == ORYX_THE_MAD_GOD_GUARD_ANIMATION || stat.ANIMATION_ID.statValue == ORYX_THE_MAD_GOD_GUARD_EXALTED_ANIMATION);
-        damage.walledGardenReflectors = objectType == FORGOTTEN_KING && stat.ANIMATION_ID != null && (stat.ANIMATION_ID.statValue == FORGOTTEN_KING_REFLECTOR_ANIMATION && tomatoData.floorPlanCrystals() == 12);
+        damage.oryx3GuardDmg = objectType == ORYX_THE_MAD_GOD && stat.get(StatType.ANIMATION_STAT) != null && (stat.get(StatType.ANIMATION_STAT).statValue == ORYX_THE_MAD_GOD_GUARD_ANIMATION || stat.get(StatType.ANIMATION_STAT).statValue == ORYX_THE_MAD_GOD_GUARD_EXALTED_ANIMATION);
+        damage.walledGardenReflectors = objectType == FORGOTTEN_KING && stat.get(StatType.ANIMATION_STAT) != null && (stat.get(StatType.ANIMATION_STAT).statValue == FORGOTTEN_KING_REFLECTOR_ANIMATION && tomatoData.floorPlanCrystals() == 12);
         damage.chancellorDammahDmg = objectType == CHANCELLOR_DAMMAH && !dammahCountered;
     }
 
     public String name() {
-        if (CharacterClass.isPlayerCharacter(objectType) && stat.NAME_STAT != null) {
-            return stat.NAME_STAT.stringStatValue.split(",")[0];
+        if (CharacterClass.isPlayerCharacter(objectType) && stat.get(StatType.NAME_STAT) != null) {
+            return stat.get(StatType.NAME_STAT).stringStatValue.split(",")[0];
         }
         return name;
     }
 
     public String getStatName() {
-        if (stat.NAME_STAT == null) return null;
-        return stat.NAME_STAT.stringStatValue;
+        if (stat.get(StatType.NAME_STAT) == null) return null;
+        return stat.get(StatType.NAME_STAT).stringStatValue;
     }
 
     public String getStatGuild() {
-        if (stat.GUILD_NAME_STAT == null) return null;
-        return stat.GUILD_NAME_STAT.stringStatValue;
+        if (stat.get(StatType.GUILD_NAME_STAT) == null) return null;
+        return stat.get(StatType.GUILD_NAME_STAT).stringStatValue;
     }
 
     public boolean isSeasonal() {
-        if (stat.SEASONAL == null) return false;
-        return stat.SEASONAL.statValue == 1;
+        if (stat.get(StatType.SEASONAL) == null) return false;
+        return stat.get(StatType.SEASONAL).statValue == 1;
     }
 
     public boolean isCrucible() {
-        if (stat.UNKNOWN128 == null) return false;
-        return !stat.UNKNOWN128.stringStatValue.isEmpty();
+        if (stat.get(StatType.CRUCIBLE_STAT) == null) return false;
+        return !stat.get(StatType.CRUCIBLE_STAT).stringStatValue.isEmpty();
     }
 
     public ArrayList<Damage> getDamageList() {
@@ -235,14 +236,14 @@ public class Entity implements Serializable {
     private int[] calculateBaseStats() {
         int[] base = new int[8];
 
-        base[0] = stat.MAX_HP_STAT.statValue - stat.MAX_HP_BOOST_STAT.statValue;
-        base[1] = stat.MAX_MP_STAT.statValue - stat.MAX_MP_BOOST_STAT.statValue;
-        base[2] = stat.ATTACK_STAT.statValue - stat.ATTACK_BOOST_STAT.statValue;
-        base[3] = stat.DEFENSE_STAT.statValue - stat.DEFENSE_BOOST_STAT.statValue;
-        base[4] = stat.SPEED_STAT.statValue - stat.SPEED_BOOST_STAT.statValue;
-        base[5] = stat.DEXTERITY_STAT.statValue - stat.DEXTERITY_BOOST_STAT.statValue;
-        base[6] = stat.VITALITY_STAT.statValue - stat.VITALITY_BOOST_STAT.statValue;
-        base[7] = stat.WISDOM_STAT.statValue - stat.WISDOM_BOOST_STAT.statValue;
+        base[0] = stat.get(StatType.MAX_HP_STAT).statValue - stat.get(StatType.MAX_HP_BOOST_STAT).statValue;
+        base[1] = stat.get(StatType.MAX_MP_STAT).statValue - stat.get(StatType.MAX_MP_BOOST_STAT).statValue;
+        base[2] = stat.get(StatType.ATTACK_STAT).statValue - stat.get(StatType.ATTACK_BOOST_STAT).statValue;
+        base[3] = stat.get(StatType.DEFENSE_STAT).statValue - stat.get(StatType.DEFENSE_BOOST_STAT).statValue;
+        base[4] = stat.get(StatType.SPEED_STAT).statValue - stat.get(StatType.SPEED_BOOST_STAT).statValue;
+        base[5] = stat.get(StatType.DEXTERITY_STAT).statValue - stat.get(StatType.DEXTERITY_BOOST_STAT).statValue;
+        base[6] = stat.get(StatType.VITALITY_STAT).statValue - stat.get(StatType.VITALITY_BOOST_STAT).statValue;
+        base[7] = stat.get(StatType.WISDOM_STAT).statValue - stat.get(StatType.WISDOM_BOOST_STAT).statValue;
 
         return base;
     }
@@ -253,7 +254,7 @@ public class Entity implements Serializable {
      * @param time
      */
     private void fame(long time) {
-        long exp = Long.parseLong(stat.EXP_STAT.stringStatValue);
+        long exp = Long.parseLong(stat.get(StatType.EXP_STAT).stringStatValue);
         FameTracker.trackFame(charId, exp, time);
         if (tomatoData.charMap != null) {
             long fame = (exp + 40071) / 2000;

@@ -3,6 +3,7 @@ package tomato.gui.security;
 import assets.AssetMissingException;
 import assets.IdToAsset;
 import assets.ImageBuffer;
+import packets.data.enums.StatType;
 import tomato.backend.data.Entity;
 import tomato.gui.SmartScroller;
 import tomato.realmshark.ParseEnchants;
@@ -132,9 +133,9 @@ public class ParsePanelGUI extends JPanel {
             panel.setMaximumSize(new Dimension(x, y));
             panel.setLayout(new BorderLayout());
 
-            int eq = player.stat.SKIN_ID.statValue;
+            int eq = player.stat.get(StatType.SKIN_ID).statValue;
             if (eq == 0) eq = player.objectType;
-            int level = player.stat.LEVEL_STAT.statValue;
+            int level = player.stat.get(StatType.LEVEL_STAT).statValue;
             String text = player.name() + " [" + level + "]";
             JLabel characterLabel = new JLabel(text, ImageBuffer.getOutlinedIcon(eq, 20), JLabel.CENTER);
             characterLabel.addMouseListener(new MouseAdapter() {
@@ -190,10 +191,10 @@ public class ParsePanelGUI extends JPanel {
             panel.setPreferredSize(new Dimension(100, 24));
             panel.setMaximumSize(new Dimension(100, 24));
             panel.setLayout(new GridLayout(1, 4));
-            p.inv[0] = player.stat.INVENTORY_0_STAT.statValue;
-            p.inv[1] = player.stat.INVENTORY_1_STAT.statValue;
-            p.inv[2] = player.stat.INVENTORY_2_STAT.statValue;
-            p.inv[3] = player.stat.INVENTORY_3_STAT.statValue;
+            p.inv[0] = player.stat.get(StatType.INVENTORY_0_STAT).statValue;
+            p.inv[1] = player.stat.get(StatType.INVENTORY_1_STAT).statValue;
+            p.inv[2] = player.stat.get(StatType.INVENTORY_2_STAT).statValue;
+            p.inv[3] = player.stat.get(StatType.INVENTORY_3_STAT).statValue;
             for (int i = 0; i < 4; i++) {
                 int eq = p.inv[i];
                 try {
@@ -339,10 +340,10 @@ public class ParsePanelGUI extends JPanel {
         JPanel crucible;
 
         public void update(Entity player) {
-            setIcon(0, player.stat.INVENTORY_0_STAT.statValue);
-            setIcon(1, player.stat.INVENTORY_1_STAT.statValue);
-            setIcon(2, player.stat.INVENTORY_2_STAT.statValue);
-            setIcon(3, player.stat.INVENTORY_3_STAT.statValue);
+            setIcon(0, player.stat.get(StatType.INVENTORY_0_STAT).statValue);
+            setIcon(1, player.stat.get(StatType.INVENTORY_1_STAT).statValue);
+            setIcon(2, player.stat.get(StatType.INVENTORY_2_STAT).statValue);
+            setIcon(3, player.stat.get(StatType.INVENTORY_3_STAT).statValue);
             crucible.setBackground(player.isCrucible() ? Color.RED : player.isSeasonal() ? seasonalColor : Color.WHITE);
             updateToolTipText();
         }
@@ -372,9 +373,9 @@ public class ParsePanelGUI extends JPanel {
         public String toString() {
             int type = playerEntity.objectType;
             String clazz = CharacterClass.getName(type);
-            int level = playerEntity.stat.LEVEL_STAT.statValue;
-            boolean seasonal = playerEntity.stat.SEASONAL.statValue == 1;
-            boolean crucible = !playerEntity.stat.UNKNOWN128.stringStatValue.isEmpty();
+            int level = playerEntity.stat.get(StatType.LEVEL_STAT).statValue;
+            boolean seasonal = playerEntity.isSeasonal();
+            boolean crucible = playerEntity.isCrucible();
             int stat = statsMaxed(playerEntity);
             int[] missing = statMissing(playerEntity);
 

@@ -2,6 +2,7 @@ package tomato.gui.mydmg;
 
 import assets.IdToAsset;
 import assets.ImageBuffer;
+import packets.data.enums.StatType;
 import tomato.backend.data.Entity;
 import tomato.backend.data.TomatoData;
 import tomato.gui.TomatoGUI;
@@ -44,28 +45,28 @@ public class MyDamageGUI extends JPanel {
     private void updateMe() {
         if (player == null) return;
         slots = new int[4];
-        if (player.stat.DEXTERITY_STAT == null) {
+        if (player.stat.get(StatType.DEXTERITY_STAT) == null) {
             System.out.println("nulled on dex stat");
             return;
         }
-        int dex = player.stat.DEXTERITY_STAT.statValue;
-        int atk = player.stat.ATTACK_STAT.statValue;
-        int wis = player.stat.WISDOM_STAT.statValue;
-        int exalt = player.stat.EXALTATION_BONUS_DAMAGE.statValue;
+        int dex = player.stat.get(StatType.DEXTERITY_STAT).statValue;
+        int atk = player.stat.get(StatType.ATTACK_STAT).statValue;
+        int wis = player.stat.get(StatType.WISDOM_STAT).statValue;
+        int exalt = player.stat.get(StatType.EXALTATION_BONUS_DAMAGE).statValue;
 
-        slots[0] = player.stat.INVENTORY_0_STAT.statValue;
-        slots[1] = player.stat.INVENTORY_1_STAT.statValue;
-        slots[2] = player.stat.INVENTORY_2_STAT.statValue;
-        slots[3] = player.stat.INVENTORY_3_STAT.statValue;
+        slots[0] = player.stat.get(StatType.INVENTORY_0_STAT).statValue;
+        slots[1] = player.stat.get(StatType.INVENTORY_1_STAT).statValue;
+        slots[2] = player.stat.get(StatType.INVENTORY_2_STAT).statValue;
+        slots[3] = player.stat.get(StatType.INVENTORY_3_STAT).statValue;
 
         for (int i = 0; i < 4; i++) {
             displayImg(icons[i], slots[i]);
         }
 
-        if (pet == null || pet.stat.SKIN_ID == null) {
+        if (pet == null || pet.stat.get(StatType.SKIN_ID) == null) {
             displayImg(icons[4], 5079);
         } else {
-            displayImg(icons[4], pet.stat.SKIN_ID.statValue);
+            displayImg(icons[4], pet.stat.get(StatType.SKIN_ID).statValue);
         }
         icons[4].setToolTipText("Enter Pet Yard to update pet");
 
@@ -162,12 +163,12 @@ public class MyDamageGUI extends JPanel {
     }
 
     private int getPetStat(int type) {
-        if (pet.stat.PET_FIRSTABILITY_TYPE_STAT.statValue == type) {
-            return pet.stat.PET_FIRSTABILITY_POWER_STAT.statValue;
-        } else if (pet.stat.PET_SECONDABILITY_TYPE_STAT.statValue == type) {
-            return pet.stat.PET_SECONDABILITY_POWER_STAT.statValue;
-        } else if (pet.stat.PET_THIRDABILITY_TYPE_STAT.statValue == type) {
-            return pet.stat.PET_THIRDABILITY_POWER_STAT.statValue;
+        if (pet.stat.get(StatType.PET_FIRST_ABILITY_TYPE_STAT).statValue == type) {
+            return pet.stat.get(StatType.PET_FIRST_ABILITY_POWER_STAT).statValue;
+        } else if (pet.stat.get(StatType.PET_SECOND_ABILITY_TYPE_STAT).statValue == type) {
+            return pet.stat.get(StatType.PET_SECOND_ABILITY_POWER_STAT).statValue;
+        } else if (pet.stat.get(StatType.PET_THIRD_ABILITY_TYPE_STAT).statValue == type) {
+            return pet.stat.get(StatType.PET_THIRD_ABILITY_POWER_STAT).statValue;
         }
 
         return -1;

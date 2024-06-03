@@ -22,7 +22,7 @@ public class StasisCheck {
 
         for (Entity player : data.playerListUpdated.values()) {
             if (player.stasisCounter == data.time) continue;
-            int item = player.stat.INVENTORY_1_STAT.statValue;
+            int item = player.stat.get(StatType.INVENTORY_1_STAT).statValue;
             if (StasisOrbs.usingOrb(item, stasisDuration)) {
                 player.stasisCounter = 2;
             }
@@ -40,11 +40,11 @@ public class StasisCheck {
             entity.stasisCounter--;
             for (StatData sd : stats) {
                 if (sd.statType == StatType.MP_STAT) {
-                    if (entity.stat.MP_STAT.statValue <= sd.statValue) {
+                    if (entity.stat.get(StatType.MP_STAT).statValue <= sd.statValue) {
                         StringBuilder sb = new StringBuilder();
                         sb.append("[").append(Util.getHourTime()).append("] ");
                         sb.append(entity.name()).append(": ");
-                        sb.append(StasisOrbs.getName(entity.stat.INVENTORY_1_STAT.statValue));
+                        sb.append(StasisOrbs.getName(entity.stat.get(StatType.INVENTORY_1_STAT).statValue));
                         SecurityGUI.updateAbilityUsage(sb.toString());
                     }
                 }

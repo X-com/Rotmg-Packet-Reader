@@ -4,6 +4,7 @@ import packets.Packet;
 import packets.data.ObjectData;
 import packets.data.StatData;
 import packets.data.enums.NotificationEffectType;
+import packets.data.enums.StatType;
 import packets.incoming.*;
 import packets.outgoing.EnemyHitPacket;
 import packets.outgoing.PlayerShootPacket;
@@ -271,7 +272,7 @@ public class TomatoData {
      * @param p Projectile info
      */
     public void serverPlayerShoot(ServerPlayerShootPacket p) {
-        if (p.spellBulletData) {
+        if (p.bulletCount > 1) {
             Projectile projectile = new Projectile(p.damage, p.containerType, p.summonerId);
             for (int j = p.bulletId; j < p.bulletId + p.bulletCount; j++) {
                 projectiles[j % 256 + 256] = projectile;
@@ -388,7 +389,7 @@ public class TomatoData {
 
     public void vaultPacketUpdate(VaultContentPacket p) {
         if (player != null) {
-            if (player.stat.SEASONAL.statValue == 1) {
+            if (player.stat.get(StatType.SEASONAL).statValue == 1) {
                 vaultDataRecievedSeasonal = true;
                 seasonalVault.vaultPacketUpdate(p);
             } else {
@@ -426,38 +427,38 @@ public class TomatoData {
     private void makePet(RealmCharacter currentChar) {
         pet = new Entity(this, -1, time);
 
-        pet.stat.SKIN_ID = new StatData();
-        pet.stat.PET_TYPE_STAT = new StatData();
-        pet.stat.PET_NAME_STAT = new StatData();
-        pet.stat.PET_RARITY_STAT = new StatData();
-        pet.stat.PET_INSTANCEID_STAT = new StatData();
-        pet.stat.PET_MAXABILITYPOWER_STAT = new StatData();
-        pet.stat.PET_FIRSTABILITY_POINT_STAT = new StatData();
-        pet.stat.PET_FIRSTABILITY_POWER_STAT = new StatData();
-        pet.stat.PET_FIRSTABILITY_TYPE_STAT = new StatData();
-        pet.stat.PET_SECONDABILITY_POINT_STAT = new StatData();
-        pet.stat.PET_SECONDABILITY_POWER_STAT = new StatData();
-        pet.stat.PET_SECONDABILITY_TYPE_STAT = new StatData();
-        pet.stat.PET_THIRDABILITY_POINT_STAT = new StatData();
-        pet.stat.PET_THIRDABILITY_POWER_STAT = new StatData();
-        pet.stat.PET_THIRDABILITY_TYPE_STAT = new StatData();
+        pet.stat.set(StatType.SKIN_ID, new StatData());
+        pet.stat.set(StatType.PET_TYPE_STAT, new StatData());
+        pet.stat.set(StatType.PET_NAME_STAT, new StatData());
+        pet.stat.set(StatType.PET_RARITY_STAT, new StatData());
+        pet.stat.set(StatType.PET_INSTANCE_ID_STAT, new StatData());
+        pet.stat.set(StatType.PET_MAX_ABILITY_POWER_STAT, new StatData());
+        pet.stat.set(StatType.PET_FIRST_ABILITY_POINT_STAT, new StatData());
+        pet.stat.set(StatType.PET_FIRST_ABILITY_POWER_STAT, new StatData());
+        pet.stat.set(StatType.PET_FIRST_ABILITY_TYPE_STAT, new StatData());
+        pet.stat.set(StatType.PET_SECOND_ABILITY_POINT_STAT, new StatData());
+        pet.stat.set(StatType.PET_SECOND_ABILITY_POWER_STAT, new StatData());
+        pet.stat.set(StatType.PET_SECOND_ABILITY_TYPE_STAT, new StatData());
+        pet.stat.set(StatType.PET_THIRD_ABILITY_POINT_STAT, new StatData());
+        pet.stat.set(StatType.PET_THIRD_ABILITY_POWER_STAT, new StatData());
+        pet.stat.set(StatType.PET_THIRD_ABILITY_TYPE_STAT, new StatData());
 
-        pet.stat.SKIN_ID.statValue = currentChar.petSkin;
-        pet.stat.PET_TYPE_STAT.statValue = currentChar.petType;
-        pet.stat.PET_NAME_STAT.stringStatValue = currentChar.petName;
-        pet.stat.PET_RARITY_STAT.statValue = currentChar.petRarity;
-        pet.stat.PET_INSTANCEID_STAT.statValue = currentChar.petInstanceId;
-        pet.stat.PET_MAXABILITYPOWER_STAT.statValue = currentChar.petMaxAbilityPower;
+        pet.stat.get(StatType.SKIN_ID).statValue = currentChar.petSkin;
+        pet.stat.get(StatType.PET_TYPE_STAT).statValue = currentChar.petType;
+        pet.stat.get(StatType.PET_NAME_STAT).stringStatValue = currentChar.petName;
+        pet.stat.get(StatType.PET_RARITY_STAT).statValue = currentChar.petRarity;
+        pet.stat.get(StatType.PET_INSTANCE_ID_STAT).statValue = currentChar.petInstanceId;
+        pet.stat.get(StatType.PET_MAX_ABILITY_POWER_STAT).statValue = currentChar.petMaxAbilityPower;
 
-        pet.stat.PET_FIRSTABILITY_POINT_STAT.statValue = currentChar.petAbilitys[0];
-        pet.stat.PET_FIRSTABILITY_POWER_STAT.statValue = currentChar.petAbilitys[1];
-        pet.stat.PET_FIRSTABILITY_TYPE_STAT.statValue = currentChar.petAbilitys[2];
-        pet.stat.PET_SECONDABILITY_POINT_STAT.statValue = currentChar.petAbilitys[3];
-        pet.stat.PET_SECONDABILITY_POWER_STAT.statValue = currentChar.petAbilitys[4];
-        pet.stat.PET_SECONDABILITY_TYPE_STAT.statValue = currentChar.petAbilitys[5];
-        pet.stat.PET_THIRDABILITY_POINT_STAT.statValue = currentChar.petAbilitys[6];
-        pet.stat.PET_THIRDABILITY_POWER_STAT.statValue = currentChar.petAbilitys[7];
-        pet.stat.PET_THIRDABILITY_TYPE_STAT.statValue = currentChar.petAbilitys[8];
+        pet.stat.get(StatType.PET_FIRST_ABILITY_POINT_STAT).statValue = currentChar.petAbilitys[0];
+        pet.stat.get(StatType.PET_FIRST_ABILITY_POWER_STAT).statValue = currentChar.petAbilitys[1];
+        pet.stat.get(StatType.PET_FIRST_ABILITY_TYPE_STAT).statValue = currentChar.petAbilitys[2];
+        pet.stat.get(StatType.PET_SECOND_ABILITY_POINT_STAT).statValue = currentChar.petAbilitys[3];
+        pet.stat.get(StatType.PET_SECOND_ABILITY_POWER_STAT).statValue = currentChar.petAbilitys[4];
+        pet.stat.get(StatType.PET_SECOND_ABILITY_TYPE_STAT).statValue = currentChar.petAbilitys[5];
+        pet.stat.get(StatType.PET_THIRD_ABILITY_POINT_STAT).statValue = currentChar.petAbilitys[6];
+        pet.stat.get(StatType.PET_THIRD_ABILITY_POWER_STAT).statValue = currentChar.petAbilitys[7];
+        pet.stat.get(StatType.PET_THIRD_ABILITY_TYPE_STAT).statValue = currentChar.petAbilitys[8];
     }
 
     /**

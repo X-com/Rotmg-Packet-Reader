@@ -2,6 +2,7 @@ package tomato.realmshark;
 
 import org.xml.sax.SAXException;
 import packets.data.StatData;
+import packets.data.enums.StatType;
 import tomato.backend.data.Entity;
 import util.StringXML;
 
@@ -219,7 +220,7 @@ public class ParseEnchants {
      * @return Four strings representing the equipment enchants if they have any. Starting with weapon, ability, armor, ring.
      */
     public static String[] extractEnchants(Entity player) {
-        StatData textureStat = player.stat.ENCHANTMENTS;
+        StatData textureStat = player.stat.get(StatType.UNIQUE_DATA_STRING);
         String[] slotEnchant = {"", "", "", ""};
         if (textureStat != null) {
             String s = textureStat.stringStatValue;
@@ -241,7 +242,7 @@ public class ParseEnchants {
      * @return Four encoded enchantment strings of equipped player
      */
     public static String[] getEnchantStrings(Entity player) {
-        StatData textureStat = player.stat.ENCHANTMENTS;
+        StatData textureStat = player.stat.get(StatType.UNIQUE_DATA_STRING);
         String[] slotEnchant = {"", "", "", ""};
 
         if (textureStat != null) {
