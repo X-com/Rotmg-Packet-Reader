@@ -381,13 +381,7 @@ public class DataModel {
         for (ObjectData od : newObjects) {
             allEntitys.put(od.status.objectId, od);
         }
-        if (inRealm) {
-            for (ObjectData od : newObjects) {
-                if (od.objectType == 20800) { // Ethereal Shrine
-                    addEntity(od, "d", 8);
-                }
-            }
-        } else if (isShatters) {
+        if (isShatters) {
             for (ObjectData od : newObjects) {
                 if (od.objectType == 33445) { // Shatters Void Phantasm
                     addEntity(od, "e", 1);
