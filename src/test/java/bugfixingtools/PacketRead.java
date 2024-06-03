@@ -79,7 +79,7 @@ public class PacketRead {
         if (packet instanceof HelloPacket) return;
         if (packet instanceof ReconnectPacket) return;
         if (packet instanceof ExaltationUpdatePacket) return;
-        if (packet instanceof ShootAckCounterPacket) return;
+        if (packet instanceof ShootAckPacket) return;
         if (packet instanceof NotificationPacket) return;
         if (packet instanceof ForgeUnlockedBlueprints) return;
         if (packet instanceof QuestFetchResponsePacket) return;
@@ -98,7 +98,7 @@ public class PacketRead {
         if (packet instanceof GotoAckPacket) return;
         if (packet instanceof SquareHitPacket) return;
         if (packet instanceof StasisPacket) return;
-        if (packet instanceof CreepMoveMessagePacket) return;
+        if (packet instanceof CreepMovePacket) return;
         if (packet instanceof PetUpgradeRequestPacket) return;
         if (packet instanceof BuyResultPacket) return;
         // unknown

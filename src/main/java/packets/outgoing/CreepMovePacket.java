@@ -8,7 +8,7 @@ import packets.reader.BufferReader;
 /**
  * Sent when playing the Summoner class and a spawned creep minion has to move position.
  */
-public class CreepMoveMessagePacket extends Packet {
+public class CreepMovePacket extends Packet {
     /**
      * The object ID of the Summoner's creep to move.
      */
@@ -36,7 +36,7 @@ public class CreepMoveMessagePacket extends Packet {
 
     @Override
     public String toString() {
-        return "CreepMoveMessagePacket{" +
+        return "CreepMovePacket{" +
                 "\n   objectId=" + objectId +
                 "\n   serverTime=" + serverTime +
                 "\n   position=" + position +

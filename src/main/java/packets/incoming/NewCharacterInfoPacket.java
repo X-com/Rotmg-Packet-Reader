@@ -8,12 +8,16 @@ import packets.reader.BufferReader;
  */
 public class NewCharacterInfoPacket extends Packet {
 
+    public String characterXml;
+
     @Override
     public void deserialize(BufferReader buffer) throws Exception {
+        characterXml = buffer.readString();
     }
 
     @Override
     public String toString() {
-        return "NewCharacterInfoPacket{";
+        return "NewCharacterInfoPacket{" +
+                "\n   characterXml=" + characterXml;
     }
 }

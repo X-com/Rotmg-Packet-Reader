@@ -37,13 +37,9 @@ public class ServerPlayerShootPacket extends Packet {
      */
     public int summonerId;
     /**
-     * Unknown byte 1
+     * Bullet type
      */
-    public byte unknownByte1;
-    /**
-     * Spell from wizard used receiving 2 additional bytes of data
-     */
-    public boolean spellBulletData = false;
+    public byte bulletType;
     /**
      * Number of bullets from the spell used
      */
@@ -62,30 +58,30 @@ public class ServerPlayerShootPacket extends Packet {
         angle = buffer.readFloat();
         damage = buffer.readShort();
         summonerId = buffer.readInt();
-        unknownByte1 = buffer.readByte();
-        if(buffer.getRemainingBytes() > 4) {
-            spellBulletData = true;
-            bulletCount = buffer.readByte();
-            anglesBetweenBullets = buffer.readFloat();
-        } else {
-            bulletCount = 0;
-            anglesBetweenBullets = 372.0f;
+
+        if (buffer.getRemainingBytes() > 0) {
+            bulletType = buffer.readByte();
+            if (buffer.getRemainingBytes() > 0) {
+                bulletCount = buffer.readByte();
+                if (buffer.getRemainingBytes() > 0) {
+                    anglesBetweenBullets = buffer.readFloat();
+                }
+            }
         }
     }
 
     @Override
     public String toString() {
         return "ServerPlayerShootPacket{" +
-                "\n bulletId=" + bulletId +
-                "\n ownerId=" + ownerId +
-                "\n containerType=" + containerType +
-                "\n startingPos=" + startingPos +
-                "\n angle=" + angle +
-                "\n damage=" + damage +
-                "\n summonerId=" + summonerId +
-                "\n unknownByte1=" + unknownByte1 +
-                "\n extraData=" + spellBulletData +
-                "\n bulletCount=" + bulletCount +
-                "\n anglesBetweenBullets=" + anglesBetweenBullets;
+                "\n   bulletId=" + bulletId +
+                "\n   ownerId=" + ownerId +
+                "\n   containerType=" + containerType +
+                "\n   startingPos=" + startingPos +
+                "\n   angle=" + angle +
+                "\n   damage=" + damage +
+                "\n   summonerId=" + summonerId +
+                "\n   bulletType=" + bulletType +
+                "\n   bulletCount=" + bulletCount +
+                "\n   anglesBetweenBullets=" + anglesBetweenBullets;
     }
 }

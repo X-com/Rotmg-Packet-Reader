@@ -17,9 +17,7 @@ public class EnemyShootPacket extends Packet {
      */
     public int ownerId;
     /**
-     * The local identifier of the projectile.
-     *
-     * @see `ProjectileInfo.id`
+     * Bullet type
      */
     public int bulletType;
     /**
@@ -55,8 +53,8 @@ public class EnemyShootPacket extends Packet {
             numShots = buffer.readUnsignedByte();
             angleInc = buffer.readFloat();
         } else {
-            numShots = 1;
-            angleInc = 0;
+            numShots = 255;
+            angleInc = 0f;
         }
     }
 

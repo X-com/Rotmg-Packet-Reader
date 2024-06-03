@@ -10,9 +10,9 @@ import java.util.Arrays;
  */
 public class ForgeUnlockedBlueprints extends Packet {
     /**
-     * Unknown Byte
+     * Seasonal forge
      */
-    public byte unknownByte;
+    public byte seasonalForge;
     /**
      * The itemIds of unlocked blueprints in an array
      */
@@ -20,7 +20,7 @@ public class ForgeUnlockedBlueprints extends Packet {
 
     @Override
     public void deserialize(BufferReader buffer) throws Exception {
-        unknownByte = buffer.readByte();
+        seasonalForge = buffer.readByte();
         unlockedBlueprints = new int[buffer.readCompressedInt()];
         for (int i = 0; i < unlockedBlueprints.length; i++) {
             unlockedBlueprints[i] = buffer.readCompressedInt();
@@ -30,7 +30,7 @@ public class ForgeUnlockedBlueprints extends Packet {
     @Override
     public String toString() {
         return "ForgeUnlockedBlueprints{" +
-                "\n   unknownByte=" + unknownByte +
+                "\n   unknownByte=" + seasonalForge +
                 "\n   unlockedBlueprints=" + Arrays.toString(unlockedBlueprints);
     }
 }

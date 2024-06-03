@@ -3,9 +3,6 @@ package packets.incoming;
 import packets.Packet;
 import packets.reader.BufferReader;
 
-/**
- * Unknown packet -48 / 210
- */
 public class IncomingPartyInvite extends Packet {
 
     public int partyId;

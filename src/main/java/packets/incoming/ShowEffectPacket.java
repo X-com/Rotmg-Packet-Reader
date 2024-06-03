@@ -32,58 +32,66 @@ public class ShowEffectPacket extends Packet {
      * The duration of the effect
      */
     public float duration;
-
     /**
      * unknown
      */
     public byte unknownByte;
+
+    private static final int EFFECT_BIT_COLOR = 1;
+    private static final int EFFECT_BIT_POS1X = 2;
+    private static final int EFFECT_BIT_POS1Y = 4;
+    private static final int EFFECT_BIT_POS2X = 8;
+    private static final int EFFECT_BIT_POS2Y = 16;
+    private static final int EFFECT_BIT_DURATION = 32;
+    private static final int EFFECT_BIT_ID = 64;
+    private static final int UNKNOWN_BIT_ID = 128;
 
     @Override
     public void deserialize(BufferReader buffer) throws Exception {
         pos1 = new WorldPosData();
         pos2 = new WorldPosData();
         effectType = buffer.readByte();
-        byte ignore = buffer.readByte();
+        byte bitmask = buffer.readByte();
 
-        if ((ignore & 0x40) != 0) {
+        if ((bitmask & EFFECT_BIT_ID) != 0) {
             targetObjectId = buffer.readCompressedInt();
         } else {
             targetObjectId = 0;
         }
-        if ((ignore & 0x2) != 0) {
+        if ((bitmask & EFFECT_BIT_POS1X) != 0) {
             pos1.x = buffer.readFloat();
         } else {
             pos1.x = 0.0f;
         }
-        if ((ignore & 0x4) != 0) {
+        if ((bitmask & EFFECT_BIT_POS1Y) != 0) {
             pos1.y = buffer.readFloat();
         } else {
             pos1.y = 0.0f;
         }
-        if ((ignore & 0x8) != 0) {
+        if ((bitmask & EFFECT_BIT_POS2X) != 0) {
             pos2.x = buffer.readFloat();
         } else {
             pos2.x = 0.0f;
         }
-        if ((ignore & 0x10) != 0) {
+        if ((bitmask & EFFECT_BIT_POS2Y) != 0) {
             pos2.y = buffer.readFloat();
         } else {
             pos2.y = 0.0f;
         }
-        if ((ignore & 0x1) != 0) {
+        if ((bitmask & EFFECT_BIT_COLOR) != 0) {
             color = buffer.readInt();
         } else {
             color = 0xFFFFFF;
         }
-        if ((ignore & 0x20) != 0) {
+        if ((bitmask & EFFECT_BIT_DURATION) != 0) {
             duration = buffer.readFloat();
         } else {
             duration = 1.0f;
         }
-        if (ignore >= 0) {
-            unknownByte = 100;
-        } else {
+        if ((bitmask & UNKNOWN_BIT_ID) != 0) {
             unknownByte = buffer.readByte();
+        } else {
+            unknownByte = 100;
         }
     }
 

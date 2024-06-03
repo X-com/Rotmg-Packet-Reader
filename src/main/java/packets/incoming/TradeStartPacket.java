@@ -25,9 +25,13 @@ public class TradeStartPacket extends Packet {
      */
     public TradeItem[] partnerItems;
     /**
-     * Unknown int
+     * Object id
      */
-    public int unknownInt;
+    public int objectId;
+    /**
+     * Unknown
+     */
+    public byte unknown;
 
     @Override
     public void deserialize(BufferReader buffer) throws Exception {
@@ -40,7 +44,8 @@ public class TradeStartPacket extends Packet {
         for (int i = 0; i < partnerItems.length; i++) {
             partnerItems[i] = new TradeItem().deserialize(buffer);
         }
-        unknownInt = buffer.readInt();
+        objectId  = buffer.readInt();
+        unknown  = buffer.readByte();
     }
 
     @Override
@@ -49,6 +54,7 @@ public class TradeStartPacket extends Packet {
                 "\n   clientItems=" + Arrays.toString(clientItems) +
                 "\n   partnerName=" + partnerName +
                 "\n   partnerItems=" + Arrays.toString(partnerItems) +
-                "\n   unknownInt=" + unknownInt;
+                "\n   objectId=" + objectId +
+                "\n   unknown=" + unknown;
     }
 }

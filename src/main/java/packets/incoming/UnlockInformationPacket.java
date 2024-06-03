@@ -4,22 +4,22 @@ import packets.Packet;
 import packets.reader.BufferReader;
 
 /**
- * Unknown packet -87 / 169
+ * UnlockInformationPacket 109
  */
-public class UnknownPacket169 extends Packet {
+public class UnlockInformationPacket extends Packet {
     /**
      * Unknown
      */
-    public int unknownInt;
+    public int unlockType;
 
     @Override
     public void deserialize(BufferReader buffer) throws Exception {
-        unknownInt = buffer.readInt();
+        unlockType = buffer.readInt();
     }
 
     @Override
     public String toString() {
-        return "UnknownPacket169{" +
-                "\n   unknownInt=" + unknownInt;
+        return "UnlockInformationPacket{" +
+                "\n   unlockType=" + unlockType;
     }
 }

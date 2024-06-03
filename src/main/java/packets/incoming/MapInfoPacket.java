@@ -93,8 +93,8 @@ public class MapInfoPacket extends Packet {
         background = buffer.readInt();
         difficulty = buffer.readFloat();
         allowPlayerTeleport = buffer.readBoolean();
-        showDisplays = buffer.readBoolean();
         unknownBoolean = buffer.readBoolean();
+        showDisplays = buffer.readBoolean();
         maxPlayers = buffer.readShort();
         gameOpenedTime = buffer.readUnsignedInt();
         buildVersion = buffer.readString();
@@ -117,8 +117,8 @@ public class MapInfoPacket extends Packet {
                 "\n   seed=" + seed +
                 "\n   background=" + background +
                 "\n   allowPlayerTeleport=" + allowPlayerTeleport +
-                "\n   showDisplays=" + showDisplays +
                 "\n   unknownBoolean=" + unknownBoolean +
+                "\n   showDisplays=" + showDisplays +
                 "\n   maxPlayers=" + maxPlayers +
                 "\n   gameOpenedTime=" + gameOpenedTime +
                 "\n   buildVersion=" + buildVersion +

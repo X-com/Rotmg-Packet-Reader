@@ -12,20 +12,20 @@ public class GotoAckPacket extends Packet {
      */
     public int time;
     /**
-     * Unknown boolean
+     * Reset
      */
-    private boolean unknownBoolean;
+    private boolean reset;
 
     @Override
     public void deserialize(BufferReader buffer) throws Exception {
         time = buffer.readInt();
-        unknownBoolean = buffer.readBoolean();
+        reset = buffer.readBoolean();
     }
 
     @Override
     public String toString() {
         return "GotoAckPacket{" +
                 "\n   time=" + time +
-                "\n   unknownBoolean=" + unknownBoolean;
+                "\n   reset=" + reset;
     }
 }

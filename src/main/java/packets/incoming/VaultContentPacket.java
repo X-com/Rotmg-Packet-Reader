@@ -18,6 +18,10 @@ public class VaultContentPacket extends Packet {
      */
     public int vaultChestObjectId;
     /**
+     * material  ID
+     */
+    public int materialChestObjectId;
+    /**
      * Gift chest object ID
      */
     public int giftChestObjectId;
@@ -30,13 +34,13 @@ public class VaultContentPacket extends Packet {
      */
     public int seasonalSpoilChestObjectId;
     /**
-     * Unknown
-     */
-    public int unknownInt;
-    /**
      * The contents of the players vault, sent as an array of item object IDs or -1 if the slot is empty
      */
     public int[] vaultContents;
+    /**
+     * The material contents of the player
+     */
+    int[] materialContents;
     /**
      * The contents of the player's gift vault
      */
@@ -49,14 +53,6 @@ public class VaultContentPacket extends Packet {
      * The contents of the player's seasonal spoils items
      */
     int[] seasonalSpoilContent;
-    /**
-     * Unknown compressed int array
-     */
-    int[] unknownCompressedIntArray;
-    /**
-     * Unknown
-     */
-    byte unknownByte;
     /**
      * The cost in gold for the next upgrade to the vault
      */
@@ -74,38 +70,38 @@ public class VaultContentPacket extends Packet {
      */
     public short nextPotionMax;
     /**
-     * Unknown string
+     * String indicating enchantments in player's vault
      */
     public String vaultChestEnchants;
     /**
-     * Unknown string
+     * String indicating enchantments in player's gift vault
      */
     public String giftChestEnchants;
     /**
-     * Unknown string
+     * String indicating enchantments in player's spoils chest vault
      */
     public String spoilsChestEnchants;
     /**
-     * Unknown
+     * Cost to upgrade materials
      */
-    public short unknownShort;
+    public short materialUpgradeCost;
 
     @Override
     public void deserialize(BufferReader buffer) throws Exception {
         lastVaultPacket = buffer.readBoolean();
         vaultChestObjectId = buffer.readCompressedInt();
+        materialChestObjectId = buffer.readCompressedInt();
         giftChestObjectId = buffer.readCompressedInt();
         potionStorageObjectId = buffer.readCompressedInt();
         seasonalSpoilChestObjectId = buffer.readCompressedInt();
-        unknownInt = buffer.readCompressedInt();
 
         vaultContents = new int[buffer.readCompressedInt()];
         for (int i = 0; i < vaultContents.length; i++) {
             vaultContents[i] = buffer.readCompressedInt();
         }
-        unknownCompressedIntArray = new int[buffer.readCompressedInt()];
-        for (int i = 0; i < unknownCompressedIntArray.length; i++) {
-            unknownCompressedIntArray[i] = buffer.readCompressedInt();
+        materialContents = new int[buffer.readCompressedInt()];
+        for (int i = 0; i < materialContents.length; i++) {
+            materialContents[i] = buffer.readCompressedInt();
         }
         giftContents = new int[buffer.readCompressedInt()];
         for (int i = 0; i < giftContents.length; i++) {
@@ -121,7 +117,7 @@ public class VaultContentPacket extends Packet {
         }
 
         vaultUpgradeCost = buffer.readShort();
-        unknownShort = buffer.readShort();
+        materialUpgradeCost = buffer.readShort();
         potionUpgradeCost = buffer.readShort();
         currentPotionMax = buffer.readShort();
         nextPotionMax = buffer.readShort();
@@ -136,24 +132,22 @@ public class VaultContentPacket extends Packet {
         return "VaultContentPacket{" +
                 "\n   lastVaultPacket=" + lastVaultPacket +
                 "\n   vaultChestObjectId=" + vaultChestObjectId +
+                "\n   materialChestObjectId=" + materialChestObjectId +
                 "\n   giftChestObjectId=" + giftChestObjectId +
                 "\n   potionStorageObjectId=" + potionStorageObjectId +
                 "\n   seasonalSpoilChestObjectId=" + seasonalSpoilChestObjectId +
-                "\n   unknownInt=" + unknownInt +
                 "\n   vaultContents=" + Arrays.toString(vaultContents) +
+                "\n   materialContents=" + Arrays.toString(materialContents) +
                 "\n   giftContents=" + Arrays.toString(giftContents) +
                 "\n   potionContents=" + Arrays.toString(potionContents) +
                 "\n   seasonalSpoilContent=" + Arrays.toString(seasonalSpoilContent) +
-                "\n   unknownCompressedIntArray=" + Arrays.toString(unknownCompressedIntArray) +
-                "\n   unknownByte=" + unknownByte +
                 "\n   vaultUpgradeCost=" + vaultUpgradeCost +
                 "\n   potionUpgradeCost=" + potionUpgradeCost +
-                "\n   unknownShort=" + unknownShort +
                 "\n   currentPotionMax=" + currentPotionMax +
                 "\n   nextPotionMax=" + nextPotionMax +
                 "\n   vaultChestEnchants=" + vaultChestEnchants +
                 "\n   giftChestEnchants=" + giftChestEnchants +
-                "\n   spoilsChestEnchants=" + spoilsChestEnchants
-                ;
+                "\n   spoilsChestEnchants=" + spoilsChestEnchants +
+                "\n   materialUpgradeCost=" + materialUpgradeCost;
     }
 }

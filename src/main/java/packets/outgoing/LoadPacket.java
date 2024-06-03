@@ -14,18 +14,18 @@ public class LoadPacket extends Packet {
     /**
      * Unknown boolean
      */
-    public boolean unknownBoolean;
+    public boolean isFromArena;
 
     @Override
     public void deserialize(BufferReader buffer) throws Exception {
         charId = buffer.readInt();
-        unknownBoolean = buffer.readBoolean();
+        isFromArena = buffer.readBoolean();
     }
 
     @Override
     public String toString() {
         return "LoadPacket{" +
                 "\n   charId=" + charId +
-                "\n   unknownBoolean=" + unknownBoolean;
+                "\n   isFromArena=" + isFromArena;
     }
 }

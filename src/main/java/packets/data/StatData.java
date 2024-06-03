@@ -49,20 +49,20 @@ public class StatData implements Serializable {
     }
 
     private boolean isStringStat() {
-        if (StatType.EXP_STAT.get() == statTypeNum // 6
-                || StatType.NAME_STAT.get() == statTypeNum // 31
-                || StatType.ACCOUNT_ID_STAT.get() == statTypeNum // 38
-                || StatType.OWNER_ACCOUNT_ID_STAT.get() == statTypeNum // 54
-                || StatType.GUILD_NAME_STAT.get() == statTypeNum // 62
-                || StatType.BACKPACK_0_STAT.get() == statTypeNum // 71
-                || StatType.BACKPACK_1_STAT.get() == statTypeNum // 72
-                || StatType.ENCHANTMENTS.get() == statTypeNum // 80
-                || StatType.PET_NAME_STAT.get() == statTypeNum // 82
-                || StatType.GRAVE_ACCOUNT_ID.get() == statTypeNum // 115
-                || StatType.UNKNOWN121.get() == statTypeNum // 121
-                || StatType.UNKNOWN127.get() == statTypeNum // 127
-                || StatType.UNKNOWN128.get() == statTypeNum // 128
-                || StatType.UNKNOWN147.get() == statTypeNum // 147
+        if (StatType.EXP_STAT.get() == statTypeNum
+                || StatType.NAME_STAT.get() == statTypeNum
+                || StatType.ACCOUNT_ID_STAT.get() == statTypeNum
+                || StatType.OWNER_ACCOUNT_ID_STAT.get() == statTypeNum
+                || StatType.GUILD_NAME_STAT.get() == statTypeNum
+                || StatType.MATERIAL_STAT.get() == statTypeNum
+                || StatType.MATERIAL_CAP_STAT.get() == statTypeNum
+                || StatType.UNIQUE_DATA_STRING.get() == statTypeNum
+                || StatType.GRAVE_ACCOUNT_ID.get() == statTypeNum
+                || StatType.MODIFIERS_STAT.get() == statTypeNum
+                || StatType.DUST_STAT.get() == statTypeNum
+                || StatType.CRUCIBLE_STAT.get() == statTypeNum
+                || StatType.DUST_AMOUNT_STAT.get() == statTypeNum
+                || StatType.PET_NAME_STAT.get() == statTypeNum
         ) {
             return true;
         }

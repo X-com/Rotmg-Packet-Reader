@@ -12,10 +12,6 @@ import java.util.Arrays;
  */
 public class HelloPacket extends Packet {
     /**
-     * Unknown
-     */
-    public byte[] unknownBytes;
-    /**
      * The current build version of RotMG.
      */
     public String buildVersion;
@@ -58,9 +54,8 @@ public class HelloPacket extends Packet {
 
     @Override
     public void deserialize(BufferReader buffer) throws Exception {
-        unknownBytes = buffer.readBytes(4);
+        gameId = buffer.readInt();
         buildVersion = buffer.readString();
-//        gameId = buffer.readInt();
         accessToken = buffer.readString();
         keyTime = buffer.readInt();
         key = buffer.readByteArray();
@@ -74,7 +69,7 @@ public class HelloPacket extends Packet {
     @Override
     public String toString() {
         return "HelloPacket{" +
-                "\n   unknownBytes=" + Arrays.toString(unknownBytes) +
+                "\n   gameId=" + gameId +
                 "\n   buildVersion=" + buildVersion +
 //                "\n   gameId=" + gameId +
                 "\n   accessToken=" + accessToken +

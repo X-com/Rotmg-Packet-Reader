@@ -10,22 +10,26 @@ import java.util.Arrays;
  */
 public class CrucibleResponsePacket extends Packet {
 
-    public byte[] unknownBytes;
-    public String crucibleJsonString1;
-    public String crucibleJsonString2;
+    public int[] crucibleIds;
+    public String[] crucibleJsons;
 
     @Override
     public void deserialize(BufferReader buffer) throws Exception {
-        unknownBytes = buffer.readBytes(12);
-        crucibleJsonString1 = buffer.readString();
-        crucibleJsonString2 = buffer.readString();
+        crucibleIds = new int[buffer.readShort()];
+        for (int i = 0; i < crucibleIds.length; i++) {
+            crucibleIds[i] = buffer.readInt();
+        }
+
+        crucibleJsons = new String[buffer.readShort()];
+        for (int i = 0; i < crucibleJsons.length; i++) {
+            crucibleJsons[i] = buffer.readString();
+        }
     }
 
     @Override
     public String toString() {
         return "CrucibleResponsePacket{" +
-                "\n   unknownBytes=" + Arrays.toString(unknownBytes) +
-                "\n   crucibleJsonString1=" + crucibleJsonString1 +
-                "\n   crucibleJsonString2=" + crucibleJsonString2;
+                "\n   crucibleIds=" + Arrays.toString(crucibleIds) +
+                "\n   crucibleJsons=" + Arrays.toString(crucibleJsons);
     }
 }

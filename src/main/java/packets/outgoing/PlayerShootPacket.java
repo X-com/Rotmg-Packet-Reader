@@ -40,13 +40,17 @@ public class PlayerShootPacket extends Packet {
      */
     public boolean isBurst;
     /**
-     * Unit vector of the projectile from the start position
+     * Unknown
      */
-    public WorldPosData unitVector;
+    public byte patternIdx;
     /**
      * Unknown
      */
-    public byte[] unknownBytes;
+    public byte attackType;
+    /**
+     * Position of the player shooting
+     */
+    public WorldPosData playerPosition;
 
     @Override
     public void deserialize(BufferReader buffer) throws Exception {
@@ -54,24 +58,26 @@ public class PlayerShootPacket extends Packet {
         bulletId = buffer.readShort();
         weaponId = buffer.readUnsignedShort();
         projectileId = buffer.readByte();
-        unitVector = new WorldPosData().deserialize(buffer);
+        startingPos = new WorldPosData().deserialize(buffer);
         angle = buffer.readFloat();
         isBurst = buffer.readBoolean();
-        unknownBytes = buffer.readBytes(2);
-        startingPos = new WorldPosData().deserialize(buffer);
+        patternIdx = buffer.readByte();
+        attackType = buffer.readByte();
+        playerPosition = new WorldPosData().deserialize(buffer);
     }
 
     @Override
     public String toString() {
         return "PlayerShootPacket{" +
                 "\n   time=" + time +
-                "\n   bulletID=" + bulletId +
+                "\n   bulletId=" + bulletId +
                 "\n   weaponId=" + weaponId +
                 "\n   projectileId=" + projectileId +
                 "\n   startingPos=" + startingPos +
                 "\n   angle=" + angle +
                 "\n   isBurst=" + isBurst +
-                "\n   unknownBytes=" + Arrays.toString(unknownBytes) +
-                "\n   unitVector=" + unitVector;
+                "\n   patternIdx=" + patternIdx +
+                "\n   attackType=" + attackType +
+                "\n   playerPosition=" + playerPosition;
     }
 }

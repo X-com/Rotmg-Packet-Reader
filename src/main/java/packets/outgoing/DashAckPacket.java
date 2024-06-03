@@ -3,13 +3,8 @@ package packets.outgoing;
 import packets.Packet;
 import packets.reader.BufferReader;
 
-/**
- * Unknown packet
- */
 public class DashAckPacket extends Packet {
-    /**
-     * The current client time.
-     */
+
     public int time;
 
     @Override

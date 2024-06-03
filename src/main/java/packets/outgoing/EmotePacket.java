@@ -7,9 +7,7 @@ import packets.reader.BufferReader;
  * Packet sent when using emotes
  */
 public class EmotePacket extends Packet {
-    /**
-     * Unknown
-     */
+
     private int emoteId;
     private int emoteTime;
     private byte unknownByte;

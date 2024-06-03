@@ -26,8 +26,6 @@ public class AoePacket extends Packet {
     public int effect;
     /**
      * The duration of the effect applied.
-     *
-     * @see `AoePacket.effect`.
      */
     public float duration;
     /**

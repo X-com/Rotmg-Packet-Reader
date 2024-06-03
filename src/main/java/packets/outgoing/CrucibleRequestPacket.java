@@ -5,25 +5,21 @@ import packets.reader.BufferReader;
 
 import java.util.Arrays;
 
-/**
- * Sent to request Crucible json info.
- * Unknown packet -74 / 182
- */
 public class CrucibleRequestPacket extends Packet {
 
-    /**
-     * Unknown
-     */
-    byte[] unknownBytes;
+    public int[] type;
 
     @Override
     public void deserialize(BufferReader buffer) throws Exception {
-        unknownBytes = buffer.readBytes(10);
+        type = new int[buffer.readShort()];
+        for (int i = 0; i < type.length; i++) {
+            type[i] = buffer.readInt();
+        }
     }
 
     @Override
     public String toString() {
         return "CrucibleRequestPacket{" +
-                "\n   unknownBytes=" + Arrays.toString(unknownBytes);
+                "\n   type=" + Arrays.toString(type);
     }
 }

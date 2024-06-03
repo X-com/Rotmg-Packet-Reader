@@ -21,14 +21,10 @@ public class DamagePacket extends Packet {
      * The amount of damage taken.
      */
     public int damageAmount;
-    /**
-     * Whether or not the damage resulted in killing the entity.
+     /**
+     * Damage properties.
      */
-    public boolean kill;
-    /**
-     * Whether or not the damage was armor piercing.
-     */
-    public boolean armorPierce;
+    public boolean damageProperties;
     /**
      * The id of the bullet which caused the damage.
      */
@@ -46,9 +42,8 @@ public class DamagePacket extends Packet {
             effects[i] = buffer.readUnsignedByte();
         }
         damageAmount = buffer.readUnsignedShort();
-        kill = buffer.readBoolean();
-        armorPierce = buffer.readBoolean();
-        bulletId = buffer.readUnsignedByte();
+        damageProperties = buffer.readBoolean();
+        bulletId = buffer.readUnsignedShort();
         objectId = buffer.readInt();
     }
 
@@ -58,8 +53,7 @@ public class DamagePacket extends Packet {
                 "\n   targetId=" + targetId +
                 "\n   effects=" + Arrays.toString(effects) +
                 "\n   damageAmount=" + damageAmount +
-                "\n   kill=" + kill +
-                "\n   armorPierce=" + armorPierce +
+                "\n   damageProperties=" + damageProperties +
                 "\n   bulletId=" + bulletId +
                 "\n   objectId=" + objectId;
     }
