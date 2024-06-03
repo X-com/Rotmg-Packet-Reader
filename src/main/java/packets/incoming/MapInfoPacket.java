@@ -52,7 +52,7 @@ public class MapInfoPacket extends Packet {
     /**
      * unknown
      */
-    public boolean unknownBoolean;
+    public boolean noSave;
     /**
      * The int of players allowed in this map
      */
@@ -70,17 +70,21 @@ public class MapInfoPacket extends Packet {
      */
     public int unknownInt;
     /**
+     * Background color
+     */
+    public int BGColor;
+    /**
      * String of all modifiers the dungeon has.
      */
-    public String[] dungeonModifiers;
+    public String dungeonModifiers;
     /**
-     * Unknown Bytes
+     * Max score of the realm
      */
-    public byte[] unknownBytes;
+    public int maxRealmScore;
     /**
-     * Unkown Info
+     * Current score of the realm
      */
-    public String dungeonInfo;
+    public int currentRealmScore;
 
     @Override
     public void deserialize(BufferReader buffer) throws Exception {
@@ -93,16 +97,23 @@ public class MapInfoPacket extends Packet {
         background = buffer.readInt();
         difficulty = buffer.readFloat();
         allowPlayerTeleport = buffer.readBoolean();
-        unknownBoolean = buffer.readBoolean();
+        noSave = buffer.readBoolean();
         showDisplays = buffer.readBoolean();
         maxPlayers = buffer.readShort();
         gameOpenedTime = buffer.readUnsignedInt();
         buildVersion = buffer.readString();
         unknownInt = buffer.readInt();
-        String dungeonMods = buffer.readString();
-        dungeonModifiers = dungeonMods.split(";");
-        dungeonInfo = buffer.readString();
-        unknownBytes = buffer.readBytes(buffer.getRemainingBytes());
+
+        if (buffer.getRemainingBytes() > 0) {
+            BGColor = buffer.readInt();
+        }
+        if (buffer.getRemainingBytes() > 0) {
+            dungeonModifiers = buffer.readString();
+        }
+        if (buffer.getRemainingBytes() > 7) {
+            maxRealmScore = buffer.readInt();
+            currentRealmScore = buffer.readInt();
+        }
     }
 
     @Override
@@ -117,14 +128,15 @@ public class MapInfoPacket extends Packet {
                 "\n   seed=" + seed +
                 "\n   background=" + background +
                 "\n   allowPlayerTeleport=" + allowPlayerTeleport +
-                "\n   unknownBoolean=" + unknownBoolean +
                 "\n   showDisplays=" + showDisplays +
+                "\n   noSave=" + noSave +
                 "\n   maxPlayers=" + maxPlayers +
                 "\n   gameOpenedTime=" + gameOpenedTime +
                 "\n   buildVersion=" + buildVersion +
                 "\n   unknownInt=" + unknownInt +
-                "\n   dungeonModifiers=" + Arrays.toString(dungeonModifiers) +
-                "\n   dungeonInfo=" + dungeonInfo +
-                "\n   unknownBytes=" + Arrays.toString(unknownBytes);
+                "\n   BGColor=" + BGColor +
+                "\n   dungeonModifiers=" + dungeonModifiers +
+                "\n   maxRealmScore=" + maxRealmScore +
+                "\n   currentRealmScore=" + currentRealmScore;
     }
 }

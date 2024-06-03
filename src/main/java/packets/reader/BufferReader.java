@@ -166,9 +166,9 @@ public class BufferReader {
     }
 
     /**
-     * Rotmg deserializer of a compressed long.
+     * Rotmg deserializer of a compressed int.
      *
-     * @return Returns a long that have been deserialized.
+     * @return Returns the int that have been deserialized.
      */
     public int readCompressedInt() {
         int uByte = readUnsignedByte();

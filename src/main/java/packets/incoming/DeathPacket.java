@@ -17,51 +17,51 @@ public class DeathPacket extends Packet {
     /**
      * The character id of the player who died
      */
-    public int unknownFameID1;
+    public int charId;
     /**
      * The cause of death
      */
     public String killedBy;
     /**
-     * Unknown int
+     * Gravestone type
      */
-    public int unknownFameID2;
+    public int gravestoneType;
     /**
-     * Unknown short
+     * Total death fame of the player
      */
-    public int unknownFameID3;
+    public int totalFame;
     /**
      * Death fame data
      */
     public FameData[] fameData;
     /**
-     * Unknown String
+     * Stats of the dead player
      */
-    public String unknownString;
+    public String stats;
 
     @Override
     public void deserialize(BufferReader buffer) throws Exception {
         accountId = buffer.readString();
-        unknownFameID1 = buffer.readCompressedInt();
+        charId = buffer.readCompressedInt();
         killedBy = buffer.readString();
-        unknownFameID2 = buffer.readInt();
-        unknownFameID3 = buffer.readCompressedInt();
+        gravestoneType = buffer.readInt();
+        totalFame = buffer.readCompressedInt();
         fameData = new FameData[buffer.readCompressedInt()];
         for (int i = 0; i < fameData.length; i++) {
             fameData[i] = new FameData().deserialize(buffer);
         }
-        unknownString = buffer.readString();
+        stats = buffer.readString();
     }
 
     @Override
     public String toString() {
         return "DeathPacket{" +
                 "\n   accountId=" + accountId +
-                "\n   unknownFameID1=" + unknownFameID1 +
+                "\n   charId=" + charId +
                 "\n   killedBy=" + killedBy +
-                "\n   unknownFameID2=" + unknownFameID2 +
-                "\n   unknownFameID3=" + unknownFameID3 +
+                "\n   gravestoneType=" + gravestoneType +
+                "\n   totalFame=" + totalFame +
                 "\n   fameData=" + Arrays.toString(fameData) +
-                "\n   unknownString=" + unknownString;
+                "\n   stats=" + stats;
     }
 }
