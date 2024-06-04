@@ -77,6 +77,7 @@ public class MapInfoPacket extends Packet {
      * String of all modifiers the dungeon has.
      */
     public String dungeonModifiers;
+    public String dungeonModifiers2;
     /**
      * Max score of the realm
      */
@@ -102,13 +103,13 @@ public class MapInfoPacket extends Packet {
         maxPlayers = buffer.readShort();
         gameOpenedTime = buffer.readUnsignedInt();
         buildVersion = buffer.readString();
-        unknownInt = buffer.readInt();
 
         if (buffer.getRemainingBytes() > 0) {
             BGColor = buffer.readInt();
         }
         if (buffer.getRemainingBytes() > 0) {
             dungeonModifiers = buffer.readString();
+            dungeonModifiers2 = buffer.readString();
         }
         if (buffer.getRemainingBytes() > 7) {
             maxRealmScore = buffer.readInt();
@@ -133,9 +134,9 @@ public class MapInfoPacket extends Packet {
                 "\n   maxPlayers=" + maxPlayers +
                 "\n   gameOpenedTime=" + gameOpenedTime +
                 "\n   buildVersion=" + buildVersion +
-                "\n   unknownInt=" + unknownInt +
                 "\n   BGColor=" + BGColor +
                 "\n   dungeonModifiers=" + dungeonModifiers +
+                "\n   dungeonModifiers2=" + dungeonModifiers2 +
                 "\n   maxRealmScore=" + maxRealmScore +
                 "\n   currentRealmScore=" + currentRealmScore;
     }

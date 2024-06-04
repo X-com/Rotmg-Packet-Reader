@@ -472,6 +472,7 @@ public class PacketTester {
     public static byte[] getByteArray(String byteString) {
         String[] list;
         boolean hex = false;
+        byteString = byteString.replaceAll("\n", "");
         if (byteString.contains("Hex stream")) {
             hex = true;
             list = byteString.replace("  Hex stream: ", "").split(" ");
