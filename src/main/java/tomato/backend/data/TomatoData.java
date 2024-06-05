@@ -15,12 +15,15 @@ import tomato.gui.dps.DpsGUI;
 import tomato.gui.keypop.KeypopGUI;
 import tomato.gui.mydmg.MyDamageGUI;
 import tomato.gui.security.ParsePanelGUI;
+import tomato.gui.stats.LootGUI;
 import tomato.realmshark.HttpCharListRequest;
 import tomato.realmshark.RealmCharacter;
 import tomato.realmshark.RealmCharacterStats;
 import tomato.realmshark.enums.CharacterClass;
+import tomato.realmshark.enums.LootBags;
 import util.RNG;
 
+import java.awt.*;
 import java.io.IOException;
 import java.util.*;
 
@@ -57,6 +60,7 @@ public class TomatoData {
     private ArrayList<Packet> dpsPacketLog = new ArrayList<>();
     private boolean petyard;
     private RealmCharacterStats currentCharacterStats;
+    private HashMap<Integer, Entity> lootBags = new HashMap<>();
 
     /**
      * Sets the current realm.
@@ -178,13 +182,21 @@ public class TomatoData {
     private void entityUpdate(ObjectData object) {
         int id = object.status.objectId;
         Entity entity = entityList.computeIfAbsent(id, idd -> new Entity(this, idd, timePc));
-        entity.entityUpdate(object.objectType, object.status, timePc);
+        int idType = object.objectType;
+        entity.entityUpdate(idType, object.status, timePc);
 
         if (petyard) {
             addPet(object);
-        } else if (isCrystal(id)) {
+        } else if (isCrystal(idType)) {
             crystalTracker.add(id);
-        } else if (isPlayerEntity(object.objectType)) {
+        } else if (isLootBag(idType)) {
+//                if(entityHitList.containsKey(dropId)) {
+//                    System.out.println(e.name() + " " + Math.sqrt(e.distSqrd(player.pos)));
+//                    System.out.println(e.pos + " " + player.pos);
+//                }
+            lootBags.put(id, entity);
+            LootGUI.update(map, entity);
+        } else if (isPlayerEntity(idType)) {
             playerList.put(id, entity);
             playerListUpdated.put(id, entity);
             if (id == worldPlayerId) {
@@ -210,6 +222,16 @@ public class TomatoData {
      */
     private boolean isCrystal(int id) {
         return id == 46721 || id == 46771 || id == 29501 || id == 33656;
+    }
+
+    /**
+     * Checks if id is a loot drop bag
+     *
+     * @param id Entity id type.
+     * @return True if id is loot bag
+     */
+    private boolean isLootBag(int id) {
+        return LootBags.isLootDropBag(id);
     }
 
     /**

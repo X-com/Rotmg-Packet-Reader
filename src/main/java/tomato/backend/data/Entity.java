@@ -27,7 +27,7 @@ public class Entity implements Serializable {
     public final int id;
     public int objectType;
     private long creationTime;
-    private WorldPosData pos;
+    public WorldPosData pos;
     public final ArrayList<ObjectStatusData> statUpdates;
     private final ArrayList<Damage> damageList;
     private final HashMap<Integer, Damage> damagePlayer;
@@ -75,6 +75,7 @@ public class Entity implements Serializable {
         statUpdates.add(status);
         StasisCheck.checkManaFromStasis(this, status.stats);
         stat.setStats(status.stats);
+        pos = status.pos;
         if (status.stats.length > 0) {
             if (isUser) {
                 fame(time);
@@ -310,5 +311,11 @@ public class Entity implements Serializable {
         String name = name();
         PlayerRemoved pr = new PlayerRemoved(dropId, hp, max, name, time);
         playerDropped.put(dropId, pr);
+    }
+
+    public double distSqrd(WorldPosData p) {
+        double x = pos.x - p.x;
+        double y = pos.y - p.y;
+        return x * x + y * y;
     }
 }

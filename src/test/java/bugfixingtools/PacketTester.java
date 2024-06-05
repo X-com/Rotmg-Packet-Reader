@@ -276,6 +276,7 @@ public class PacketTester {
             System.out.println(p);
         } catch (Exception e) {
             System.out.println("Buffer blew up");
+            System.out.println(Arrays.toString(data));
             e.printStackTrace();
         }
     }
@@ -501,6 +502,7 @@ public class PacketTester {
     public static byte[] getByteArray(String byteString) {
         String[] list;
         boolean hex = false;
+        list = byteString.replaceAll("\n", "").split("");
         if (byteString.contains("Hex stream")) {
             hex = true;
             list = byteString.replace("  Hex stream: ", "").split(" ");

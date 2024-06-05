@@ -1,4 +1,4 @@
-package tomato.gui.fame;
+package tomato.gui.stats;
 
 public class Fame {
 

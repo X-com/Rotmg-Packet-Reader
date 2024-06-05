@@ -1,6 +1,6 @@
 package tomato.backend.data;
 
-import tomato.gui.fame.FameTrackerGUI;
+import tomato.gui.stats.FameTrackerGUI;
 
 import java.util.ArrayList;
 

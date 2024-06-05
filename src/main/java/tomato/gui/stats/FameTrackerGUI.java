@@ -1,4 +1,4 @@
-package tomato.gui.fame;
+package tomato.gui.stats;
 
 import javax.swing.*;
 import java.awt.*;

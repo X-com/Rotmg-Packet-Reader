@@ -26,6 +26,10 @@ public class Stat implements Serializable {
         return stats[type.get()];
     }
 
+    public StatData get(int id) {
+        return stats[id];
+    }
+
     public void set(StatType type, StatData sd) {
         stats[type.get()] = sd;
     }

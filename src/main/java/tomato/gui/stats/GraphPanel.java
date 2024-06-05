@@ -1,4 +1,4 @@
-package tomato.gui.fame;
+package tomato.gui.stats;
 
 import java.awt.*;
 import java.awt.event.MouseEvent;
