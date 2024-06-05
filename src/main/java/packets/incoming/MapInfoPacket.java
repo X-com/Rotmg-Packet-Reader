@@ -78,6 +78,7 @@ public class MapInfoPacket extends Packet {
      */
     public String dungeonModifiers;
     public String dungeonModifiers2;
+    public String dungeonModifiers3;
     /**
      * Max score of the realm
      */
@@ -110,6 +111,8 @@ public class MapInfoPacket extends Packet {
         if (buffer.getRemainingBytes() > 0) {
             dungeonModifiers = buffer.readString();
             dungeonModifiers2 = buffer.readString();
+            dungeonModifiers3 = buffer.readString();
+            System.out.println(buffer.getRemainingBytes());
         }
         if (buffer.getRemainingBytes() > 7) {
             maxRealmScore = buffer.readInt();
@@ -137,6 +140,7 @@ public class MapInfoPacket extends Packet {
                 "\n   BGColor=" + BGColor +
                 "\n   dungeonModifiers=" + dungeonModifiers +
                 "\n   dungeonModifiers2=" + dungeonModifiers2 +
+                "\n   dungeonModifiers3=" + dungeonModifiers3 +
                 "\n   maxRealmScore=" + maxRealmScore +
                 "\n   currentRealmScore=" + currentRealmScore;
     }
