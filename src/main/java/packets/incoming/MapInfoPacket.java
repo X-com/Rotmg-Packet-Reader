@@ -112,7 +112,6 @@ public class MapInfoPacket extends Packet {
             dungeonModifiers = buffer.readString();
             dungeonModifiers2 = buffer.readString();
             dungeonModifiers3 = buffer.readString();
-            System.out.println(buffer.getRemainingBytes());
         }
         if (buffer.getRemainingBytes() > 7) {
             maxRealmScore = buffer.readInt();
