@@ -2,7 +2,6 @@ package tomato.gui.stats;
 
 import assets.AssetMissingException;
 import assets.IdToAsset;
-import packets.data.ObjectStatusData;
 import packets.data.StatData;
 import packets.incoming.MapInfoPacket;
 import tomato.backend.data.Entity;
@@ -28,14 +27,16 @@ public class LootGUI extends JPanel {
         add(TomatoGUI.createTextArea(textArea, false));
     }
 
-    public static void update(MapInfoPacket map, Entity entity) {
-        INSTANCE.updateGui(map, entity);
+    public static void update(MapInfoPacket map, Entity entity, Entity dropper) {
+        INSTANCE.updateGui(map, entity, dropper);
     }
 
-    private void updateGui(MapInfoPacket map, Entity entity) {
-        String s1 = map == null ? "" : map.displayName;
-        if (s1.equals("{s.rotmg}")) s1 = "Nexus";
-        String s = time() + "  " + s1 + " - " + LootBags.lootBagName(entity.objectType) + ": " + lootInfo(entity) + "\n";
+    private void updateGui(MapInfoPacket map, Entity entity, Entity dropper) {
+        String s1 = "";
+        if (dropper != null) {
+            s1 = dropper.name() + "[" + dropper.id + "] - ";
+        }
+        String s = time() + "  " + (map != null ? map.name : "") + " - " + s1 + LootBags.lootBagName(entity.objectType) + ": " + lootInfo(entity) + "\n";
         textArea.append(s);
     }
 

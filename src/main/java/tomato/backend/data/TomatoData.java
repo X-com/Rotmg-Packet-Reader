@@ -1,8 +1,11 @@
 package tomato.backend.data;
 
+import assets.AssetMissingException;
+import assets.IdToAsset;
 import packets.Packet;
 import packets.data.ObjectData;
 import packets.data.StatData;
+import packets.data.WorldPosData;
 import packets.data.enums.NotificationEffectType;
 import packets.data.enums.StatType;
 import packets.incoming.*;
@@ -56,11 +59,15 @@ public class TomatoData {
     public HashMap<Integer, RealmCharacter> charMap;
     public ArrayList<DpsData> dpsData = new ArrayList<>();
     protected ArrayList<NotificationPacket> deathNotifications = new ArrayList<>();
-    protected final HashSet<Integer> dropList = new HashSet<>();
+    protected final HashMap<Integer, Entity> dropList = new HashMap<>();
     private ArrayList<Packet> dpsPacketLog = new ArrayList<>();
     private boolean petyard;
     private RealmCharacterStats currentCharacterStats;
-    private HashMap<Integer, Entity> lootBags = new HashMap<>();
+    private final TreeSet<Integer> lootBags = new TreeSet<>();
+    private int lootTickToggle = 0;
+    private final ArrayList<Entity>[] lootTickContainer = new ArrayList[]{new ArrayList<>(), new ArrayList<>()};
+    private final ArrayList<Entity> killedEntitys = new ArrayList<>();
+
 
     /**
      * Sets the current realm.
@@ -156,19 +163,23 @@ public class TomatoData {
         for (int i = 0; i < p.drops.length; i++) {
             int dropId = p.drops[i];
             crystalTracker.remove(dropId);
-            dropList.add(dropId);
             Entity e = entityList.get(dropId);
+            dropList.put(dropId, e);
             if (e != null) {
 //                e.entityDropped(timePc);
                 if (isPlayerEntity(e.objectType)) {
                     for (Map.Entry<Integer, Entity> dropCheck : entityHitList.entrySet()) {
                         int k = dropCheck.getKey();
-                        if (!dropList.contains(k)) {
+                        if (!dropList.containsKey(k)) {
                             dropCheck.getValue().addPlayerDrop(dropId, timePc);
                         }
                     }
                 }
             }
+            if (entityHitList.containsKey(dropId)) {
+                killedEntitys.add(e);
+            }
+
             playerListUpdated.remove(dropId);
             ParsePanelGUI.removePlayer(dropId);
         }
@@ -189,13 +200,9 @@ public class TomatoData {
             addPet(object);
         } else if (isCrystal(idType)) {
             crystalTracker.add(id);
-        } else if (isLootBag(idType)) {
-//                if(entityHitList.containsKey(dropId)) {
-//                    System.out.println(e.name() + " " + Math.sqrt(e.distSqrd(player.pos)));
-//                    System.out.println(e.pos + " " + player.pos);
-//                }
-            lootBags.put(id, entity);
-            LootGUI.update(map, entity);
+        } else if (isLootBag(idType) && !lootBags.contains(id)) {
+            lootBags.add(id);
+            lootTickContainer[lootTickToggle].add(entity);
         } else if (isPlayerEntity(idType)) {
             playerList.put(id, entity);
             playerListUpdated.put(id, entity);
@@ -207,6 +214,36 @@ public class TomatoData {
                 entity.isPlayer();
             }
             ParsePanelGUI.addPlayer(id, entity);
+        }
+    }
+
+    /**
+     * Method to connect loot bag drops to mobs that drop them.
+     * If an entity drops a tick after loot bag shows up and is
+     * close enough it is most likely the entity that dropped the bag.
+     */
+    private void lootTick() {
+        lootTickToggle ^= 1;
+        if(!lootTickContainer[lootTickToggle].isEmpty()) {
+            for(Entity bag : lootTickContainer[lootTickToggle]) {
+                double dist = 0;
+                Entity mob = null;
+                for (Entity k : killedEntitys) {
+                    double d = bag.distSqrd(k.pos);
+                    if(mob == null) {
+                        dist = d;
+                        mob = k;
+                    } else if (d < dist) {
+                        dist = d;
+                        mob = k;
+                    }
+                }
+                LootGUI.update(map, bag, mob);
+            }
+            lootTickContainer[lootTickToggle].clear();
+        }
+        if(!killedEntitys.isEmpty()) {
+            killedEntitys.clear();
         }
     }
 
@@ -277,6 +314,7 @@ public class TomatoData {
             Entity entity = entityList.computeIfAbsent(id, idd -> new Entity(this, idd, timePc));
             entity.updateStats(p.status[i], timePc);
         }
+        lootTick();
     }
 
     /**
@@ -384,6 +422,7 @@ public class TomatoData {
         crystalTracker.clear();
         playerListUpdated.clear();
         dropList.clear();
+        lootBags.clear();
         deathNotifications = new ArrayList<>();
         entityHitList = new HashMap<>();
         for (int[] row : mapTiles) {
