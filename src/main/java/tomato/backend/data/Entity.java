@@ -1,9 +1,8 @@
 package tomato.backend.data;
 
-import assets.AssetMissingException;
 import assets.IdToAsset;
-import assets.ImageBuffer;
 import packets.data.ObjectStatusData;
+import packets.data.StatData;
 import packets.data.WorldPosData;
 import packets.data.enums.StatType;
 import tomato.backend.StasisCheck;
@@ -14,8 +13,6 @@ import tomato.gui.security.ParsePanelGUI;
 import tomato.realmshark.RealmCharacter;
 import tomato.realmshark.enums.CharacterClass;
 
-import java.awt.image.BufferedImage;
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -47,6 +44,8 @@ public class Entity implements Serializable {
     private final static int CHANCELLOR_DAMMAH = 9635;
     private final static int FORGOTTEN_KING = 29039;
     private final static int FORGOTTEN_KING_REFLECTOR_ANIMATION = -123818367;
+    private long lootDropTime;
+    private long lootTierTime;
 
     public Entity(TomatoData tomatoData, int id, long time) {
         this.tomatoData = tomatoData;
@@ -59,8 +58,8 @@ public class Entity implements Serializable {
         playerDropped = new HashMap<>();
     }
 
-    public void entityUpdate(int type, ObjectStatusData status, long time) {
-        updateStats(status, time);
+    public void entityUpdate(int type, ObjectStatusData status, long timePC) {
+        updateStats(status, timePC);
         this.objectType = type;
         try {
             if (type != -1) {
@@ -70,15 +69,17 @@ public class Entity implements Serializable {
         }
     }
 
-    // TODO fix time
-    public void updateStats(ObjectStatusData status, long time) {
+    // TODO fix timePC
+    public void updateStats(ObjectStatusData status, long timePC) {
         statUpdates.add(status);
         StasisCheck.checkManaFromStasis(this, status.stats);
         stat.setStats(status.stats);
         pos = status.pos;
+
         if (status.stats.length > 0) {
+            lootTimers(status);
             if (isUser) {
-                fame(time);
+                fame(timePC);
                 tomatoData.player.charStat(charId, calculateBaseStats());
                 MyDamageGUI.updatePlayer(this);
             } else if (isPlayer) {
@@ -86,6 +87,25 @@ public class Entity implements Serializable {
             }
         }
         ParsePanelGUI.update(id, this);
+    }
+
+    private void lootTimers(ObjectStatusData status) {
+        long time = System.currentTimeMillis();
+        for (StatData sd : status.stats) {
+            if (sd.statType == StatType.LD_TIMER_STAT) {
+                lootDropTime = 0;
+                int ld = sd.statValue;
+                if (ld > 0) {
+                    lootDropTime = ld * 1000L + time;
+                }
+            } else if (sd.statType == StatType.LT_TIMER_STAT) {
+                lootTierTime = 0;
+                int lt = sd.statValue;
+                if (lt > 0) {
+                    lootTierTime = lt * 1000L + time;
+                }
+            }
+        }
     }
 
     public int maxHp() {
@@ -317,5 +337,10 @@ public class Entity implements Serializable {
         double x = pos.x - p.x;
         double y = pos.y - p.y;
         return x * x + y * y;
+    }
+
+    public long lootDropTime(long time) {
+        if (lootDropTime == 0) return lootDropTime;
+        return lootDropTime - time;
     }
 }

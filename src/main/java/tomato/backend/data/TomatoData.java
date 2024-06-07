@@ -238,7 +238,7 @@ public class TomatoData {
                         mob = k;
                     }
                 }
-                LootGUI.update(map, bag, mob);
+                LootGUI.update(map, bag, mob, player, timePc);
             }
             lootTickContainer[lootTickToggle].clear();
         }

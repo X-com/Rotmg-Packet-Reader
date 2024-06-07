@@ -8,6 +8,10 @@ import packets.data.StatData;
 import packets.data.enums.StatType;
 import packets.incoming.*;
 import packets.incoming.ip.IpAddress;
+import packets.outgoing.MovePacket;
+import packets.outgoing.PlayerShootPacket;
+import packets.outgoing.PongPacket;
+import packets.outgoing.UpdateAckPacket;
 import packets.packetcapture.PacketProcessor;
 import packets.packetcapture.register.Register;
 import tomato.realmshark.enums.CharacterClass;
@@ -36,9 +40,19 @@ public class PacketRead {
             return;
         }
 
+        if(packet instanceof MovePacket) return;
+        if(packet instanceof PingPacket) return;
+        if(packet instanceof PongPacket) return;
+        if(packet instanceof UpdateAckPacket) return;
+        if(packet instanceof ForgeUnlockedBlueprints) return;
+        if(packet instanceof PlayerShootPacket) return;
+        if(packet instanceof EnemyShootPacket) return;
+        if(packet instanceof RealmScoreUpdatePacket) return;
+
         if (packet instanceof NewTickPacket) {
+            System.out.println(packet);
 //            newtick((NewTickPacket) packet);
-            updateEntity((NewTickPacket) packet);
+//            updateEntity((NewTickPacket) packet);
             return;
         }
 
@@ -65,6 +79,8 @@ public class PacketRead {
 //            countPots((VaultContentPacket) packet);
             return;
         }
+
+        System.out.println(packet);
     }
 
     private static void filterNotificationPacket(NotificationPacket packet) {

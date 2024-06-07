@@ -3,7 +3,7 @@ package tomato.realmshark;
 import tomato.realmshark.enums.CharacterClass;
 
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.TreeMap;
 
 /**
  * Basic data class to store Character info.
@@ -17,7 +17,7 @@ public class RealmCharacter {
     // Atk 5
     // Mana 6
     // Life 7
-    public static HashMap<Integer, int[]> exalts = new HashMap<>();
+    public static TreeMap<Integer, int[]> exalts = new TreeMap<>();
 
     public int charId;
     public short classNum;
@@ -53,6 +53,55 @@ public class RealmCharacter {
     public int petMaxAbilityPower;
     public int petRarity;
     public int[] petAbilitys;
+
+    /**
+     * Returns the player exalt loot drop bonus
+     *
+     * @param classId Class to receive exalt bonus.
+     */
+    public static int exaltLootBonus(int classId) {
+        if (exalts.size() < 18) return -1;
+
+        if (fullyExalted()) {
+            return 35;
+        }
+        int bonus = 25;
+        for (int c : CharacterClass.weaponClasses(classId)) {
+            int[] ints = exalts.get(c);
+            if (ints == null) return -1;
+
+            for (int i : ints) {
+                if (i < 5) {
+                    return 0;
+                } else if (i < 15 && bonus > 5) {
+                    bonus = 5;
+                } else if (i < 30 && bonus > 10) {
+                    bonus = 10;
+                } else if (i < 50 && bonus > 15) {
+                    bonus = 15;
+                } else if (i < 75 && bonus > 20) {
+                    bonus = 20;
+                }
+            }
+        }
+        return bonus;
+    }
+
+    /**
+     * Checks if account is fully exalted.
+     *
+     * @return True if account is fully exalted.
+     */
+    private static boolean fullyExalted() {
+        for (int[] e : exalts.values()) {
+            for (int i : e) {
+                if (i < 75) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
 
     /**
      * Simple setter for the class string from the class id.
