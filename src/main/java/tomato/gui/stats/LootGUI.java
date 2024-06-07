@@ -86,7 +86,7 @@ public class LootGUI extends JPanel {
             } catch (AssetMissingException var6) {
                 var6.printStackTrace();
             }
-            if (enchants != null && !enchants[i].isEmpty() && !enchants[i].equals("AAIE_f_9__3__f8=")) {
+            if (enchants != null && i < enchants.length && !enchants[i].isEmpty() && !enchants[i].equals("AAIE_f_9__3__f8=")) {
                 s.append("[E]");
             }
             s.append("[").append(statValue).append("]");
