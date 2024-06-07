@@ -31,11 +31,17 @@ public class LootGUI extends JPanel {
     }
 
     public static void update(MapInfoPacket map, Entity entity, Entity dropper, Entity player, long time) {
-        int exaltBonus = RealmCharacter.exaltLootBonus(player.objectType);
-        INSTANCE.updateGui(map, entity, dropper, exaltBonus, player.lootDropTime(time));
+        INSTANCE.updateGui(map, entity, dropper, player, time);
     }
 
-    private void updateGui(MapInfoPacket map, Entity entity, Entity dropper, int exaltBonus, long lootTime) {
+    private void updateGui(MapInfoPacket map, Entity entity, Entity dropper, Entity player, long time) {
+        int exaltBonus = -1;
+        long lootTime = 0;
+        if (player != null) {
+            exaltBonus = RealmCharacter.exaltLootBonus(player.objectType);
+            lootTime = player.lootDropTime(time);
+        }
+
         String mobName = "";
         String mapName = "";
         String dungeonBonus = "";
