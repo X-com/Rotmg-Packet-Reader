@@ -1,7 +1,7 @@
 package tomato.realmshark.enums;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.TreeMap;
 
 public enum CharacterStatistics {
     SHOTS_FIRED(24, -1, "Shots Fired"),
@@ -105,8 +105,9 @@ public enum CharacterStatistics {
     int spriteId;
     String name;
 
-    public static final HashMap<Integer, String> PC_NAME = new HashMap<>();
-    public static final HashMap<Integer, String> ID_NAME = new HashMap<>();
+    public static final TreeMap<Integer, String> PC_NAME = new TreeMap<>();
+    public static final TreeMap<Integer, String> ID_NAME = new TreeMap<>();
+    public static final TreeMap<String, CharacterStatistics> NAME_CS = new TreeMap<>();
     public static final ArrayList<Integer> DUNGEONS = new ArrayList<>();
     public static final ArrayList<String> DUNGEON_NAMES = new ArrayList<>();
 
@@ -118,6 +119,7 @@ public enum CharacterStatistics {
                 DUNGEONS.add(o.spriteId);
                 DUNGEON_NAMES.add(o.name);
             }
+            NAME_CS.put(o.name, o);
         }
     }
 
@@ -154,5 +156,24 @@ public enum CharacterStatistics {
      */
     public int getPcStatId() {
         return pcStatId;
+    }
+
+    /**
+     * Character statistics from stat name
+     *
+     * @param name Name of the stat
+     * @return Character statistics tied to the stat name.
+     */
+    public static CharacterStatistics statByName(String name) {
+        return NAME_CS.get(name);
+    }
+
+    /**
+     * Returns sprite ID of stat.
+     *
+     * @return Sprite ID
+     */
+    public int getSpriteId() {
+        return spriteId;
     }
 }
