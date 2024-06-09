@@ -40,7 +40,7 @@ public enum CharacterStatistics {
     BEACHZONE(67, 1858, "Beachzone"),
     BELLADONNAS_GARDEN(48, 8849, "Belladonna's Garden"),
     CANDYLAND_HUNTING_GROUNDS(3, 1866, "Candyland Hunting Grounds"),
-    CAVE_OF_THOUSAND_TREASURES(5, 24110, "Cave of Thousand Treasures"),
+    CAVE_OF_THOUSAND_TREASURES(5, 24110, "Cave of A Thousand Treasures"),
     CNIDARIAN_REEF(46, 2554, "Cnidarian Reef"),
     CRYSTAL_CAVERN(34, 10042, "Crystal Cavern"),
     CULTIST_HIDEOUT(40, 19459, "Cultist Hideout"),
