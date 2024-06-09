@@ -247,8 +247,10 @@ public class LootGUI extends JPanel {
 
     private static void displayMobIcon(Entity dropper, JPanel panel) {
         int mob = 100;
+        int sharedLoot = 0;
         if (dropper != null) {
             mob = dropper.objectType;
+            sharedLoot = dropper.playersRemainAtKill();
         }
         try {
             JLabel icon = new JLabel(ImageBuffer.getOutlinedIcon(mob, 20));
@@ -256,7 +258,10 @@ public class LootGUI extends JPanel {
             if (mob != 100) {
                 name = IdToAsset.objectName(mob);
             }
-            icon.setToolTipText(name);
+            if (sharedLoot != 0) {
+                name += "<br>Shared loot: " + sharedLoot + " players";
+            }
+            icon.setToolTipText("<html>" + name + "</html>");
             panel.add(icon);
         } catch (AssetMissingException e) {
             e.printStackTrace();

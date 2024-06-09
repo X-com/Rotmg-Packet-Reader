@@ -239,6 +239,16 @@ public class Entity implements Serializable {
         return Arrays.stream(damagePlayer.values().toArray(new Damage[0])).sorted(Comparator.comparingInt(Damage::getDamage).reversed()).collect(Collectors.toList());
     }
 
+    public int playersRemainAtKill() {
+        int count = 0;
+        for (int id : damagePlayer.keySet()) {
+            if (!playerDropped.containsKey(id)) {
+                count++;
+            }
+        }
+        return count;
+    }
+
     public boolean isUser() {
         return isUser;
     }
