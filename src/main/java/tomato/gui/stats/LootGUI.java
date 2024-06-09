@@ -46,44 +46,41 @@ public class LootGUI extends JPanel {
         add(scroll, BorderLayout.CENTER);
     }
 
-    private void clicked() {
-    }
-
     public static void update(MapInfoPacket map, Entity entity, Entity dropper, Entity player, long time) {
         INSTANCE.updateGui(map, entity, dropper, player, time);
     }
 
     private void updateGui(MapInfoPacket map, Entity entity, Entity dropper, Entity player, long time) {
-        int exaltBonus = -1;
-        long lootTime = 0;
-        if (player != null) {
-            exaltBonus = RealmCharacter.exaltLootBonus(player.objectType);
-            lootTime = player.lootDropTime(time);
-        }
-
-        String mobName = "";
-        String mapName = "";
-        String dungeonBonus = "";
-        String exaltString = "";
-        String lootDropString = "";
-        if (dropper != null) {
-            mobName = dropper.name() + "[" + dropper.id + "] - ";
-        }
-        if (map != null) {
-            mapName = map.name;
-            dungeonBonus = dungeonBuff(map.dungeonModifiers3);
-        }
-        if (exaltBonus != -1) {
-            exaltString = " Exalt: " + exaltBonus + "%";
-        }
-        if (lootTime > 0) {
-            lootDropString = " LD-bonus ";
-        }
-        String s = time() + "  " + mapName + dungeonBonus + exaltString + lootDropString + " - " + mobName + LootBags.lootBagName(entity.objectType) + ": " + lootInfo(entity) + "\n";
+//        int exaltBonus = -1;
+//        long lootTime = 0;
+//        if (player != null) {
+//            exaltBonus = RealmCharacter.exaltLootBonus(player.objectType);
+//            lootTime = player.lootDropTime(time);
+//        }
+//
+//        String mobName = "";
+//        String mapName = "";
+//        String dungeonBonus = "";
+//        String exaltString = "";
+//        String lootDropString = "";
+//        if (dropper != null) {
+//            mobName = dropper.name() + "[" + dropper.id + "] - ";
+//        }
+//        if (map != null) {
+//            mapName = map.name;
+//            dungeonBonus = dungeonBuff(map.dungeonModifiers3);
+//        }
+//        if (exaltBonus != -1) {
+//            exaltString = " Exalt: " + exaltBonus + "%";
+//        }
+//        if (lootTime > 0) {
+//            lootDropString = " LD-bonus ";
+//        }
+//        String s = time() + "  " + mapName + dungeonBonus + exaltString + lootDropString + " - " + mobName + LootBags.lootBagName(entity.objectType) + ": " + lootInfo(entity) + "\n";
 //        textArea.append(s);
 
         JPanel panel = createMainBox(map, entity, dropper, player, time);
-        lootPanel.add(panel);
+        lootPanel.add(panel, 0);
 
         INSTANCE.guiUpdate();
     }
@@ -109,116 +106,134 @@ public class LootGUI extends JPanel {
 
         mainPanel.add(Box.createHorizontalGlue());
 
-        {
-            JPanel panel = new JPanel();
-//            panel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-            width += 75;
-
-            panel.setPreferredSize(new Dimension(75, 24));
-            panel.setMaximumSize(new Dimension(75, 24));
-            panel.setLayout(new GridLayout(1, 3));
-
-            int bag = entity.objectType;
-            try {
-                JLabel icon = new JLabel(ImageBuffer.getOutlinedIcon(bag, 20));
-                String name = IdToAsset.objectName(bag);
-                if (exaltBonus != -1) {
-                    name += "<br>Exalt Bonus: " + exaltBonus + "%";
-                }
-                if (lootTime > 0) {
-                    name += "<br>Loot drop bonus 50%";
-                }
-                icon.setToolTipText("<html>" + name + "</html>");
-
-                panel.add(icon);
-            } catch (AssetMissingException e) {
-                e.printStackTrace();
-            }
-
-            CharacterStatistics dungeonIndex = CharacterStatistics.statByName(map.name);
-            int dungeon = 100;
-            if (dungeonIndex != null) {
-                dungeon = dungeonIndex.getSpriteId();
-            }
-            {
-                if (map.name.equals("Realm of the Mad God")) dungeon = 1796;
-                JLabel icon = new JLabel(ImageBuffer.getOutlinedIcon(dungeon, 20));
-                String name = map.name;
-                String s = dungeonBuff(map.dungeonModifiers3);
-                if (!s.isEmpty()) {
-                    name += "<br>" + s;
-                }
-                icon.setToolTipText("<html>" + name + "</html>");
-                panel.add(icon);
-            }
-
-            int mob = 100;
-            if (dropper != null) {
-                mob = dropper.objectType;
-            }
-            try {
-                JLabel icon = new JLabel(ImageBuffer.getOutlinedIcon(mob, 20));
-                String name = "Unknown";
-                if (mob != 100) {
-                    name = IdToAsset.objectName(mob);
-                }
-                icon.setToolTipText(name);
-                panel.add(icon);
-            } catch (AssetMissingException e) {
-                e.printStackTrace();
-            }
-
-            mainPanel.add(panel);
-        }
+        width = displayBagDungMob(map, entity, dropper, mainPanel, width, exaltBonus, lootTime);
         mainPanel.add(Box.createHorizontalStrut(30));
-        {
-
-            JPanel panel = new JPanel();
-//            panel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-            width += 200;
-
-            panel.setPreferredSize(new Dimension(200, 24));
-            panel.setMaximumSize(new Dimension(200, 24));
-            panel.setLayout(new GridLayout(1, 8));
-
-            String[] enchants = null;
-            StatData udata = entity.stat.get(StatType.UNIQUE_DATA_STRING);
-            if (udata != null && udata.stringStatValue != null) {
-                enchants = udata.stringStatValue.split(",");
-            }
-
-            for (int i = 0; i < 8; i++) {
-                StatData sd = entity.stat.get(StatType.INVENTORY_0_STAT.get() + i);
-                if (sd == null || sd.statValue < 1) {
-                    JPanel comp = new JPanel();
-                    comp.setMinimumSize(new Dimension(24, 24));
-                    panel.add(comp);
-                }
-                int statValue = sd.statValue;
-                try {
-                    JLabel icon = new JLabel(ImageBuffer.getOutlinedIcon(statValue, 20));
-                    String itemName = IdToAsset.objectName(statValue);
-                    if (enchants != null && i < enchants.length && !enchants[i].isEmpty() && !enchants[i].equals("AAIE_f_9__3__f8=")) {
-                        String e = ParseEnchants.parse(enchants[i]);
-                        if (!e.isEmpty()) {
-                            itemName += "<br>" + e;
-                        }
-                    }
-                    icon.setToolTipText("<html>" + itemName + "</html>");
-                    panel.add(icon);
-                } catch (AssetMissingException var6) {
-                    var6.printStackTrace();
-                }
-            }
-
-            mainPanel.add(panel);
-        }
+        width = displayBagLootIcons(entity, mainPanel, width);
 
         mainPanel.add(Box.createHorizontalGlue());
 
         mainPanel.setMaximumSize(new Dimension(width, y));
 
         return mainPanel;
+    }
+
+    private static int displayBagDungMob(MapInfoPacket map, Entity entity, Entity dropper, JPanel mainPanel, int width, int exaltBonus, long lootTime) {
+        JPanel panel = new JPanel();
+        width += 75;
+
+        panel.setPreferredSize(new Dimension(75, 24));
+        panel.setMaximumSize(new Dimension(75, 24));
+        panel.setLayout(new GridLayout(1, 3));
+
+        displayBagIcon(entity, exaltBonus, lootTime, panel);
+        displayDungeonIcon(map, panel);
+        displayMobIcon(dropper, panel);
+
+        mainPanel.add(panel);
+        return width;
+    }
+
+    private static int displayBagLootIcons(Entity entity, JPanel mainPanel, int width) {
+        JPanel panel = new JPanel();
+//            panel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        width += 200;
+
+        panel.setPreferredSize(new Dimension(200, 24));
+        panel.setMaximumSize(new Dimension(200, 24));
+        panel.setLayout(new GridLayout(1, 8));
+
+        String[] enchants = null;
+        StatData udata = entity.stat.get(StatType.UNIQUE_DATA_STRING);
+        if (udata != null && udata.stringStatValue != null) {
+            enchants = udata.stringStatValue.split(",");
+        }
+
+        for (int i = 0; i < 8; i++) {
+            StatData sd = entity.stat.get(StatType.INVENTORY_0_STAT.get() + i);
+            if (sd == null || sd.statValue < 1) {
+                JPanel comp = new JPanel();
+                comp.setMinimumSize(new Dimension(24, 24));
+                panel.add(comp);
+            }
+            int statValue = sd.statValue;
+            try {
+                JLabel icon = new JLabel(ImageBuffer.getOutlinedIcon(statValue, 20));
+                String itemName = IdToAsset.objectName(statValue);
+                if (enchants != null && i < enchants.length && !enchants[i].isEmpty() && !enchants[i].equals("AAIE_f_9__3__f8=")) {
+                    String e = ParseEnchants.parse(enchants[i]);
+                    if (!e.isEmpty()) {
+                        itemName += "<br>" + e;
+                    }
+                }
+                icon.setToolTipText("<html>" + itemName + "</html>");
+                panel.add(icon);
+            } catch (AssetMissingException var6) {
+                var6.printStackTrace();
+            }
+        }
+
+        mainPanel.add(panel);
+        return width;
+    }
+
+    private static void displayBagIcon(Entity entity, int exaltBonus, long lootTime, JPanel panel) {
+        int bag = entity.objectType;
+        try {
+            JLabel icon = new JLabel(ImageBuffer.getOutlinedIcon(bag, 20));
+            String name = IdToAsset.objectName(bag);
+            if (exaltBonus != -1) {
+                name += "<br>Exalt Bonus: " + exaltBonus + "%";
+            }
+            if (lootTime > 0) {
+                name += "<br>Loot drop bonus 50%";
+            }
+            icon.setToolTipText("<html>" + name + "</html>");
+
+            panel.add(icon);
+        } catch (AssetMissingException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void displayMobIcon(Entity dropper, JPanel panel) {
+        int mob = 100;
+        if (dropper != null) {
+            mob = dropper.objectType;
+        }
+        try {
+            JLabel icon = new JLabel(ImageBuffer.getOutlinedIcon(mob, 20));
+            String name = "Unknown";
+            if (mob != 100) {
+                name = IdToAsset.objectName(mob);
+            }
+            icon.setToolTipText(name);
+            panel.add(icon);
+        } catch (AssetMissingException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void displayDungeonIcon(MapInfoPacket map, JPanel panel) {
+        int dungeon = 100;
+        String dungeonName = "Unknown";
+        String dungeonModifiers = "";
+        if (map != null) {
+            dungeonName = map.name;
+            dungeonModifiers = dungeonBuff(map.dungeonModifiers3);
+
+            CharacterStatistics dungeonIndex = CharacterStatistics.statByName(map.name);
+            if (dungeonIndex != null) {
+                dungeon = dungeonIndex.getSpriteId();
+            }
+        }
+
+        if (dungeonName.equals("Realm of the Mad God")) dungeon = 1796;
+        JLabel icon = new JLabel(ImageBuffer.getOutlinedIcon(dungeon, 20));
+        if (!dungeonModifiers.isEmpty()) {
+            dungeonName += "<br>" + dungeonModifiers;
+        }
+        icon.setToolTipText("<html>" + dungeonName + "</html>");
+        panel.add(icon);
     }
 
     public static String time() {
