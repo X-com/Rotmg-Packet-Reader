@@ -8,12 +8,10 @@ import packets.data.enums.StatType;
 import packets.incoming.MapInfoPacket;
 import tomato.backend.data.Entity;
 import tomato.gui.SmartScroller;
-import tomato.gui.TomatoGUI;
 import tomato.gui.security.ParsePanelGUI;
 import tomato.realmshark.ParseEnchants;
 import tomato.realmshark.RealmCharacter;
 import tomato.realmshark.enums.CharacterStatistics;
-import tomato.realmshark.enums.LootBags;
 
 import javax.swing.*;
 import java.awt.*;
@@ -22,7 +20,6 @@ import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
 
 public class LootGUI extends JPanel {
 
@@ -30,6 +27,7 @@ public class LootGUI extends JPanel {
 
     private static JPanel lootPanel;
     private static JTextArea textArea;
+    private static Font mainFont;
 
     public LootGUI() {
         this.INSTANCE = this;
@@ -106,7 +104,9 @@ public class LootGUI extends JPanel {
 
         mainPanel.add(Box.createHorizontalGlue());
 
-        width = displayBagDungMob(map, entity, dropper, mainPanel, width, exaltBonus, lootTime);
+        width = displayTime(mainPanel, width);
+        mainPanel.add(Box.createHorizontalStrut(10));
+        width = displayBagDungMob(map, entity, player, dropper, mainPanel, width, exaltBonus, lootTime);
         mainPanel.add(Box.createHorizontalStrut(30));
         width = displayBagLootIcons(entity, mainPanel, width);
 
@@ -117,20 +117,72 @@ public class LootGUI extends JPanel {
         return mainPanel;
     }
 
-    private static int displayBagDungMob(MapInfoPacket map, Entity entity, Entity dropper, JPanel mainPanel, int width, int exaltBonus, long lootTime) {
+    private static int displayBagDungMob(MapInfoPacket map, Entity entity, Entity player, Entity dropper, JPanel mainPanel, int width, int exaltBonus, long lootTime) {
         JPanel panel = new JPanel();
-        width += 75;
+        width += 100;
 
-        panel.setPreferredSize(new Dimension(75, 24));
-        panel.setMaximumSize(new Dimension(75, 24));
-        panel.setLayout(new GridLayout(1, 3));
+        panel.setPreferredSize(new Dimension(100, 24));
+        panel.setMaximumSize(new Dimension(100, 24));
+        panel.setLayout(new GridLayout(1, 4));
 
         displayBagIcon(entity, exaltBonus, lootTime, panel);
+        displayPlayerIcon(map, player, exaltBonus, panel);
         displayDungeonIcon(map, panel);
         displayMobIcon(dropper, panel);
 
         mainPanel.add(panel);
         return width;
+    }
+
+    private static int displayTime(JPanel mainPanel, int width) {
+        JPanel o = new JPanel();
+//            panel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+
+//            int x = fm.stringWidth("HH:mm:ss") + 2;
+        width += 50;
+
+        o.setPreferredSize(new Dimension(50, 24));
+        o.setMaximumSize(new Dimension(50, 24));
+        o.setLayout(new BorderLayout());
+
+        try {
+            String text = timeShort();
+            JLabel timeLabel = new JLabel(text, JLabel.CENTER);
+
+            timeLabel.setAlignmentX(JLabel.LEFT);
+            o.setAlignmentX(JLabel.LEFT);
+            o.setAlignmentX(LEFT_ALIGNMENT);
+            timeLabel.setHorizontalAlignment(SwingConstants.LEFT);
+            timeLabel.setFont(mainFont);
+            o.add(timeLabel);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        mainPanel.add(o);
+        return width;
+    }
+
+    private static void displayPlayerIcon(MapInfoPacket map, Entity player, int exaltBonus, JPanel panel) {
+        int picon = 100;
+        if (map != null) {
+            StatData sd = player.stat.get(StatType.SKIN_ID.get());
+            if (sd != null) {
+                picon = sd.statValue;
+                if (picon == 0) picon = player.objectType;
+            }
+        }
+        try {
+            JLabel icon = new JLabel(ImageBuffer.getOutlinedIcon(picon, 20));
+            String name = IdToAsset.objectName(picon);
+            if (exaltBonus != -1) {
+                name += "<br>Exalt Bonus: " + exaltBonus + "%";
+            }
+            icon.setToolTipText("<html>" + name + "</html>");
+
+            panel.add(icon);
+        } catch (AssetMissingException e) {
+            e.printStackTrace();
+        }
     }
 
     private static int displayBagLootIcons(Entity entity, JPanel mainPanel, int width) {
@@ -180,10 +232,8 @@ public class LootGUI extends JPanel {
         int bag = entity.objectType;
         try {
             JLabel icon = new JLabel(ImageBuffer.getOutlinedIcon(bag, 20));
-            String name = IdToAsset.objectName(bag);
-            if (exaltBonus != -1) {
-                name += "<br>Exalt Bonus: " + exaltBonus + "%";
-            }
+            String name = time();
+            name += "<br>" + IdToAsset.objectName(bag);
             if (lootTime > 0) {
                 name += "<br>Loot drop bonus 50%";
             }
@@ -234,6 +284,12 @@ public class LootGUI extends JPanel {
         }
         icon.setToolTipText("<html>" + dungeonName + "</html>");
         panel.add(icon);
+    }
+
+    public static String timeShort() {
+        DateTimeFormatter dateTimeFormat = DateTimeFormatter.ofPattern("HH:mm:ss");
+        LocalDateTime dateTime = LocalDateTime.now();
+        return dateTimeFormat.format(dateTime);
     }
 
     public static String time() {
@@ -291,4 +347,17 @@ public class LootGUI extends JPanel {
     private static int getaChar(String s) {
         return s.charAt(s.length() - 1) - 48;
     }
+
+//    private void updateFont(Component c) {
+//        charPanel.removeAll();
+//        for (ParsePanelGUI.Player p : playerDisplay.values()) {
+//            p.panel = createMainBox(p, p.playerEntity);
+//            charPanel.add(p.panel);
+//        }
+//    }
+//
+//    public static void editFont(Font font) {
+//        mainFont = font;
+//        INSTANCE.updateFont(charPanel);
+//    }
 }
