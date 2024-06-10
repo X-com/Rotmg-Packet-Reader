@@ -25,6 +25,7 @@ public class LootGUI extends JPanel {
 
     private static LootGUI INSTANCE;
 
+    private static boolean cleared = false;
     private static JPanel lootPanel;
     private static JTextArea textArea;
     private static Font mainFont;
@@ -51,8 +52,11 @@ public class LootGUI extends JPanel {
     }
 
     public static void updateExaltStats() {
-        lootPanel.removeAll();
-        INSTANCE.guiUpdate();
+        if (!cleared) {
+            cleared = true;
+            lootPanel.removeAll();
+            INSTANCE.guiUpdate();
+        }
     }
 
     private void updateGui(MapInfoPacket map, Entity entity, Entity dropper, Entity player, long time) {
