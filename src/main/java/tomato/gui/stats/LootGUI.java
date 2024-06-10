@@ -36,6 +36,8 @@ public class LootGUI extends JPanel {
         lootPanel = new JPanel();
 
         lootPanel.setLayout(new BoxLayout(lootPanel, BoxLayout.Y_AXIS));
+
+        lootPanel.add(new JLabel("Enter Daily Quest Room or Pet Yard to get loot info."));
         validate();
 
         JScrollPane scroll = new JScrollPane(lootPanel);
@@ -46,6 +48,11 @@ public class LootGUI extends JPanel {
 
     public static void update(MapInfoPacket map, Entity entity, Entity dropper, Entity player, long time) {
         INSTANCE.updateGui(map, entity, dropper, player, time);
+    }
+
+    public static void updateExaltStats() {
+        lootPanel.removeAll();
+        INSTANCE.guiUpdate();
     }
 
     private void updateGui(MapInfoPacket map, Entity entity, Entity dropper, Entity player, long time) {
@@ -77,6 +84,7 @@ public class LootGUI extends JPanel {
 //        String s = time() + "  " + mapName + dungeonBonus + exaltString + lootDropString + " - " + mobName + LootBags.lootBagName(entity.objectType) + ": " + lootInfo(entity) + "\n";
 //        textArea.append(s);
 
+        if (player == null || RealmCharacter.exalts.size() == 0) return;
         JPanel panel = createMainBox(map, entity, dropper, player, time);
         lootPanel.add(panel, 0);
 
@@ -164,25 +172,26 @@ public class LootGUI extends JPanel {
 
     private static void displayPlayerIcon(MapInfoPacket map, Entity player, int exaltBonus, JPanel panel) {
         int picon = 100;
+        String name = "Unknown";
         if (map != null) {
             StatData sd = player.stat.get(StatType.SKIN_ID.get());
             if (sd != null) {
                 picon = sd.statValue;
                 if (picon == 0) picon = player.objectType;
+                try {
+                    name = IdToAsset.objectName(picon);
+                } catch (AssetMissingException e) {
+                    throw new RuntimeException(e);
+                }
             }
         }
-        try {
-            JLabel icon = new JLabel(ImageBuffer.getOutlinedIcon(picon, 20));
-            String name = IdToAsset.objectName(picon);
-            if (exaltBonus != -1) {
-                name += "<br>Exalt Bonus: " + exaltBonus + "%";
-            }
-            icon.setToolTipText("<html>" + name + "</html>");
+        JLabel icon = new JLabel(ImageBuffer.getOutlinedIcon(picon, 20));
+        if (exaltBonus != -1) {
+            name += "<br>Exalt Bonus: " + exaltBonus + "%";
+        }
+        icon.setToolTipText("<html>" + name + "</html>");
 
-            panel.add(icon);
-        } catch (AssetMissingException e) {
-            e.printStackTrace();
-        }
+        panel.add(icon);
     }
 
     private static int displayBagLootIcons(Entity entity, JPanel mainPanel, int width) {

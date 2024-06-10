@@ -1,5 +1,7 @@
 package bugfixingtools;
 
+import assets.AssetMissingException;
+import assets.IdToAsset;
 import packets.Packet;
 import packets.data.GroundTileData;
 import packets.data.ObjectData;
@@ -40,17 +42,17 @@ public class PacketRead {
             return;
         }
 
-        if(packet instanceof MovePacket) return;
-        if(packet instanceof PingPacket) return;
-        if(packet instanceof PongPacket) return;
-        if(packet instanceof UpdateAckPacket) return;
-        if(packet instanceof ForgeUnlockedBlueprints) return;
-        if(packet instanceof PlayerShootPacket) return;
-        if(packet instanceof EnemyShootPacket) return;
-        if(packet instanceof RealmScoreUpdatePacket) return;
+        if (packet instanceof MovePacket) return;
+        if (packet instanceof PingPacket) return;
+        if (packet instanceof PongPacket) return;
+        if (packet instanceof UpdateAckPacket) return;
+        if (packet instanceof ForgeUnlockedBlueprints) return;
+        if (packet instanceof PlayerShootPacket) return;
+        if (packet instanceof EnemyShootPacket) return;
+        if (packet instanceof RealmScoreUpdatePacket) return;
 
         if (packet instanceof NewTickPacket) {
-            System.out.println(packet);
+//            System.out.println(packet);
 //            newtick((NewTickPacket) packet);
 //            updateEntity((NewTickPacket) packet);
             return;
@@ -61,18 +63,29 @@ public class PacketRead {
 //            if (p.name.equals("Realm of the Mad God")) {
 //                System.out.println(p.seed + "   " + ip);
 //            }
-            types.clear();
+//            types.clear();
             System.out.println("clearconsole");
+            System.out.println(((MapInfoPacket) packet).seed);
             return;
         }
 
         if (packet instanceof UpdatePacket) {
+            UpdatePacket p = (UpdatePacket) packet;
 //            crystalTPRange((UpdatePacket) packet);
 //            realmIdentifier((UpdatePacket) packet);
 //            showPlayer((UpdatePacket) packet);
 //            countTiles((UpdatePacket) packet);
 //            isSeasonalCharacter((UpdatePacket) packet);
 //            entityName((UpdatePacket) packet);
+            for (ObjectData pp : p.newObjects) {
+                String name = "";
+                try {
+                    name = IdToAsset.objectName(pp.objectType);
+                } catch (AssetMissingException var3) {
+                    var3.printStackTrace();
+                }
+                System.out.println(name + " " + pp.status.pos);
+            }
             return;
         }
         if (packet instanceof VaultContentPacket) {
@@ -80,7 +93,7 @@ public class PacketRead {
             return;
         }
 
-        System.out.println(packet);
+//        System.out.println(packet);
     }
 
     private static void filterNotificationPacket(NotificationPacket packet) {

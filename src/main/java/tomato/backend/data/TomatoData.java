@@ -483,6 +483,7 @@ public class TomatoData {
             MyDamageGUI.updatePet(pet);
         }
         CharacterPanelGUI.updateRealmChars();
+        LootGUI.updateExaltStats();
     }
 
     private void makePet(RealmCharacter currentChar) {
