@@ -47,8 +47,8 @@ public class LootGUI extends JPanel {
         add(scroll, BorderLayout.CENTER);
     }
 
-    public static void update(MapInfoPacket map, Entity entity, Entity dropper, Entity player, long time) {
-        INSTANCE.updateGui(map, entity, dropper, player, time);
+    public static void update(MapInfoPacket map, Entity bag, Entity dropper, Entity player, long time) {
+        INSTANCE.updateGui(map, bag, dropper, player, time);
     }
 
     public static void updateExaltStats() {
@@ -59,7 +59,7 @@ public class LootGUI extends JPanel {
         }
     }
 
-    private void updateGui(MapInfoPacket map, Entity entity, Entity dropper, Entity player, long time) {
+    private void updateGui(MapInfoPacket map, Entity bag, Entity dropper, Entity player, long time) {
 //        int exaltBonus = -1;
 //        long lootTime = 0;
 //        if (player != null) {
@@ -85,11 +85,12 @@ public class LootGUI extends JPanel {
 //        if (lootTime > 0) {
 //            lootDropString = " LD-bonus ";
 //        }
-//        String s = time() + "  " + mapName + dungeonBonus + exaltString + lootDropString + " - " + mobName + LootBags.lootBagName(entity.objectType) + ": " + lootInfo(entity) + "\n";
+//        String s = time() + "  " + mapName + dungeonBonus + exaltString + lootDropString + " - " + mobName + LootBags.lootBagName(bag.objectType) + ": " + lootInfo(bag) + "\n";
 //        textArea.append(s);
 
-        if (player == null || RealmCharacter.exalts.size() == 0) return;
-        JPanel panel = createMainBox(map, entity, dropper, player, time);
+        if (player == null || RealmCharacter.exalts.size() != 18) return;
+        JPanel panel = createMainBox(map, bag, dropper, player, time);
+        SendLoot.sendLoot(map, bag, dropper, player, time);
         lootPanel.add(panel, 0);
 
         INSTANCE.guiUpdate();
@@ -100,7 +101,7 @@ public class LootGUI extends JPanel {
         repaint();
     }
 
-    private static JPanel createMainBox(MapInfoPacket map, Entity entity, Entity dropper, Entity player, long time) {
+    private static JPanel createMainBox(MapInfoPacket map, Entity bag, Entity dropper, Entity player, long time) {
         JPanel mainPanel = new JPanel();
         mainPanel.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.gray), BorderFactory.createEmptyBorder(0, 20, 0, 20)));
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.X_AXIS));
@@ -118,9 +119,9 @@ public class LootGUI extends JPanel {
 
         width = displayTime(mainPanel, width);
         mainPanel.add(Box.createHorizontalStrut(10));
-        width = displayBagDungMob(map, entity, player, dropper, mainPanel, width, exaltBonus, lootTime);
+        width = displayBagDungMob(map, bag, player, dropper, mainPanel, width, exaltBonus, lootTime);
         mainPanel.add(Box.createHorizontalStrut(30));
-        width = displayBagLootIcons(entity, mainPanel, width);
+        width = displayBagLootIcons(bag, mainPanel, width);
 
         mainPanel.add(Box.createHorizontalGlue());
 
@@ -137,7 +138,7 @@ public class LootGUI extends JPanel {
         panel.setMaximumSize(new Dimension(100, 24));
         panel.setLayout(new GridLayout(1, 4));
 
-        displayBagIcon(entity, exaltBonus, lootTime, panel);
+        displayBagIcon(entity, lootTime, panel);
         displayPlayerIcon(map, player, exaltBonus, panel);
         displayDungeonIcon(map, panel);
         displayMobIcon(dropper, panel);
@@ -176,9 +177,11 @@ public class LootGUI extends JPanel {
 
     private static void displayPlayerIcon(MapInfoPacket map, Entity player, int exaltBonus, JPanel panel) {
         int picon = 100;
+        boolean isSeasonal = false;
         String name = "Unknown";
         if (map != null) {
             StatData sd = player.stat.get(StatType.SKIN_ID.get());
+            StatData sesn = player.stat.get(StatType.SEASONAL.get());
             if (sd != null) {
                 picon = sd.statValue;
                 if (picon == 0) picon = player.objectType;
@@ -188,10 +191,18 @@ public class LootGUI extends JPanel {
                     throw new RuntimeException(e);
                 }
             }
+            if (sesn != null) {
+                if (sesn.statValue == 1) {
+                    isSeasonal = true;
+                }
+            }
         }
         JLabel icon = new JLabel(ImageBuffer.getOutlinedIcon(picon, 20));
         if (exaltBonus != -1) {
             name += "<br>Exalt Bonus: " + exaltBonus + "%";
+        }
+        if (isSeasonal) {
+            name += "<br>Seasonal";
         }
         icon.setToolTipText("<html>" + name + "</html>");
 
@@ -241,7 +252,7 @@ public class LootGUI extends JPanel {
         return width;
     }
 
-    private static void displayBagIcon(Entity entity, int exaltBonus, long lootTime, JPanel panel) {
+    private static void displayBagIcon(Entity entity, long lootTime, JPanel panel) {
         int bag = entity.objectType;
         try {
             JLabel icon = new JLabel(ImageBuffer.getOutlinedIcon(bag, 20));
