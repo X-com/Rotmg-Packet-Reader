@@ -3,9 +3,7 @@ package tomato.backend;
 import packets.Packet;
 import packets.data.QuestData;
 import packets.incoming.*;
-import packets.outgoing.EnemyHitPacket;
-import packets.outgoing.HelloPacket;
-import packets.outgoing.PlayerShootPacket;
+import packets.outgoing.*;
 import tomato.backend.data.TomatoData;
 import tomato.gui.dps.DpsGUI;
 import tomato.gui.TomatoGUI;
@@ -29,7 +27,10 @@ public class TomatoPacketCapture implements Controller {
      * @param packet incoming packets to be processed.
      */
     public void packetCapture(Packet packet) {
-        if (packet instanceof NewTickPacket) {
+        if (packet instanceof MovePacket) {
+            MovePacket p = (MovePacket) packet;
+            data.updatePlayersPos(p);
+        } else if (packet instanceof NewTickPacket) {
             NewTickPacket p = (NewTickPacket) packet;
             data.updateNewTick(p);
             DpsGUI.updateNewTickPacket(data);
@@ -54,6 +55,18 @@ public class TomatoPacketCapture implements Controller {
             DamagePacket p = (DamagePacket) packet;
             data.damage(p);
             data.logPacket(packet);
+        } else if (packet instanceof PlayerHitPacket) {
+            PlayerHitPacket p = (PlayerHitPacket) packet;
+            data.userDamage(p);
+        } else if (packet instanceof EnemyShootPacket) {
+            EnemyShootPacket p = (EnemyShootPacket) packet;
+            data.enemyProjectile(p);
+        } else if (packet instanceof AoePacket) {
+            AoePacket p = (AoePacket) packet;
+            data.aoeDamage(p);
+        } else if (packet instanceof GroundDamagePacket) {
+            GroundDamagePacket p = (GroundDamagePacket) packet;
+            data.groundDamage(p);
         } else if (packet instanceof TextPacket) {
             TextPacket p = (TextPacket) packet;
             data.text(p);

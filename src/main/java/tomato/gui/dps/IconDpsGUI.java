@@ -209,6 +209,26 @@ public class IconDpsGUI extends DisplayDpsGUI {
             if (pref[pref.length - 1] < height) {
                 pref[pref.length - 1] = height;
             }
+
+            float damagePerMinute = dmg.damage / Math.min(entity.getFightDuration() / 60000f, 1);
+            DecimalFormat df = new DecimalFormat("###,###.##");
+
+            float guardedDamagePercentage = 0;
+            boolean hasGuardedDamage = dmg.oryx3GuardDmg || (entity.dammahCountered && dmg.chancellorDammahDmg) || dmg.walledGardenReflectors;
+            if (hasGuardedDamage) {
+                guardedDamagePercentage = (float) dmg.counterDmg / dmg.damage * 100;
+            }
+
+            int[] damageFight = dmg.owner.damageTaken(entity);
+            int[] damageTotal = dmg.owner.damageTaken(null);
+            String tooltipText = String.format("Damage taken: %s (hits: %s)\n", damageFight[0], damageFight[1]);
+            tooltipText += String.format("Total damage taken: %s (hits: %s)\n\n", damageTotal[0], damageTotal[1]);
+            tooltipText += String.format("Damage per Minute: %s", df.format(damagePerMinute));
+            if (hasGuardedDamage) {
+                tooltipText += String.format("\nGuarded Damage: %s%%", df.format(guardedDamagePercentage));
+            }
+            pp.setToolTipText("<html>" + tooltipText.replace("\n", "<br>") + "</html>");
+
             panelAllPlayers.add(pp);
         }
         pref[0] = 40;

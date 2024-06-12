@@ -4,6 +4,8 @@ import assets.IdToAsset;
 import packets.data.ObjectStatusData;
 import packets.data.StatData;
 import packets.data.WorldPosData;
+import packets.data.enums.ConditionBits;
+import packets.data.enums.ConditionNewBits;
 import packets.data.enums.StatType;
 import tomato.backend.StasisCheck;
 import tomato.gui.character.CharacterStatMaxingGUI;
@@ -29,6 +31,7 @@ public class Entity implements Serializable {
     private final ArrayList<Damage> damageList;
     private final HashMap<Integer, Damage> damagePlayer;
     public final HashMap<Integer, PlayerRemoved> playerDropped;
+    public final HashMap<Long, Damage> playerHits;
     private String name;
     private long firstDamageTaken = -1;
     private long lastDamageTaken = -1;
@@ -56,6 +59,7 @@ public class Entity implements Serializable {
         stat = new Stat();
         damagePlayer = new HashMap<>();
         playerDropped = new HashMap<>();
+        playerHits = new HashMap<>();
     }
 
     public void entityUpdate(int type, ObjectStatusData status, long timePC) {
@@ -145,8 +149,9 @@ public class Entity implements Serializable {
      * @return damage multiplier from player stats.
      */
     public float playerStatsMultiplier() {
-        boolean weak = (stat.get(StatType.CONDITION_STAT).statValue & 0x40) != 0;
-        boolean damaging = (stat.get(StatType.CONDITION_STAT).statValue & 0x40000) != 0;
+        int condition = stat.get(StatType.CONDITION_STAT).statValue;
+        boolean weak = (condition & ConditionBits.WEAK.value()) != 0;
+        boolean damaging = (condition & ConditionBits.DAMAGING.value()) != 0;
         int attack = stat.get(StatType.ATTACK_STAT).statValue;
         float exaltDmgBonus = (float) stat.get(StatType.EXALTATION_BONUS_DAMAGE).statValue / 1000;
 
@@ -196,6 +201,50 @@ public class Entity implements Serializable {
             Damage dmg = damagePlayer.computeIfAbsent(id, a -> new Damage(damage.owner));
             dmg.add(damage);
         }
+    }
+
+    public void userDamageTaken(Entity e, long timePc, Projectile p) {
+        int dmg = p.getDamage();
+        dmg = calculatePlayerDmg(dmg, p.isArmorPiercing());
+        System.out.println(dmg);
+        Damage d = new Damage(e, timePc, dmg);
+        damageList.add(d);
+    }
+
+    private int calculatePlayerDmg(int dmg, boolean ap) {
+        int def = stat.get(StatType.DEFENSE_STAT).statValue;
+        int condition = stat.get(StatType.CONDITION_STAT).statValue;
+        boolean invulnerable = (condition & ConditionBits.INVULNERABLE.value()) != 0;
+
+        if (invulnerable) {
+            return 0;
+        }
+
+        boolean armorBroken = (condition & ConditionBits.ARMORBROKEN.value()) != 0;
+        boolean armored = (condition & ConditionBits.ARMORED.value()) != 0;
+        boolean exposed = (condition & ConditionNewBits.EXPOSED.value()) != 0;
+        boolean petrified = (condition & ConditionNewBits.PETRIFIED.value()) != 0;
+        boolean cursed = (condition & ConditionNewBits.CURSE.value()) != 0;
+
+        if (ap || armorBroken) {
+            def = 0;
+        } else if (armored) {
+            def = (int) (def * 1.5);
+        }
+        if (exposed) {
+            def -= 20;
+        }
+
+        float damage = Math.max(dmg * 0.1f, dmg - def);
+
+        if (petrified) {
+            damage = (int) (damage * 0.9f);
+        }
+        if (cursed) {
+            damage = (int) (damage * 1.25f);
+        }
+
+        return (int) damage;
     }
 
     private void bossPhaseDamage(Damage damage) {
@@ -352,5 +401,27 @@ public class Entity implements Serializable {
     public long lootDropTime(long time) {
         if (lootDropTime == 0) return lootDropTime;
         return lootDropTime - time;
+    }
+
+    public long getFightDuration() {
+        return lastDamageTaken - firstDamageTaken;
+    }
+
+    public int[] damageTaken(Entity entity) {
+        int[] dmg = new int[2];
+        long first = 0;
+        long last = Long.MAX_VALUE;
+        if (entity != null) {
+            first = entity.firstDamageTaken;
+            last = entity.lastDamageTaken;
+        }
+        for (Damage d : damageList) {
+            long time = d.time;
+            if (first < time && time < last) {
+                dmg[0] += d.damage;
+                dmg[1]++;
+            }
+        }
+        return dmg;
     }
 }

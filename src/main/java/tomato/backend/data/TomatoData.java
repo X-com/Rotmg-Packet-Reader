@@ -1,17 +1,15 @@
 package tomato.backend.data;
 
-import assets.AssetMissingException;
 import assets.IdToAsset;
 import packets.Packet;
+import packets.data.MoveRecord;
 import packets.data.ObjectData;
 import packets.data.StatData;
 import packets.data.WorldPosData;
 import packets.data.enums.NotificationEffectType;
 import packets.data.enums.StatType;
 import packets.incoming.*;
-import packets.outgoing.EnemyHitPacket;
-import packets.outgoing.PlayerShootPacket;
-import tomato.gui.TomatoGUI;
+import packets.outgoing.*;
 import tomato.gui.character.*;
 import tomato.gui.chat.ChatGUI;
 import tomato.gui.dps.DpsGUI;
@@ -26,7 +24,6 @@ import tomato.realmshark.enums.CharacterClass;
 import tomato.realmshark.enums.LootBags;
 import util.RNG;
 
-import java.awt.*;
 import java.io.IOException;
 import java.util.*;
 
@@ -67,6 +64,7 @@ public class TomatoData {
     private int lootTickToggle = 0;
     private final ArrayList<Entity>[] lootTickContainer = new ArrayList[]{new ArrayList<>(), new ArrayList<>()};
     private final ArrayList<Entity> killedEntitys = new ArrayList<>();
+    protected final HashMap<Long, Projectile> enemyProjectiles = new HashMap<>();
 
 
     /**
@@ -148,6 +146,17 @@ public class TomatoData {
     }
 
     /**
+     * Packet updating players position
+     *
+     * @param p Move packet data
+     */
+    public void updatePlayersPos(MovePacket p) {
+        if (player != null && p.records != null && p.records.length > 0) {
+            player.pos = p.records[p.records.length - 1].pos;
+        }
+    }
+
+    /**
      * Main update packet.
      *
      * @param p Update packet
@@ -224,13 +233,13 @@ public class TomatoData {
      */
     private void lootTick() {
         lootTickToggle ^= 1;
-        if(!lootTickContainer[lootTickToggle].isEmpty()) {
-            for(Entity bag : lootTickContainer[lootTickToggle]) {
+        if (!lootTickContainer[lootTickToggle].isEmpty()) {
+            for (Entity bag : lootTickContainer[lootTickToggle]) {
                 double dist = 0;
                 Entity mob = null;
                 for (Entity k : killedEntitys) {
                     double d = bag.distSqrd(k.pos);
-                    if(mob == null) {
+                    if (mob == null) {
                         dist = d;
                         mob = k;
                     } else if (d < dist) {
@@ -242,7 +251,7 @@ public class TomatoData {
             }
             lootTickContainer[lootTickToggle].clear();
         }
-        if(!killedEntitys.isEmpty()) {
+        if (!killedEntitys.isEmpty()) {
             killedEntitys.clear();
         }
     }
@@ -333,12 +342,12 @@ public class TomatoData {
      */
     public void serverPlayerShoot(ServerPlayerShootPacket p) {
         if (p.bulletCount > 1) {
-            Projectile projectile = new Projectile(p.damage, p.containerType, p.summonerId);
+            Projectile projectile = new Projectile(p.damage, p.containerType, p.bulletType, p.summonerId);
             for (int j = p.bulletId; j < p.bulletId + p.bulletCount; j++) {
                 projectiles[j % 256 + 256] = projectile;
             }
         } else if (p.bulletId > 255 && p.bulletId < 512) {
-            Projectile projectile = new Projectile(p.damage, p.containerType, p.summonerId);
+            Projectile projectile = new Projectile(p.damage, p.containerType, p.bulletType, p.summonerId);
             projectiles[p.bulletId] = projectile;
         }
     }
@@ -378,6 +387,69 @@ public class TomatoData {
             if (!entityHitList.containsKey(id) && !CharacterClass.isPlayerCharacter(id)) {
                 entityHitList.put(id, target);
             }
+        }
+    }
+
+    /**
+     * Packet indicating player taking damage by enemy.
+     */
+    public void userDamage(PlayerHitPacket p) {
+        if (player != null) {
+            Entity e = entityList.get(p.objectId);
+            long id = p.objectId + ((long) p.bulletId << 24);
+            Projectile p1 = enemyProjectiles.get(id);
+            if (p1 != null) {
+                player.userDamageTaken(e, timePc, p1);
+            }
+        }
+    }
+
+    /**
+     * Packet for projectiles seen by user.
+     *
+     * @param p Enemy projectile packet
+     */
+    public void enemyProjectile(EnemyShootPacket p) {
+        Entity e = entityList.get(p.ownerId);
+        boolean ap = false;
+        if (e != null) {
+            int etype = e.objectType;
+            int btype = p.bulletType;
+            try {
+                ap = IdToAsset.getIdProjectileArmorPierces(etype, btype);
+            } catch (Exception ignored) {
+            }
+        }
+        for (int i = 0; i < p.numShots; i++) {
+            long id = p.ownerId + ((long) (p.bulletId + i) << 24);
+            enemyProjectiles.put(id, new Projectile(p.damage, ap));
+        }
+    }
+
+    /**
+     * Aoe damage packet
+     *
+     * @param p Aoe packet
+     */
+    public void aoeDamage(AoePacket p) {
+        if (player != null) {
+            if (player.distSqrd(p.pos) < (p.radius * p.radius)) {
+                player.userDamageTaken(null, timePc, new Projectile(p.damage, p.armorPiercing));
+            }
+        }
+    }
+
+    /**
+     * Ground tile damage on player
+     *
+     * @param p Ground tile packet update
+     */
+    public void groundDamage(GroundDamagePacket p) {
+        if(player != null) {
+            WorldPosData pos = p.position;
+            int id = mapTiles[(int) pos.x][(int) pos.y];
+            int dmg = IdToAsset.getTileDamage(id);
+            player.userDamageTaken(null, timePc, new Projectile(dmg, true));
         }
     }
 
@@ -423,6 +495,7 @@ public class TomatoData {
         playerListUpdated.clear();
         dropList.clear();
         lootBags.clear();
+        enemyProjectiles.clear();
         deathNotifications = new ArrayList<>();
         entityHitList = new HashMap<>();
         for (int[] row : mapTiles) {

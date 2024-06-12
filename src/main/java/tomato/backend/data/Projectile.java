@@ -1,6 +1,5 @@
 package tomato.backend.data;
 
-import assets.AssetMissingException;
 import assets.IdToAsset;
 import util.RNG;
 
@@ -16,11 +15,16 @@ public class Projectile implements Serializable {
         this.damage = damage;
     }
 
-    public Projectile(short damage, int containerType, int summonerId) {
+    public Projectile(int damage, boolean armorPiercing) {
+        this.damage = damage;
+        this.armorPiercing = armorPiercing;
+    }
+
+    public Projectile(short damage, int id, int type, int summonerId) {
         this.damage = damage;
         this.summonerId = summonerId;
         try {
-            armorPiercing = IdToAsset.getIdProjectileArmorPierces(containerType, 0);
+            armorPiercing = IdToAsset.getIdProjectileArmorPierces(id, type);
         } catch (Exception e) {
         }
     }
@@ -39,19 +43,11 @@ public class Projectile implements Serializable {
         if (projectileId == -1) {
             projectileId = 0;
         }
-        int min = 0;
-        int max = 0;
-        boolean ap = false;
-        boolean mainWeapon = false;
-        try {
-            min = IdToAsset.getIdProjectileMinDmg(weaponId, projectileId);
-            max = IdToAsset.getIdProjectileMaxDmg(weaponId, projectileId);
-            ap = IdToAsset.getIdProjectileArmorPierces(weaponId, projectileId);
-            int slot = IdToAsset.getIdProjectileSlotType(weaponId);
-            mainWeapon = isMainWeapon(slot);
-        } catch (AssetMissingException e) {
-            e.printStackTrace();
-        }
+        int min = IdToAsset.getIdProjectileMinDmg(weaponId, projectileId);
+        int max = IdToAsset.getIdProjectileMaxDmg(weaponId, projectileId);
+        boolean ap = IdToAsset.getIdProjectileArmorPierces(weaponId, projectileId);
+        int slot = IdToAsset.getIdProjectileSlotType(weaponId);
+        boolean mainWeapon = isMainWeapon(slot);
         int dmg;
         if (min != max) {
             long r = rng.next();

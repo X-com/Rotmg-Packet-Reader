@@ -4,12 +4,15 @@ package tomato.realmshark;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.concurrent.TimeUnit;
 
 public class WebSocket extends WebSocketClient {
     public boolean isConnected = false;
+    private String uri;
 
     public static void main(String[] args) throws URISyntaxException, InterruptedException {
         WebSocket ws = new WebSocket("ws://localhost:8080");
@@ -20,6 +23,7 @@ public class WebSocket extends WebSocketClient {
 
     public WebSocket(String uri) throws URISyntaxException {
         super(new URI(uri));
+        this.uri = uri;
     }
 
     public void sendString(String s) {
@@ -60,6 +64,14 @@ public class WebSocket extends WebSocketClient {
     }
 
     public void closed() {
+        close();
+        new Thread(() -> {
+            try {
+                reconnectBlocking();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }).start();
     }
 
     @Override

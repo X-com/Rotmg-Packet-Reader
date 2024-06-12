@@ -42,6 +42,12 @@ public class Damage implements Serializable {
         setInv(o);
     }
 
+    public Damage(Entity o, long t, int dmg) {
+        owner = o;
+        time = t;
+        damage = dmg;
+    }
+
     private void setInv(Entity o) {
         if (o != null && o.stat != null) {
             ownerInvntory = new int[]{o.stat.get(StatType.INVENTORY_0_STAT).statValue, o.stat.get(StatType.INVENTORY_1_STAT).statValue, o.stat.get(StatType.INVENTORY_2_STAT).statValue, o.stat.get(StatType.INVENTORY_3_STAT).statValue};

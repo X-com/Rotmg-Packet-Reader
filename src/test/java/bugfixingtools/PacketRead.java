@@ -1,7 +1,5 @@
 package bugfixingtools;
 
-import assets.AssetMissingException;
-import assets.IdToAsset;
 import packets.Packet;
 import packets.data.GroundTileData;
 import packets.data.ObjectData;
@@ -10,10 +8,7 @@ import packets.data.StatData;
 import packets.data.enums.StatType;
 import packets.incoming.*;
 import packets.incoming.ip.IpAddress;
-import packets.outgoing.MovePacket;
-import packets.outgoing.PlayerShootPacket;
-import packets.outgoing.PongPacket;
-import packets.outgoing.UpdateAckPacket;
+import packets.outgoing.*;
 import packets.packetcapture.PacketProcessor;
 import packets.packetcapture.register.Register;
 import tomato.realmshark.enums.CharacterClass;
@@ -42,14 +37,29 @@ public class PacketRead {
             return;
         }
 
-        if (packet instanceof MovePacket) return;
+        if (packet instanceof MovePacket) {
+            System.out.println(packet);
+            return;
+        }
         if (packet instanceof PingPacket) return;
         if (packet instanceof PongPacket) return;
         if (packet instanceof UpdateAckPacket) return;
         if (packet instanceof ForgeUnlockedBlueprints) return;
         if (packet instanceof PlayerShootPacket) return;
-        if (packet instanceof EnemyShootPacket) return;
+//        if (packet instanceof EnemyShootPacket) return;
         if (packet instanceof RealmScoreUpdatePacket) return;
+        if (packet instanceof ShowEffectPacket) return;
+        if (packet instanceof ShootAckPacket) return;
+        if (packet instanceof OtherHitPacket) return;
+        if (packet instanceof ServerPlayerShootPacket) return;
+        if (packet instanceof NotificationPacket) return;
+        if (packet instanceof TextPacket) return;
+
+        if (packet instanceof EnemyShootPacket) {
+            EnemyShootPacket p = (EnemyShootPacket) packet;
+//            System.out.println(p.bulletId);
+            return;
+        }
 
         if (packet instanceof NewTickPacket) {
 //            System.out.println(packet);
@@ -77,15 +87,16 @@ public class PacketRead {
 //            countTiles((UpdatePacket) packet);
 //            isSeasonalCharacter((UpdatePacket) packet);
 //            entityName((UpdatePacket) packet);
-            for (ObjectData pp : p.newObjects) {
-                String name = "";
-                try {
-                    name = IdToAsset.objectName(pp.objectType);
-                } catch (AssetMissingException var3) {
-                    var3.printStackTrace();
-                }
-                System.out.println(name + " " + pp.status.pos);
-            }
+
+//            for (ObjectData pp : p.newObjects) {
+//                String name = "";
+//                try {
+//                    name = IdToAsset.objectName(pp.objectType);
+//                } catch (AssetMissingException var3) {
+//                    var3.printStackTrace();
+//                }
+//                System.out.println(name + " " + pp.status.pos);
+//            }
             return;
         }
         if (packet instanceof VaultContentPacket) {
@@ -93,7 +104,7 @@ public class PacketRead {
             return;
         }
 
-//        System.out.println(packet);
+        System.out.println(packet);
     }
 
     private static void filterNotificationPacket(NotificationPacket packet) {

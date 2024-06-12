@@ -2,6 +2,9 @@ package tomato;
 
 import assets.AssetExtractor;
 import packets.PacketType;
+import packets.incoming.EnemyShootPacket;
+import packets.outgoing.GroundDamagePacket;
+import packets.outgoing.PlayerHitPacket;
 import packets.packetcapture.PacketProcessor;
 import packets.packetcapture.register.Register;
 import packets.packetcapture.sniff.assembly.TcpStreamErrorHandler;
@@ -118,6 +121,11 @@ public class Tomato {
         Register.INSTANCE.register(PacketType.ENEMYHIT, packCap::packetCapture);
         Register.INSTANCE.register(PacketType.PLAYERSHOOT, packCap::packetCapture);
         Register.INSTANCE.register(PacketType.DAMAGE, packCap::packetCapture);
+        Register.INSTANCE.register(PacketType.PLAYERHIT, packCap::packetCapture);
+        Register.INSTANCE.register(PacketType.ENEMYSHOOT, packCap::packetCapture);
+        Register.INSTANCE.register(PacketType.GROUNDDAMAGE, packCap::packetCapture);
+        Register.INSTANCE.register(PacketType.AOE, packCap::packetCapture);
+        Register.INSTANCE.register(PacketType.MOVE, packCap::packetCapture);
         Register.INSTANCE.register(PacketType.SERVERPLAYERSHOOT, packCap::packetCapture);
         Register.INSTANCE.register(PacketType.UPDATE, packCap::packetCapture);
         Register.INSTANCE.register(PacketType.NEWTICK, packCap::packetCapture);

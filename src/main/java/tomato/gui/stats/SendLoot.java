@@ -111,7 +111,7 @@ public class SendLoot {
 //        JsonObject j = new JsonObject();
 //        System.out.println(jj);
 
-        int bagId = 1287;
+        int bagId = -1;
         String dungeon = "Realm of the Mad God";
         int[] dungeonMods = ParseDungeonMods.getModIds("BONUSCONSUMABLES;ENERGIZEDMINIONS_1;|D");
         int mob = 17735;
