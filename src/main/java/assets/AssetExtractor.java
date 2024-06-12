@@ -179,6 +179,7 @@ public class AssetExtractor {
             pane.setMessage("Finished extraction.");
             ok.setEnabled(true);
             System.out.println("done extracting.");
+            dialog.dispose();
         });
         AtomicReference<Throwable> throwableReference = new AtomicReference<>();
         extractThread.setUncaughtExceptionHandler((t, e) -> {
@@ -463,6 +464,10 @@ public class AssetExtractor {
         AssetProjectile projectile = new AssetProjectile();
         addNode(node, (name, value, n) -> {
             switch (name) {
+                case "Damage":
+                    projectile.min = value;
+                    projectile.max = value;
+                    break;
                 case "MinDamage":
                     projectile.min = value;
                     break;

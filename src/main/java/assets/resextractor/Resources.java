@@ -35,8 +35,8 @@ public class Resources {
     public void parseAllResources(SerializedFile sf) throws IOException {
         for (ObjectReader o : sf.objects) {
             counter++;
-            if (counter % 100 == 0) {
-                AssetExtractor.setDisplay(String.format("Extracting Assets %.1fK", counter / 1000.f));
+            if (counter % 1000 == 0) {
+                AssetExtractor.setDisplay(String.format("Extracting Assets %dK", (int) (counter / 1000.f)));
             }
             switch (o.type) {
                 case AudioClip:

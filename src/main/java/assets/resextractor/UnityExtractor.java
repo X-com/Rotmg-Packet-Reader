@@ -82,6 +82,7 @@ public class UnityExtractor {
     private void extractSprites(Resources res, File outputFolder) {
         for (Texture2D t : res.assetTexture2D) {
             if (Arrays.asList(Texture2D.SPRITESHEET_NAMES).contains(t.name)) {
+                AssetExtractor.setDisplay("Extracting Sprite: " + t.name);
                 File outputFile = new File(outputFolder + "/" + t.name + ".png");
                 int width = t.m_Width;
                 int height = t.m_Height;
