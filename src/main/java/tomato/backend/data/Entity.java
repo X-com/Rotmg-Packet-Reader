@@ -206,7 +206,6 @@ public class Entity implements Serializable {
     public void userDamageTaken(Entity e, long timePc, Projectile p) {
         int dmg = p.getDamage();
         dmg = calculatePlayerDmg(dmg, p.isArmorPiercing());
-        System.out.println(dmg);
         Damage d = new Damage(e, timePc, dmg);
         damageList.add(d);
     }

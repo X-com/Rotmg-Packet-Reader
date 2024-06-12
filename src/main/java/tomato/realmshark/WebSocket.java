@@ -61,17 +61,21 @@ public class WebSocket extends WebSocketClient {
         System.out.println("Connection closed by " + (remote ? "remote peer" : "us") + " Code: " + code + " Reason: " + reason);
         isConnected = false;
         closed();
+        new Thread(this::reset).start();
     }
 
+    public void reset() {
+        try {
+            Method method = WebSocketClient.class.getDeclaredMethod("reset");
+            method.setAccessible(true);
+            Object r = method.invoke(this);
+        } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
     public void closed() {
-        close();
-        new Thread(() -> {
-            try {
-                reconnectBlocking();
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-        }).start();
     }
 
     @Override
