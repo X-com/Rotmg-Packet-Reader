@@ -1,6 +1,5 @@
 package tomato.gui.quest;
 
-import assets.AssetMissingException;
 import assets.IdToAsset;
 import assets.ImageBuffer;
 import packets.data.QuestData;
@@ -48,7 +47,7 @@ public class QuestGUI extends JPanel {
             addItems(q.requirements, panel);
             panel.add(new JLabel(" -> "));
             addItems(q.rewards, panel);
-        } catch (IOException | AssetMissingException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
@@ -61,7 +60,7 @@ public class QuestGUI extends JPanel {
      * @param items List of items to be added to the row.
      * @param panel The panel to be added to.
      */
-    private void addItems(int[] items, JPanel panel) throws IOException, AssetMissingException {
+    private void addItems(int[] items, JPanel panel) throws IOException {
         for (int id : items) {
             JLabel item = new JLabel(ImageBuffer.getOutlinedIcon(id, 20));
             item.setToolTipText(IdToAsset.objectName(id));

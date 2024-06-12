@@ -1,6 +1,5 @@
 package tomato.gui.character;
 
-import assets.AssetMissingException;
 import assets.ImageBuffer;
 import tomato.realmshark.RealmCharacter;
 import tomato.backend.data.TomatoData;

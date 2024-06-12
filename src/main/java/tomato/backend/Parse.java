@@ -6,7 +6,6 @@ import packets.data.WorldPosData;
 import packets.incoming.CreateSuccessPacket;
 import packets.incoming.NewTickPacket;
 import packets.incoming.UpdatePacket;
-import assets.AssetMissingException;
 import assets.IdToAsset;
 import util.Pair;
 
@@ -150,12 +149,7 @@ public class Parse {
 
         @Override
         public String toString() {
-            try {
-                return IdToAsset.objectName(objectType);
-            } catch (AssetMissingException e) {
-                e.printStackTrace();
-            }
-            return "";
+            return IdToAsset.objectName(objectType);
         }
     }
 }

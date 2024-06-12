@@ -1,6 +1,5 @@
 package tomato.gui.dps;
 
-import assets.AssetMissingException;
 import assets.IdToAsset;
 import packets.incoming.MapInfoPacket;
 import packets.incoming.NotificationPacket;
@@ -71,12 +70,8 @@ public class DpsToString {
             s.append("[");
             for (int i = 0; i < 4; i++) {
                 Equipment max = inv[i].values().stream().max(Comparator.comparingInt(e -> e.dmg)).orElseThrow(NoSuchElementException::new);
-                try {
-                    if (i != 0) s.append(" / ");
-                    s.append(IdToAsset.objectName(max.id));
-                } catch (AssetMissingException ex) {
-                    throw new RuntimeException(ex);
-                }
+                if (i != 0) s.append(" / ");
+                s.append(IdToAsset.objectName(max.id));
             }
             s.append("]");
             return s.toString();
@@ -84,23 +79,19 @@ public class DpsToString {
             StringBuilder s = new StringBuilder();
             for (int i = 0; i < 4; i++) {
                 s.append("\n");
-                try {
-                    Collection<Equipment> list = inv[i].values();
-                    s.append("       ");
-                    boolean first = true;
-                    for (Equipment e : list) {
-                        if (list.size() > 1) {
-                            if (!first) s.append(" /");
-                            s.append(String.format(" %.1f%% ", 100f * e.dmg / e.totalDmg.get()));
-                            s.append(IdToAsset.objectName(e.id));
-                        } else {
-                            s.append(" ");
-                            s.append(IdToAsset.objectName(e.id));
-                        }
-                        first = false;
+                Collection<Equipment> list = inv[i].values();
+                s.append("       ");
+                boolean first = true;
+                for (Equipment e : list) {
+                    if (list.size() > 1) {
+                        if (!first) s.append(" /");
+                        s.append(String.format(" %.1f%% ", 100f * e.dmg / e.totalDmg.get()));
+                        s.append(IdToAsset.objectName(e.id));
+                    } else {
+                        s.append(" ");
+                        s.append(IdToAsset.objectName(e.id));
                     }
-                } catch (AssetMissingException ex) {
-                    throw new RuntimeException(ex);
+                    first = false;
                 }
             }
             return s.toString();

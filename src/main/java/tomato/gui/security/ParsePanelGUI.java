@@ -1,6 +1,5 @@
 package tomato.gui.security;
 
-import assets.AssetMissingException;
 import assets.IdToAsset;
 import assets.ImageBuffer;
 import packets.data.enums.StatType;
@@ -197,13 +196,9 @@ public class ParsePanelGUI extends JPanel {
             p.inv[3] = player.stat.get(StatType.INVENTORY_3_STAT).statValue;
             for (int i = 0; i < 4; i++) {
                 int eq = p.inv[i];
-                try {
-                    p.icon[i] = new JLabel(ImageBuffer.getOutlinedIcon(eq, 20));
-                    p.itemName[i] = IdToAsset.objectName(eq);
-                    panel.add(p.icon[i]);
-                } catch (AssetMissingException e) {
-                    e.printStackTrace();
-                }
+                p.icon[i] = new JLabel(ImageBuffer.getOutlinedIcon(eq, 20));
+                p.itemName[i] = IdToAsset.objectName(eq);
+                panel.add(p.icon[i]);
             }
             p.updateToolTipText();
             mainPanel.add(panel);
@@ -390,11 +385,8 @@ public class ParsePanelGUI extends JPanel {
 
             sb.append("\t\t").append("\"equipment\":{\n");
             for (int i = 0; i < 4; i++) {
-                try {
-                    sb.append("\t\t\t").append("\"" + equipmentNames[i] + "\":\"").append(IdToAsset.objectName(inv[i])).append("\",\n");
-                    sb.append("\t\t\t").append("\"" + equipmentNames[i] + "id\":").append(inv[i]).append(i != 3 ? "," : "").append("\n");
-                } catch (AssetMissingException ignored) {
-                }
+                sb.append("\t\t\t").append("\"" + equipmentNames[i] + "\":\"").append(IdToAsset.objectName(inv[i])).append("\",\n");
+                sb.append("\t\t\t").append("\"" + equipmentNames[i] + "id\":").append(inv[i]).append(i != 3 ? "," : "").append("\n");
             }
             sb.append("\t\t").append("},\n");
 

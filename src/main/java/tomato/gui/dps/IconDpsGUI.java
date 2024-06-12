@@ -1,6 +1,5 @@
 package tomato.gui.dps;
 
-import assets.AssetMissingException;
 import assets.IdToAsset;
 import assets.ImageBuffer;
 import packets.data.ObjectStatusData;
@@ -167,7 +166,7 @@ public class IconDpsGUI extends DisplayDpsGUI {
                         try {
                             ImageBuffer.getImage(dead);
                             deathNexusLabel = new JLabel(ImageBuffer.getOutlinedIcon(dead, 16));
-                        } catch (AssetMissingException | IOException e) {
+                        } catch (IOException e) {
                             deathNexusLabel = new JLabel("Died");
                         }
                     } else {
@@ -179,7 +178,7 @@ public class IconDpsGUI extends DisplayDpsGUI {
             JLabel counterLabel = new JLabel(extra);
 
             playerIconLabel.setHorizontalTextPosition(SwingConstants.LEFT);
-            ArrayList<Component> list = new ArrayList();
+            ArrayList<Component> list = new ArrayList<>();
             list.add(deathNexusLabel);
             list.add(playerIconLabel);
             list.add(nameLabel);
@@ -299,14 +298,10 @@ public class IconDpsGUI extends DisplayDpsGUI {
 
         for (int i = 0; i < 4; i++) {
             Equipment max = inv[i].values().stream().max(Comparator.comparingInt(e -> e.dmg)).orElseThrow(NoSuchElementException::new);
-            try {
-                int eq = max.id;
-                JLabel icon = new JLabel(ImageBuffer.getOutlinedIcon(eq, 16));
-                icon.setToolTipText(String.format("<html>%s<br>%s</html>", IdToAsset.objectName(eq), ParseEnchants.parse(max.enchant)));
-                panel.add(icon);
-            } catch (AssetMissingException ex) {
-                throw new RuntimeException(ex);
-            }
+            int eq = max.id;
+            JLabel icon = new JLabel(ImageBuffer.getOutlinedIcon(eq, 16));
+            icon.setToolTipText(String.format("<html>%s<br>%s</html>", IdToAsset.objectName(eq), ParseEnchants.parse(max.enchant)));
+            panel.add(icon);
         }
 
         return panel;

@@ -1,6 +1,5 @@
 package tomato.gui.keypop;
 
-import assets.AssetMissingException;
 import assets.IdToAsset;
 import packets.data.enums.NotificationEffectType;
 import packets.incoming.NotificationPacket;
@@ -71,18 +70,14 @@ public class KeypopGUI extends JPanel {
             Matcher m = keypopParse.matcher(msg);
             if (m.matches()) {
                 String playerName = m.group(1);
-                try {
-                    String dungeonName = IdToAsset.objectName(packet.pictureType);
+                String dungeonName = IdToAsset.objectName(packet.pictureType);
 
-                    appendTextAreaKeypop(String.format("%s [%s]: %s\n", Util.getHourTime(), playerName, dungeonName));
+                appendTextAreaKeypop(String.format("%s [%s]: %s\n", Util.getHourTime(), playerName, dungeonName));
 
-                    if (selectedDungeons.contains(dungeonName)) {
-                        AudioNotification.playNotificationSound();
-                    } else if (isMissingDungeonsSelected() && isMissingDungeon(data.getCurrentDungeonStats(), dungeonName)) {
-                        AudioNotification.playNotificationSound();
-                    }
-                } catch (AssetMissingException e) {
-                    e.printStackTrace();
+                if (selectedDungeons.contains(dungeonName)) {
+                    AudioNotification.playNotificationSound();
+                } else if (isMissingDungeonsSelected() && isMissingDungeon(data.getCurrentDungeonStats(), dungeonName)) {
+                    AudioNotification.playNotificationSound();
                 }
             }
         } else if (packet.effect == NotificationEffectType.ServerMessage && packet.message != null) {

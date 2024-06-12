@@ -1,6 +1,5 @@
 package tomato.gui.character;
 
-import assets.AssetMissingException;
 import assets.IdToAsset;
 import assets.ImageBuffer;
 import packets.data.ObjectData;
@@ -185,12 +184,7 @@ public class CharacterPetsGUI extends JPanel {
 
         public String name() {
             if (stat.get(StatType.PET_NAME_STAT) == null) return "---";
-            try {
-                return IdToAsset.objectName(skin());
-            } catch (AssetMissingException e) {
-                e.printStackTrace();
-            }
-            return stat.get(StatType.PET_NAME_STAT).stringStatValue;
+            return IdToAsset.objectName(skin());
         }
 
         public int skin() {

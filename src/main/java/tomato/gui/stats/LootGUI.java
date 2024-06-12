@@ -1,6 +1,5 @@
 package tomato.gui.stats;
 
-import assets.AssetMissingException;
 import assets.IdToAsset;
 import assets.ImageBuffer;
 import packets.data.StatData;
@@ -185,11 +184,7 @@ public class LootGUI extends JPanel {
             if (sd != null) {
                 picon = sd.statValue;
                 if (picon == 0) picon = player.objectType;
-                try {
-                    name = IdToAsset.objectName(picon);
-                } catch (AssetMissingException e) {
-                    throw new RuntimeException(e);
-                }
+                name = IdToAsset.objectName(picon);
             }
             if (sesn != null) {
                 if (sesn.statValue == 1) {
@@ -232,20 +227,16 @@ public class LootGUI extends JPanel {
                 panel.add(comp);
             }
             int statValue = sd.statValue;
-            try {
-                JLabel icon = new JLabel(ImageBuffer.getOutlinedIcon(statValue, 20));
-                String itemName = IdToAsset.objectName(statValue);
-                if (enchants != null && i < enchants.length && !enchants[i].isEmpty() && !enchants[i].equals("AAIE_f_9__3__f8=")) {
-                    String e = ParseEnchants.parse(enchants[i]);
-                    if (!e.isEmpty()) {
-                        itemName += "<br>" + e;
-                    }
+            JLabel icon = new JLabel(ImageBuffer.getOutlinedIcon(statValue, 20));
+            String itemName = IdToAsset.objectName(statValue);
+            if (enchants != null && i < enchants.length && !enchants[i].isEmpty() && !enchants[i].equals("AAIE_f_9__3__f8=")) {
+                String e = ParseEnchants.parse(enchants[i]);
+                if (!e.isEmpty()) {
+                    itemName += "<br>" + e;
                 }
-                icon.setToolTipText("<html>" + itemName + "</html>");
-                panel.add(icon);
-            } catch (AssetMissingException var6) {
-                var6.printStackTrace();
             }
+            icon.setToolTipText("<html>" + itemName + "</html>");
+            panel.add(icon);
         }
 
         mainPanel.add(panel);
@@ -254,19 +245,15 @@ public class LootGUI extends JPanel {
 
     private static void displayBagIcon(Entity entity, long lootTime, JPanel panel) {
         int bag = entity.objectType;
-        try {
-            JLabel icon = new JLabel(ImageBuffer.getOutlinedIcon(bag, 20));
-            String name = time();
-            name += "<br>" + IdToAsset.objectName(bag);
-            if (lootTime > 0) {
-                name += "<br>Loot drop bonus 50%";
-            }
-            icon.setToolTipText("<html>" + name + "</html>");
-
-            panel.add(icon);
-        } catch (AssetMissingException e) {
-            e.printStackTrace();
+        JLabel icon = new JLabel(ImageBuffer.getOutlinedIcon(bag, 20));
+        String name = time();
+        name += "<br>" + IdToAsset.objectName(bag);
+        if (lootTime > 0) {
+            name += "<br>Loot drop bonus 50%";
         }
+        icon.setToolTipText("<html>" + name + "</html>");
+
+        panel.add(icon);
     }
 
     private static void displayMobIcon(Entity dropper, JPanel panel) {
@@ -276,20 +263,16 @@ public class LootGUI extends JPanel {
             mob = dropper.objectType;
             sharedLoot = dropper.playersRemainAtKill();
         }
-        try {
-            JLabel icon = new JLabel(ImageBuffer.getOutlinedIcon(mob, 20));
-            String name = "Unknown";
-            if (mob != 100) {
-                name = IdToAsset.objectName(mob);
-            }
-            if (sharedLoot != 0) {
-                name += "<br>Shared loot: " + sharedLoot + " players";
-            }
-            icon.setToolTipText("<html>" + name + "</html>");
-            panel.add(icon);
-        } catch (AssetMissingException e) {
-            e.printStackTrace();
+        JLabel icon = new JLabel(ImageBuffer.getOutlinedIcon(mob, 20));
+        String name = "Unknown";
+        if (mob != 100) {
+            name = IdToAsset.objectName(mob);
         }
+        if (sharedLoot != 0) {
+            name += "<br>Shared loot: " + sharedLoot + " players";
+        }
+        icon.setToolTipText("<html>" + name + "</html>");
+        panel.add(icon);
     }
 
     private static void displayDungeonIcon(MapInfoPacket map, JPanel panel) {
@@ -344,11 +327,7 @@ public class LootGUI extends JPanel {
             if (statValue < 1) continue;
             if (!first) s.append(" * ");
             first = false;
-            try {
-                s.append(IdToAsset.objectName(statValue));
-            } catch (AssetMissingException var6) {
-                var6.printStackTrace();
-            }
+            s.append(IdToAsset.objectName(statValue));
             if (enchants != null && i < enchants.length && !enchants[i].isEmpty() && !enchants[i].equals("AAIE_f_9__3__f8=")) {
                 s.append("[E]");
             }
