@@ -36,7 +36,7 @@ public class ImageBuffer {
      * @return Sprite of based of the object type ID.
      * @throws IOException Thrown if the sprite atlas file is missing.
      */
-    public static BufferedImage getImage(int id) throws IOException, AssetMissingException {
+    public static BufferedImage getImage(int id) throws IOException {
         if (id <= 0) return null;
 //        if (images.containsKey(id)) return images.get(id);
         String name = IdToAsset.getObjectTextureName(id, 0);
@@ -55,7 +55,7 @@ public class ImageBuffer {
      * @param id Type ID of the tile.
      * @return Most common color of the tile.
      */
-    public static float[] getColor(int id) throws AssetMissingException {
+    public static float[] getColor(int id) {
         if (id <= 0) return null;
         if (colors.containsKey(id)) return colors.get(id);
         if (!IdToAsset.tileIdExists(id)) return null;
@@ -125,7 +125,7 @@ public class ImageBuffer {
         } else {
             try {
                 img = ImageBuffer.getImage(id);
-            } catch (IOException | AssetMissingException e) {
+            } catch (IOException e) {
                 img = ImageBuffer.getEmptyImg();
             }
         }

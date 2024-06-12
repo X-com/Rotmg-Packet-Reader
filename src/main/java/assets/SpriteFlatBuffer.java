@@ -89,7 +89,7 @@ public class SpriteFlatBuffer {
         }
     }
 
-    public static void main(String[] args) throws IOException, AssetMissingException {
+    public static void main(String[] args) throws IOException {
     }
 
     /**

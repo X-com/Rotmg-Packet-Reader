@@ -16,7 +16,7 @@ public class IdToAsset {
     private final String display;
     private final String clazz;
     private final String group;
-    private final String projectile;
+    private int tileDmg;
     private Projectile[] projectiles = null;
     private final String texture;
     private Texture[] textures = null;
@@ -26,22 +26,22 @@ public class IdToAsset {
     /**
      * Constructor for the object resources.
      *
-     * @param l          Base string before parsing
-     * @param id         Id of the resource
-     * @param idName     Name of the resource
-     * @param display    Display name of the resource
-     * @param clazz      Class of the resource
-     * @param projectile Projectile min,max,armorPiercing,(repeated) listed
-     * @param texture    Texture name and index used to find the image
-     * @param group      Group of the resource
+     * @param l             Base string before parsing
+     * @param id            Id of the resource
+     * @param idName        Name of the resource
+     * @param display       Display name of the resource
+     * @param clazz         Class of the resource
+     * @param projectiles   Projectile min,max,armorPiercin
+     * @param texture       Texture name and index used to f
+     * @param group         Group of the resource
      */
-    public IdToAsset(String l, int id, String idName, String display, String clazz, String projectile, String texture, String group) {
+    public IdToAsset(String l, int id, String idName, String display, String clazz, Projectile[] projectiles, String texture, String group) {
         this.l = l;
         this.id = id;
         this.idName = idName;
         this.display = display;
         this.clazz = clazz;
-        this.projectile = projectile;
+        this.projectiles = projectiles;
         this.texture = texture;
         this.group = group;
     }
@@ -51,19 +51,20 @@ public class IdToAsset {
      *
      * @param l       Base string before parsing
      * @param id      Id of the resource
+     * @param damage  Tile damage
      * @param idName  Name of the resource
      * @param texture Texture name and index used to find the image
      */
-    public IdToAsset(String l, int id, String idName, String texture) {
+    public IdToAsset(String l, int id, int damage, String idName, String texture) {
         this.l = l;
         this.id = id;
+        this.tileDmg = damage;
         this.idName = idName;
         this.texture = texture;
 
         display = "";
         clazz = "";
         group = "";
-        projectile = "";
     }
 
     /**
@@ -90,27 +91,31 @@ public class IdToAsset {
     private static void readObjectList() {
         File objectsFile = new File(AssetExtractor.ASSETS_OBJECT_FILE_DIR_PATH);
         if (!objectsFile.exists()) return;
+        String lineCheck = "";
         try {
             BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(objectsFile)));
             String line;
 
             while ((line = br.readLine()) != null) {
                 String[] l = line.split(";");
+                lineCheck = line;
                 int id = Integer.parseInt(l[0]);
                 String display = l[1];
                 String clazz = l[2];
                 String group = l[3];
                 String projectile = l[4];
+                Projectile[] projectiles = parseProjectile(projectile);
                 String texture = l[5];
                 String idName = l[6];
-                objectID.put(id, new IdToAsset(line, id, idName, display, clazz, projectile, texture, group));
+                objectID.put(id, new IdToAsset(line, id, idName, display, clazz, projectiles, texture, group));
             }
             br.close();
         } catch (Exception e) {
+            System.out.println(lineCheck);
             e.printStackTrace();
         }
 
-        objectID.put(-1, new IdToAsset("", -1, "Unloaded", "Unloaded", "", "", "", "Unloaded"));
+        objectID.put(-1, new IdToAsset("", -1, "Unloaded", "Unloaded", "", null, "", "Unloaded"));
     }
 
     /**
@@ -127,15 +132,29 @@ public class IdToAsset {
                 String[] l = line.split(";");
                 int id = Integer.parseInt(l[0]);
                 String texture = l[1];
-                String idName = l[2];
-                tileID.put(id, new IdToAsset(line, id, idName, texture));
+                String dmg = l[2];
+                int damage = 0;
+                if (!dmg.isEmpty()) {
+                    String[] s = dmg.split(",");
+                    if (s[0].equals(s[1])) {
+                        damage = Integer.parseInt(s[0]);
+                    } else {
+                        System.out.println("Nonuniform tile damage");
+                    }
+                }
+                String idName = l[3];
+                tileID.put(id, new IdToAsset(line, id, damage, idName, texture));
             }
             br.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        tileID.put(-1, new IdToAsset("", -1, "Unknown", ""));
+        tileID.put(-1, new IdToAsset("", -1, -1, "Unknown", ""));
+    }
+
+    public static void main(String[] args) {
+
     }
 
     /**
@@ -145,7 +164,7 @@ public class IdToAsset {
      * @param id Id of the object.
      * @return Best descriptive name of the resource
      */
-    public static String objectName(int id) throws AssetMissingException {
+    public static String objectName(int id) {
         IdToAsset i = objectID.get(id);
         if (i.display.equals("")) return i.idName;
         return i.display;
@@ -158,7 +177,7 @@ public class IdToAsset {
      * @param id Id of the tile.
      * @return Best descriptive name of the resource
      */
-    public static String tileName(int id) throws AssetMissingException {
+    public static String tileName(int id) {
         IdToAsset i = tileID.get(id);
         return i.idName;
     }
@@ -169,7 +188,7 @@ public class IdToAsset {
      * @param id Id of the object.
      * @return Regular name of the object.
      */
-    public static String getOjbectIdName(int id) throws AssetMissingException {
+    public static String getOjbectIdName(int id) {
         IdToAsset i = objectID.get(id);
         return i.idName;
     }
@@ -180,7 +199,7 @@ public class IdToAsset {
      * @param id Id of the object.
      * @return Display name of the object.
      */
-    public static String getDisplayName(int id) throws AssetMissingException {
+    public static String getDisplayName(int id) {
         IdToAsset i = objectID.get(id);
         return i.display;
     }
@@ -191,7 +210,7 @@ public class IdToAsset {
      * @param id Id of the object.
      * @return Class name of the object.
      */
-    public static String getClazz(int id) throws AssetMissingException {
+    public static String getClazz(int id) {
         IdToAsset i = objectID.get(id);
         return i.clazz;
     }
@@ -202,7 +221,7 @@ public class IdToAsset {
      * @param id Id of the object.
      * @return Group name of the object.
      */
-    public static String getIdGroup(int id) throws AssetMissingException {
+    public static String getIdGroup(int id) {
         IdToAsset i = objectID.get(id);
         return i.group;
     }
@@ -210,11 +229,10 @@ public class IdToAsset {
     /**
      * Parses the projectile string to the number of projectiles the entity can shoot.
      *
-     * @param entity that should be projectile parsed
      * @return List of parsed projectiles
      */
-    private static Projectile[] parseProjectile(IdToAsset entity) throws AssetMissingException {
-        String[] l = entity.projectile.split(",");
+    private static Projectile[] parseProjectile(String projectile) {
+        String[] l = projectile.split(",");
         String s = l[0];
         int slotType = s.isEmpty() ? 0 : Integer.parseInt(s);
         int length = l.length - 1;
@@ -237,7 +255,7 @@ public class IdToAsset {
      * @param entity that should be texture parsed
      * @return List of parsed textures
      */
-    private static Texture[] parseObjectTexture(IdToAsset entity) throws AssetMissingException {
+    private static Texture[] parseObjectTexture(IdToAsset entity) {
         String[] l = entity.texture.split(",");
         Texture[] t = new Texture[l.length / 2];
         int index = 0;
@@ -255,15 +273,24 @@ public class IdToAsset {
     }
 
     /**
+     * Gets the damage the tile makes when walking on it.
+     *
+     * @param id Id of the tile
+     * @return Damage of the tile when walking on it
+     */
+    public static int getTileDamage(int id) {
+        return tileID.get(id).tileDmg;
+    }
+
+    /**
      * Minimum damage of weapon.
      *
      * @param id           Id of the object.
      * @param projectileId Bullet sub id
      * @return Minimum damage
      */
-    public static int getIdProjectileMinDmg(int id, int projectileId) throws AssetMissingException {
+    public static int getIdProjectileMinDmg(int id, int projectileId) {
         IdToAsset i = objectID.get(id);
-        if (i.projectiles == null) i.projectiles = parseProjectile(i);
         return i.projectiles[projectileId].min;
     }
 
@@ -274,9 +301,8 @@ public class IdToAsset {
      * @param projectileId Bullet sub id
      * @return Maximum damage
      */
-    public static int getIdProjectileMaxDmg(int id, int projectileId) throws AssetMissingException {
+    public static int getIdProjectileMaxDmg(int id, int projectileId) {
         IdToAsset i = objectID.get(id);
-        if (i.projectiles == null) i.projectiles = parseProjectile(i);
         return i.projectiles[projectileId].max;
     }
 
@@ -287,9 +313,8 @@ public class IdToAsset {
      * @param projectileId Bullet sub id
      * @return Maximum damage
      */
-    public static boolean getIdProjectileArmorPierces(int id, int projectileId) throws AssetMissingException {
+    public static boolean getIdProjectileArmorPierces(int id, int projectileId) {
         IdToAsset i = objectID.get(id);
-        if (i.projectiles == null) i.projectiles = parseProjectile(i);
         return i.projectiles[projectileId].ap;
     }
 
@@ -299,9 +324,8 @@ public class IdToAsset {
      * @param id Id of the weapon.
      * @return Inventory slot type of weapon
      */
-    public static int getIdProjectileSlotType(int id) throws AssetMissingException {
+    public static int getIdProjectileSlotType(int id) {
         IdToAsset i = objectID.get(id);
-        if (i.projectiles == null) i.projectiles = parseProjectile(i);
         return i.projectiles[0].slotType;
     }
 
@@ -312,7 +336,7 @@ public class IdToAsset {
      * @param num Sub texture number
      * @return File name of the texture
      */
-    public static String getObjectTextureName(int id, int num) throws AssetMissingException {
+    public static String getObjectTextureName(int id, int num) {
         IdToAsset i = objectID.get(id);
         if (i != null && i.textures == null) i.textures = parseObjectTexture(i);
         try {
@@ -330,7 +354,7 @@ public class IdToAsset {
      * @param num Sub texture number
      * @return File index of the texture
      */
-    public static int getObjectTextureIndex(int id, int num) throws AssetMissingException {
+    public static int getObjectTextureIndex(int id, int num) {
         IdToAsset i = objectID.get(id);
         if (i.textures == null) i.textures = parseObjectTexture(i);
         try {
@@ -348,7 +372,7 @@ public class IdToAsset {
      * @param num Sub texture number
      * @return File name of the texture
      */
-    public static String getTileTextureName(int id, int num) throws AssetMissingException {
+    public static String getTileTextureName(int id, int num) {
         IdToAsset i = tileID.get(id);
         if (i.textures == null) i.textures = parseObjectTexture(i);
         return i.textures[num].name;
@@ -361,7 +385,7 @@ public class IdToAsset {
      * @param num Sub texture number
      * @return File index of the texture
      */
-    public static int getTileTextureIndex(int id, int num) throws AssetMissingException {
+    public static int getTileTextureIndex(int id, int num) {
         IdToAsset i = tileID.get(id);
         if (i.textures == null) i.textures = parseObjectTexture(i);
         return i.textures[num].index;

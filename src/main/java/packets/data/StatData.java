@@ -4,7 +4,6 @@ import packets.data.enums.ConditionBits;
 import packets.data.enums.ConditionNewBits;
 import packets.data.enums.StatType;
 import packets.reader.BufferReader;
-import assets.AssetMissingException;
 import assets.IdToAsset;
 
 import java.io.Serializable;
@@ -79,12 +78,7 @@ public class StatData implements Serializable {
         } else if (statTypeNum == 96) {
             stringExtra += " " + ConditionNewBits.effectsToString(statValue);
         } else if (statTypeNum >= 8 && statTypeNum <= 19) {
-            String name = "";
-            try {
-                name = IdToAsset.objectName(statValue);
-            } catch (AssetMissingException e) {
-                e.printStackTrace();
-            }
+            String name = IdToAsset.objectName(statValue);
             stringExtra += " " + name;
         }
         return "      " + statType + "(" + statTypeNum + ") = " + statValue + secondValue + stringValue + stringExtra;

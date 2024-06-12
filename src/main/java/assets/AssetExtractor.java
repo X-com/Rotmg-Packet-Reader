@@ -49,6 +49,8 @@ public class AssetExtractor {
 
     public static void main(String[] args) throws Throwable {
         checkForExtraction(Version.VERSION);
+//        pane = new JOptionPane();
+//        extractAssetsFromXML();
     }
 
     /**
@@ -623,7 +625,7 @@ public class AssetExtractor {
 
         @Override
         public String toString() {
-            return min + "," + max + "," + (peirce ? "1," : "0,");
+            return min.replaceAll("\t", "") + "," + max.replaceAll("\t", "") + "," + (peirce ? "1," : "0,");
         }
     }
 

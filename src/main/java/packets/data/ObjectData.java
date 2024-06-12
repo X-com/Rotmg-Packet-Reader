@@ -1,7 +1,6 @@
 package packets.data;
 
 import packets.reader.BufferReader;
-import assets.AssetMissingException;
 import assets.IdToAsset;
 
 import java.io.Serializable;
@@ -32,11 +31,7 @@ public class ObjectData implements Serializable {
     @Override
     public String toString() {
         String name = "";
-        try {
-            name = IdToAsset.objectName(objectType);
-        } catch (AssetMissingException e) {
-            e.printStackTrace();
-        }
+        name = IdToAsset.objectName(objectType);
         return "    " + (name.equals("") ? ("objectType=" + objectType) : ("objectType=" + objectType + " " + name)) +
                 status;
     }

@@ -1,7 +1,6 @@
 package packets.data;
 
 import packets.reader.BufferReader;
-import assets.AssetMissingException;
 import assets.IdToAsset;
 
 import java.io.Serializable;
@@ -38,12 +37,7 @@ public class GroundTileData implements Serializable {
 
     @Override
     public String toString() {
-        String tile = "";
-        try {
-            tile = IdToAsset.tileName(type);
-        } catch (AssetMissingException e) {
-            e.printStackTrace();
-        }
+        String tile = IdToAsset.tileName(type);
         return "    Tile: " + tile + " " + type + " (" + x + ", " + y + ")";
     }
 }
