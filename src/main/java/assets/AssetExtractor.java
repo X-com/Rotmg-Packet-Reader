@@ -420,6 +420,7 @@ public class AssetExtractor {
      * @param at   Asset objects to store the parsed data into.
      */
     private static void parseChildTiles(Node node, AssetTile at) {
+        AssetDamage damage = new AssetDamage();
         addNode(node, (name, value, n) -> {
             switch (name) {
                 case "Texture":
@@ -430,8 +431,20 @@ public class AssetExtractor {
                         parseChildTiles(n, at);
                     }
                     break;
+                case "MinDamage":
+                    if (n.hasChildNodes()) {
+                        damage.min = value;
+                    }
+                case "MaxDamage":
+                    if (n.hasChildNodes()) {
+                        damage.max = value;
+                    }
+                    break;
             }
         });
+        if (damage.min != null && damage.max != null) {
+            at.damage = damage;
+        }
     }
 
     /**
@@ -580,9 +593,15 @@ public class AssetExtractor {
      * Class to store XML parsed tile data into.
      */
     private static class AssetTile extends Asset {
+        AssetDamage damage;
 
         @Override
         public String toString() {
+            StringBuilder damageString = new StringBuilder();
+            if (damage != null) {
+                damageString.append(damage.min).append(",").append(damage.max);
+            }
+
             StringBuilder textureString = new StringBuilder();
             if (textures != null) {
                 for (AssetTexture p : textures) {
@@ -590,7 +609,7 @@ public class AssetExtractor {
                 }
                 textureString.deleteCharAt(textureString.length() - 1);
             }
-            return String.format("%d;%s;%s", id, textureString, idName);
+            return String.format("%d;%s;%s;%s", id, textureString, damageString, idName);
         }
     }
 
@@ -605,6 +624,19 @@ public class AssetExtractor {
         @Override
         public String toString() {
             return min + "," + max + "," + (peirce ? "1," : "0,");
+        }
+    }
+
+    /**
+     * Class to store XML parsed damage data into.
+     */
+    private static class AssetDamage {
+        String min;
+        String max;
+
+        @Override
+        public String toString() {
+            return min + "," + max;
         }
     }
 
