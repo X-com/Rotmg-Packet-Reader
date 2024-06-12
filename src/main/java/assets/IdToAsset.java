@@ -215,7 +215,8 @@ public class IdToAsset {
      */
     private static Projectile[] parseProjectile(IdToAsset entity) throws AssetMissingException {
         String[] l = entity.projectile.split(",");
-        int slotType = Integer.parseInt(l[0]);
+        String s = l[0];
+        int slotType = s.isEmpty() ? 0 : Integer.parseInt(s);
         int length = l.length - 1;
         Projectile[] p = new Projectile[length / 3];
         int index = 0;
