@@ -32,7 +32,7 @@ public class WebSocket extends WebSocketClient {
         send(b);
     }
 
-    public void connect() {
+    public void con() {
         if (isConnected) return;
         try {
             connectBlocking(10, TimeUnit.SECONDS);

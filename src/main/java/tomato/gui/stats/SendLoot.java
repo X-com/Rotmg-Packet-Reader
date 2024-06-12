@@ -19,14 +19,14 @@ public class SendLoot {
 
     static {
         try {
-            webSocket = new WebSocket("ws://localhost:8080");
+            webSocket = new WebSocket("ws://38.45.66.65:6005");
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }
     }
 
     public static void sendLoot(MapInfoPacket map, Entity bag, Entity dropper, Entity player, long time) {
-//        webSocket.connect();
+        webSocket.con();
 
         int bagId = -1;
         String dungeon = "";
@@ -94,16 +94,17 @@ public class SendLoot {
 
         jsonObject.addProperty("exalt", exaltBonus);
         jsonObject.addProperty("ld", lootDrop);
-        jsonObject.addProperty("sesson", isSeasonal);
+        jsonObject.addProperty("seas", isSeasonal);
 
-        System.out.println(jsonObject);
+//        System.out.println(jsonObject);
 
-//        byte[] out = jsonObject.toString().getBytes(StandardCharsets.UTF_8);
-//
-//        webSocket.sendBytes(out);
+        byte[] out = jsonObject.toString().getBytes(StandardCharsets.UTF_8);
+
+        webSocket.sendBytes(out);
     }
 
     public static void main(String[] args) {
+        webSocket.con();
 //        String s = "{\"bagId\":1287,\"dungeon\":\"Spider Den\",\"dungeonMods\":\"BONUSCONSUMABLES;ENERGIZEDMINIONS_1;|D\",\"mob\":2358,\"sharedLoot\":1,\"items\":\"1799:2773[UT - Engraving: RELATIVE_SPEED_BONUS_1(320)]:2655:2745[UT - Engraving: RELATIVE_SPEED_BONUS_1(320)]:6141:1799:1799:1799\",\"exaltBonus\":35,\"lootDrop\":false,\"isSeasonal\":true}";
 //        String jj = JSONParser.quote(s);
 //
@@ -150,5 +151,9 @@ public class SendLoot {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         String jsonOutput = gson.toJson(jsonObject);
         System.out.println(jsonOutput);
+
+        byte[] out = jsonObject.toString().getBytes(StandardCharsets.UTF_8);
+
+        webSocket.sendBytes(out);
     }
 }
