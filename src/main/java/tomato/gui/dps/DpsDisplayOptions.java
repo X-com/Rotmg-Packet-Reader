@@ -21,7 +21,7 @@ public class DpsDisplayOptions {
         }
 
         if (equipment == null) {
-            equipmentOption = 1;
+            equipmentOption = 3;
         } else {
             equipmentOption = Integer.parseInt(equipment);
         }
