@@ -210,7 +210,8 @@ public class IconDpsGUI extends DisplayDpsGUI {
                 pref[pref.length - 1] = height;
             }
 
-            float damagePerMinute = (float) dmg.damage / entity.getFightDuration();
+            float fightDuration = entity.getFightDuration() / 60000f;
+            float damagePerMinute = (float) dmg.damage / fightDuration;
             DecimalFormat df = new DecimalFormat("###,###.##");
 
             float guardedDamagePercentage = 0;

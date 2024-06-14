@@ -165,7 +165,7 @@ public class Entity implements Serializable {
         return number * exaltDmgBonus;
     }
 
-    public void userProjectileHit(Entity attacker, Projectile projectile, long time) {
+    public void userProjectileHit(Entity attacker, Projectile projectile, long timePc) {
         if (projectile == null || projectile.getDamage() == 0) return;
 
         int[] conditions = new int[2];
@@ -177,13 +177,13 @@ public class Entity implements Serializable {
         int dmg = Projectile.damageWithDefense(projectile.getDamage(), projectile.isArmorPiercing(), defence, conditions);
 
         if (dmg > 0) {
-            Damage damage = new Damage(attacker, projectile, time, dmg);
+            Damage damage = new Damage(attacker, projectile, timePc, dmg);
             bossPhaseDamage(damage);
             addPlayerDmg(damage);
             if (firstDamageTaken == -1) {
-                firstDamageTaken = time;
+                firstDamageTaken = timePc;
             }
-            lastDamageTaken = time;
+            lastDamageTaken = timePc;
         }
     }
 
