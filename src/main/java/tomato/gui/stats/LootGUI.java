@@ -7,16 +7,12 @@ import packets.data.enums.StatType;
 import packets.incoming.MapInfoPacket;
 import tomato.backend.data.Entity;
 import tomato.gui.SmartScroller;
-import tomato.gui.security.ParsePanelGUI;
 import tomato.realmshark.ParseEnchants;
 import tomato.realmshark.RealmCharacter;
 import tomato.realmshark.enums.CharacterStatistics;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.image.BufferedImage;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -25,9 +21,11 @@ public class LootGUI extends JPanel {
     private static LootGUI INSTANCE;
 
     private static boolean cleared = false;
+    private static boolean update = false;
     private static JPanel lootPanel;
     private static JTextArea textArea;
     private static Font mainFont;
+    private boolean disableLootSharing = false;
 
     public LootGUI() {
         this.INSTANCE = this;
@@ -51,6 +49,7 @@ public class LootGUI extends JPanel {
     }
 
     public static void updateExaltStats() {
+        update = true;
         if (!cleared) {
             cleared = true;
             lootPanel.removeAll();
@@ -87,12 +86,13 @@ public class LootGUI extends JPanel {
 //        String s = time() + "  " + mapName + dungeonBonus + exaltString + lootDropString + " - " + mobName + LootBags.lootBagName(bag.objectType) + ": " + lootInfo(bag) + "\n";
 //        textArea.append(s);
 
-        if (player == null || RealmCharacter.exalts.size() != 18) return;
+        if (player == null || !update) return;
         JPanel panel = createMainBox(map, bag, dropper, player, time);
-        SendLoot.sendLoot(map, bag, dropper, player, time);
         lootPanel.add(panel, 0);
-
         INSTANCE.guiUpdate();
+        if (!disableLootSharing) {
+            SendLoot.sendLoot(map, bag, dropper, player, time);
+        }
     }
 
     private void guiUpdate() {
@@ -354,6 +354,10 @@ public class LootGUI extends JPanel {
 
     private static int getaChar(String s) {
         return s.charAt(s.length() - 1) - 48;
+    }
+
+    public static void lootSharing(boolean b) {
+        INSTANCE.disableLootSharing = b;
     }
 
 //    private void updateFont(Component c) {

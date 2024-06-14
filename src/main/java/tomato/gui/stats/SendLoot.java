@@ -2,6 +2,7 @@ package tomato.gui.stats;
 
 import com.google.gson.*;
 import packets.data.StatData;
+import packets.data.WorldPosData;
 import packets.data.enums.StatType;
 import packets.incoming.MapInfoPacket;
 import tomato.backend.data.Entity;
@@ -29,6 +30,7 @@ public class SendLoot {
         webSocket.con();
 
         int bagId = -1;
+        WorldPosData pos = bag.pos;
         String dungeon = "";
         JsonArray mods = new JsonArray();
         int mob = -1;
@@ -85,6 +87,7 @@ public class SendLoot {
 
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("bag", bagId);
+        jsonObject.addProperty("pos", String.format("%f,%f", pos.x, pos.y));
         jsonObject.addProperty("dung", dungeon);
         jsonObject.add("mods", mods);
 
@@ -112,6 +115,7 @@ public class SendLoot {
 //        System.out.println(jj);
 
         int bagId = -1;
+        WorldPosData pos = new WorldPosData();
         String dungeon = "Realm of the Mad God";
         int[] dungeonMods = ParseDungeonMods.getModIds("BONUSCONSUMABLES;ENERGIZEDMINIONS_1;|D");
         int mob = 17735;
@@ -130,6 +134,7 @@ public class SendLoot {
         }
 
         jsonObject.addProperty("bag", bagId);
+        jsonObject.addProperty("pos", String.format("%s,%s", pos.x, pos.y));
         jsonObject.addProperty("dung", dungeon);
         JsonArray mods = new JsonArray();
         for (int i = 0; i < dungeonMods.length; i++) {

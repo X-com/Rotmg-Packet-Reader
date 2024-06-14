@@ -7,6 +7,7 @@ import tomato.gui.TomatoGUI;
 import tomato.gui.chat.ChatGUI;
 import tomato.gui.dps.DpsDisplayOptions;
 import tomato.gui.dps.DpsGUI;
+import tomato.gui.stats.LootGUI;
 import util.PropertiesManager;
 
 import javax.swing.*;
@@ -23,7 +24,7 @@ public class TomatoMenuBar implements ActionListener {
     private JRadioButtonMenuItem fontNameMonospaced, fontNameDialog, fontNameDialogInput, fontNameSerif, fontNameSansSerif, fontNameSegoe;
     private JRadioButtonMenuItem dpsEquipmentNone, dpsEquipmentSimple, dpsEquipmentFull, dpsIcon;
     private JRadioButtonMenuItem dpsSortLastHit, dpsSortFirstHit, dpsSortMaxHp, dpsSortFightTimer;
-    private JCheckBoxMenuItem fontStyleBold, fontStyleItalic, dpsShowMe, saveChat, chatPing;
+    private JCheckBoxMenuItem fontStyleBold, fontStyleItalic, dpsShowMe, saveChat, chatPing, disableDataSending;
     private JMenu file, edit, info;
     private JMenuBar jMenuBar;
     private JFrame frame;
@@ -37,10 +38,7 @@ public class TomatoMenuBar implements ActionListener {
     public JMenuBar make() {
         jMenuBar = new JMenuBar();
 
-        sniffer = new JMenuItem("Start Sniffer");
-        sniffer.addActionListener(this);
         file = new JMenu("File");
-        file.add(sniffer);
         jMenuBar.add(file);
 
         chat = new JMenu("Chat");
@@ -65,7 +63,6 @@ public class TomatoMenuBar implements ActionListener {
         chatPing.addActionListener(this);
         clearChat = new JMenuItem("Clear Chat");
         clearChat.addActionListener(this);
-        setChatCheckbox();
 
         chat.add(saveChat);
         chat.add(chatPing);
@@ -74,6 +71,16 @@ public class TomatoMenuBar implements ActionListener {
 
         borders = new JMenuItem("Borders");
         borders.addActionListener(this);
+
+        sniffer = new JMenuItem("Start Sniffer");
+        sniffer.addActionListener(this);
+        file.add(sniffer);
+        file.add(new JSeparator(SwingConstants.HORIZONTAL));
+        disableDataSending = new JCheckBoxMenuItem("Opt-out Loot Sharing");
+        disableDataSending.setToolTipText("Disables sending loot to server");
+        disableDataSending.addActionListener(this);
+        file.add(disableDataSending);
+        setChatCheckbox();
 
         theme.add(borders);
         theme.add(new JSeparator(SwingConstants.HORIZONTAL));
@@ -295,6 +302,13 @@ public class TomatoMenuBar implements ActionListener {
     }
 
     private void setChatCheckbox() {
+        String dataSending = PropertiesManager.getProperty("disableDataSending");
+        if (dataSending != null) {
+            boolean b = dataSending.equals("true");
+            disableDataSending.setSelected(b);
+            LootGUI.lootSharing(b);
+        }
+
         String save = PropertiesManager.getProperty("saveChat");
         if (save != null) {
             saveChat.setSelected(save.equals("true"));
@@ -436,6 +450,10 @@ public class TomatoMenuBar implements ActionListener {
                 stopPacketSniffer();
                 PropertiesManager.setProperties("sniffer", "F");
             }
+        } else if (e.getSource() == disableDataSending) { // chat save logs
+            boolean b = disableDataSending.isSelected();
+            PropertiesManager.setProperties("disableDataSending", b ? "true" : "false");
+            LootGUI.lootSharing(b);
         } else if (e.getSource() == saveChat) { // chat save logs
             boolean b = saveChat.isSelected();
             PropertiesManager.setProperties("saveChat", b ? "true" : "false");
