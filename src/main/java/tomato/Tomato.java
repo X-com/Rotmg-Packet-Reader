@@ -45,7 +45,6 @@ public class Tomato {
         Util.setSaveLogs(false); // turns the logger to, save in to files.
         TcpStreamErrorHandler.INSTANCE.setErrorMessageHandler(Tomato::errorMessageHandler);
         TcpStreamErrorHandler.INSTANCE.setErrorStopHandler(TomatoMenuBar::stopPacketSniffer);
-        CheckVersion.checkVersion();
         load();
     }
 
@@ -57,6 +56,7 @@ public class Tomato {
         try {
             CrashLogger.loadThisClass();
             TomatoGUI.loadThemePreset();
+            CheckVersion.checkVersion();
             AssetExtractor.checkForExtraction(Version.VERSION);
             TomatoData data = new TomatoData();
             loadControllers(data);
