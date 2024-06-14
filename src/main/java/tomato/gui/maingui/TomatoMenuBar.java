@@ -331,7 +331,7 @@ public class TomatoMenuBar implements ActionListener {
         String equipment = PropertiesManager.getProperty("equipment");
 
         if (equipment == null) {
-            dpsEquipmentSimple.setSelected(true);
+            dpsIcon.setSelected(true);
             return;
         }
 
