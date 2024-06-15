@@ -7,7 +7,6 @@ import packets.data.StatData;
 import packets.incoming.*;
 import packets.outgoing.EnemyHitPacket;
 import packets.outgoing.PlayerShootPacket;
-import assets.AssetMissingException;
 import assets.IdToAsset;
 import util.Pair;
 import util.Util;
@@ -571,12 +570,7 @@ public class DpsLogger {
     }
 
     private static String getName(int id) {
-        try {
-            IdToAsset.objectName(id);
-        } catch (AssetMissingException e) {
-            e.printStackTrace();
-        }
-        return "";
+        return IdToAsset.objectName(id);
     }
 
     /**

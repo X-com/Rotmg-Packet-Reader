@@ -60,15 +60,13 @@ public class RealmCharacter {
      * @param classId Class to receive exalt bonus.
      */
     public static int exaltLootBonus(int classId) {
-        if (exalts.size() < 18) return -1;
-
         if (fullyExalted()) {
             return 35;
         }
         int bonus = 25;
         for (int c : CharacterClass.weaponClasses(classId)) {
             int[] ints = exalts.get(c);
-            if (ints == null) return -1;
+            if (ints == null) return 0;
 
             for (int i : ints) {
                 if (i < 5) {
@@ -93,6 +91,8 @@ public class RealmCharacter {
      * @return True if account is fully exalted.
      */
     private static boolean fullyExalted() {
+        if (exalts.size() < 18) return false;
+
         for (int[] e : exalts.values()) {
             for (int i : e) {
                 if (i < 75) {

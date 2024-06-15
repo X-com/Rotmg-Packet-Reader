@@ -8,7 +8,6 @@ import packets.incoming.NewTickPacket;
 import packets.incoming.TextPacket;
 import packets.incoming.UpdatePacket;
 import packets.reader.BufferReader;
-import assets.AssetMissingException;
 import assets.IdToAsset;
 import util.Pair;
 
@@ -442,7 +441,7 @@ public class DamageSimulator {
             return stats[0].statValue;
         }
 
-        public String showInv(long firstServertime, long endServerTime) throws AssetMissingException {
+        public String showInv(long firstServertime, long endServerTime) {
             if (stats[31] == null) return "";
             String s = "";
             for (int inventory = 0; inventory < 4; inventory++) {
@@ -494,12 +493,7 @@ public class DamageSimulator {
 
         @Override
         public String toString() {
-            try {
-                return IdToAsset.objectName(objectType);
-            } catch (AssetMissingException e) {
-                e.printStackTrace();
-            }
-            return "";
+            return IdToAsset.objectName(objectType);
         }
     }
 
