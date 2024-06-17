@@ -222,8 +222,13 @@ public class IconDpsGUI extends DisplayDpsGUI {
 
             int[] damageFight = dmg.owner.damageTaken(entity);
             int[] damageTotal = dmg.owner.damageTaken(null);
-            String tooltipText = String.format("Damage taken: %s (hits: %s)\n", damageFight[0], damageFight[1]);
-            tooltipText += String.format("Total damage taken: %s (hits: %s)\n\n", damageTotal[0], damageTotal[1]);
+            String tooltipText = "";
+            if(damageFight[1] > 0) {
+                tooltipText = String.format("Damage taken: %s (hits: %s)\n", damageFight[0], damageFight[1]);
+            }
+            if(damageTotal[1] > 0) {
+                tooltipText += String.format("Total damage taken: %s (hits: %s)\n\n", damageTotal[0], damageTotal[1]);
+            }
             tooltipText += String.format("Damage per Minute: %s", df.format(damagePerMinute));
             if (hasGuardedDamage) {
                 tooltipText += String.format("\nGuarded Damage: %s%%", df.format(guardedDamagePercentage));
