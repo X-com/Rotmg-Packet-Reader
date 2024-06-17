@@ -31,10 +31,11 @@ public enum CharacterStatistics {
     QUESTS_COMPLETED(20, -1, "Quests Completed"),
     MINUTES_ACTIVE(12, -1, "Minutes Active"),
     DUNGEON_TYPES_COMPLETED(36, -1, "Dungeon Types Completed"),
+    STAT_POTION_CONSUMED(124, -1, "Stat Potion Consumed"),
 
     ABYSS_OF_DEMONS(23, 1819, "Abyss of Demons"),
-    ADVANCED_KOGBOLD_STEAMWORKS(-1, 28822, "Advanced Kogbold Steamworks"),
-    ADVANCED_NEST(-1, 17570, "Advanced Nest"),
+    ADVANCED_KOGBOLD_STEAMWORKS(120, 28822, "Advanced Kogbold Steamworks"),
+    ADVANCED_NEST(121, 17570, "Advanced Nest"),
     ANCIENT_RUINS(35, 9657, "Ancient Ruins"), // AncientRuinsCompleted
     BATTLE_FOR_THE_NEXUS(62, 1886, "Battle for the Nexus"),
     BEACHZONE(67, 1858, "Beachzone"),

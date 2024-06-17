@@ -5,6 +5,7 @@ import tomato.realmshark.enums.CharacterStatistics;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.util.Arrays;
 
 /**
  * Character statistics and dungeon completes
@@ -40,6 +41,7 @@ public class RealmCharacterStats {
     public int quests_completed;
     public int minutes_active;
     public int dungeon_types_completed;
+    public int stat_potion_consumed;
 
     /**
      * Dungeon completes
@@ -137,6 +139,10 @@ public class RealmCharacterStats {
             }
         }
         updateStats();
+//        for(int i = 0; i < CharacterStatistics.DUNGEON_NAMES.size(); i++) {
+//            System.out.print(CharacterStatistics.DUNGEON_NAMES.get(i) + "=" + dungeonStats[i] + ", ");
+//        }
+//        System.out.println();
     }
 
     private void updateStats() {
@@ -168,6 +174,7 @@ public class RealmCharacterStats {
                 quests_completed,
                 minutes_active,
                 dungeon_types_completed,
+                stat_potion_consumed,
         };
 
         dungeonStats = new int[]{
@@ -533,11 +540,20 @@ public class RealmCharacterStats {
         if (readStat(bitArray, CharacterStatistics.MOONLIGHT_VILLAGE.getPcStatId())) {
             moonlight_village = reader.readCompressedInt();
         }
+        if (readStat(bitArray, CharacterStatistics.ADVANCED_KOGBOLD_STEAMWORKS.getPcStatId())) {
+            advanced_kogbold_steamworks = reader.readCompressedInt();
+        }
+        if (readStat(bitArray, CharacterStatistics.ADVANCED_NEST.getPcStatId())) {
+            advanced_nest = reader.readCompressedInt();
+        }
         if (readStat(bitArray, CharacterStatistics.THE_TAVERN.getPcStatId())) {
             the_tavern = reader.readCompressedInt();
         }
         if (readStat(bitArray, CharacterStatistics.QUEEN_BUNNY_CHAMBER.getPcStatId())) {
             queen_bunny_chamber = reader.readCompressedInt();
+        }
+        if (readStat(bitArray, CharacterStatistics.STAT_POTION_CONSUMED.getPcStatId())) {
+            stat_potion_consumed = reader.readCompressedInt();
         }
     }
 
@@ -582,6 +598,7 @@ public class RealmCharacterStats {
                 "\n   quests_completed=" + quests_completed +
                 "\n   minutes_active=" + minutes_active +
                 "\n   dungeon_types_completed=" + dungeon_types_completed +
+                "\n   stat_potion_consumed=" + stat_potion_consumed +
                 "\n   abyss_of_demons=" + abyss_of_demons +
                 "\n   advanced_kogbold_steamworks=" + advanced_kogbold_steamworks +
                 "\n   advanced_nest=" + advanced_nest +
