@@ -362,7 +362,7 @@ public class TomatoData {
         int id = p.targetId;
         Entity target = entityList.computeIfAbsent(id, idd -> new Entity(this, idd, timePc));
         int shooterId = p.shooterID;
-        if (projectile.getSummonerId() != 0) {
+        if (projectile != null && projectile.getSummonerId() != 0) {
             shooterId = projectile.getSummonerId();
         }
         Entity attacker = playerList.get(shooterId);
