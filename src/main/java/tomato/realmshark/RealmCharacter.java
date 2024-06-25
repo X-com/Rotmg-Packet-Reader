@@ -104,6 +104,13 @@ public class RealmCharacter {
     }
 
     /**
+     * Set character stats
+     */
+    public void updateCharStats(RealmCharacterStats c) {
+        charStats = c;
+    }
+
+    /**
      * Simple setter for the class string from the class id.
      */
     public void setClassString() {

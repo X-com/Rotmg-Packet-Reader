@@ -103,21 +103,17 @@ public class TomatoData {
     }
 
     private void updateDungeonStats(int charId, String str) {
-        if (currentCharacterStats == null) {
+        if (currentCharacterStats == null || !currentCharacterStats.pcStats.equals(str)) {
             currentCharacterStats = new RealmCharacterStats();
+            currentCharacterStats.decode(str);
         }
-        currentCharacterStats.decode(str);
 
         if (charMap == null) {
             return;
         }
         RealmCharacter r = charMap.get(charId);
-        if (r == null || r.charStats == null) {
-            return;
-        }
-        if (!Arrays.equals(currentCharacterStats.dungeonStats, r.charStats.dungeonStats)) {
-            r.charStats = new RealmCharacterStats();
-            r.charStats.decode(str);
+        if (r != null && r.charStats != null && !r.charStats.pcStats.equals(str)) {
+            r.updateCharStats(currentCharacterStats);
             CharacterStatsGUI.updateRealmChars();
             CharacterCollectionGUI.updateRealmChars();
         }

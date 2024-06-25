@@ -139,8 +139,9 @@ public class RealmCharacterStats {
             }
         }
         updateStats();
+//        System.out.println(flag + " " + pcStats);
 //        for(int i = 0; i < CharacterStatistics.DUNGEON_NAMES.size(); i++) {
-//            System.out.print(CharacterStatistics.DUNGEON_NAMES.get(i) + "=" + dungeonStats[i] + ", ");
+//            if(dungeonStats[i] > 0) System.out.print(CharacterStatistics.DUNGEON_NAMES.get(i) + "=" + dungeonStats[i] + ", ");
 //        }
 //        System.out.println();
     }
