@@ -101,8 +101,8 @@ public class Sound {
      */
     public void play() {
         if (soundClip != null) {
-            soundClip.setFramePosition(0); // Rewind to the beginning
             setVolume(soundClip);
+            soundClip.setFramePosition(0); // Rewind to the beginning
             soundClip.start();
         }
     }
