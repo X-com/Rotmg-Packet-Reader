@@ -153,8 +153,18 @@ public class IconDpsGUI extends DisplayDpsGUI {
 
             String userIndicator = String.format("%s%d", user ? " ->" : (highlight ? ">>" : "  "), counter);
             String s2 = String.format("DMG: %7d %6.3f%%", dmg.damage, pers);
-
-            JLabel playerIconLabel = new JLabel(userIndicator, ImageBuffer.getOutlinedIcon(dmg.owner.objectType, 16), JLabel.LEFT);
+            int icon = 0;
+            if (dmg.owner != null && dmg.owner.stat != null && dmg.owner.stat.get(StatType.SKIN_ID) != null) {
+                int skinId = dmg.owner.stat.get(StatType.SKIN_ID).statValue;
+                if (skinId != 0) {
+                    icon = skinId;
+                } else {
+                    icon = dmg.owner.objectType;
+                }
+            } else if (dmg.owner != null) {
+                icon = dmg.owner.objectType;
+            }
+            JLabel playerIconLabel = new JLabel(userIndicator, ImageBuffer.getOutlinedIcon(icon, 16), JLabel.LEFT);
             JLabel nameLabel = new JLabel(name);
             JLabel dpsDataLabel = new JLabel(s2);
             JLabel deathNexusLabel = new JLabel();
@@ -223,10 +233,10 @@ public class IconDpsGUI extends DisplayDpsGUI {
             int[] damageFight = dmg.owner.damageTaken(entity);
             int[] damageTotal = dmg.owner.damageTaken(null);
             String tooltipText = "";
-            if(damageFight[1] > 0) {
+            if (damageFight[1] > 0) {
                 tooltipText = String.format("Damage taken: %s (hits: %s)\n", damageFight[0], damageFight[1]);
             }
-            if(damageTotal[1] > 0) {
+            if (damageTotal[1] > 0) {
                 tooltipText += String.format("Total damage taken: %s (hits: %s)\n\n", damageTotal[0], damageTotal[1]);
             }
             tooltipText += String.format("Damage per Minute: %s", df.format(damagePerMinute));

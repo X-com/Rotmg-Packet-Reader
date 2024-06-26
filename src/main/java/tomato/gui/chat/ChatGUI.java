@@ -51,7 +51,6 @@ public class ChatGUI extends JPanel {
      */
     public static void updateChat(TextPacket p) {
         String a = "";
-        System.out.println(p);
         if (p.recipient.contains("*Guild*")) {
             a = "[Guild]";
             if (Sound.playGuildSound) {
