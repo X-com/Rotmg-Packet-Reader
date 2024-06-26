@@ -19,8 +19,8 @@ public class Sound {
     public static Sound keypop;
     public static Sound whitebag;
 
-    public static boolean playPmSound = true;
-    public static boolean playGuildSound = true;
+    public static boolean playPmSound = false;
+    public static boolean playGuildSound = false;
     public static boolean playWhiteBagSound = true;
 
     public Sound(String file) {

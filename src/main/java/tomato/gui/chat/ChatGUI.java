@@ -51,16 +51,19 @@ public class ChatGUI extends JPanel {
      */
     public static void updateChat(TextPacket p) {
         String a = "";
+        System.out.println(p);
         if (p.recipient.contains("*Guild*")) {
-            a = "[G]";
+            a = "[Guild]";
             if (Sound.playGuildSound) {
                 Sound.ping.play();
             }
+        } else if (p.recipient.contains("*Party*")) {
+            a = "[Party]";
         } else if (!p.recipient.trim().isEmpty()) {
             if (Sound.playPmSound) {
                 Sound.ping2.play();
             }
-            a = "[P]";
+            a = "[PM]";
         }
         String s = String.format("%s[%s]: %s", a, p.name, p.text);
         ChatGUI.appendTextAreaChat(s + "\n");

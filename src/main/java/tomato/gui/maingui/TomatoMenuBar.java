@@ -360,12 +360,16 @@ public class TomatoMenuBar implements ActionListener {
         if (pm != null) {
             chatPing.setSelected(pm.equals("true"));
             Sound.playPmSound = pm.equals("true");
+        } else {
+            Sound.playPmSound = false;
         }
 
         String guild = PropertiesManager.getProperty("chatPingGuild");
         if (guild != null) {
             chatPingGuild.setSelected(guild.equals("true"));
             Sound.playGuildSound = guild.equals("true");
+        } else {
+            Sound.playGuildSound = false;
         }
 
         String white = PropertiesManager.getProperty("whiteBagSound");
