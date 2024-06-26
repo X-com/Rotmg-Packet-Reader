@@ -32,8 +32,8 @@ public class Sound {
      */
     static {
         notification = new Sound("sound/notification.wav");
-        ping = new Sound("sound/ping.wav");
-        ping2 = new Sound("sound/ping2.wav");
+        ping = new Sound("sound/guild.wav");
+        ping2 = new Sound("sound/pm.wav");
         keypop = new Sound("sound/keypop.wav");
         whitebag = new Sound("sound/whitebag.wav");
     }
