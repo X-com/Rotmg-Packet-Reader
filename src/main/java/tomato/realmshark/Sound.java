@@ -14,8 +14,8 @@ public class Sound {
     private Clip soundClip;
 
     public static Sound notification;
-    public static Sound ping;
-    public static Sound ping2;
+    public static Sound guild;
+    public static Sound pm;
     public static Sound keypop;
     public static Sound whitebag;
 
@@ -32,8 +32,8 @@ public class Sound {
      */
     static {
         notification = new Sound("sound/notification.wav");
-        ping = new Sound("sound/guild.wav");
-        ping2 = new Sound("sound/pm.wav");
+        guild = new Sound("sound/guild.wav");
+        pm = new Sound("sound/pm.wav");
         keypop = new Sound("sound/keypop.wav");
         whitebag = new Sound("sound/whitebag.wav");
     }

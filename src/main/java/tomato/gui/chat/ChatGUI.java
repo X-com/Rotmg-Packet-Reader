@@ -54,13 +54,13 @@ public class ChatGUI extends JPanel {
         if (p.recipient.contains("*Guild*")) {
             a = "[Guild]";
             if (Sound.playGuildSound) {
-                Sound.ping.play();
+                Sound.guild.play();
             }
         } else if (p.recipient.contains("*Party*")) {
             a = "[Party]";
         } else if (!p.recipient.trim().isEmpty()) {
             if (Sound.playPmSound) {
-                Sound.ping2.play();
+                Sound.pm.play();
             }
             a = "[PM]";
         }

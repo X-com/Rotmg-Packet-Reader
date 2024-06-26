@@ -189,6 +189,7 @@ public class TomatoMenuBar implements ActionListener {
                 int v = source.getValue();
                 Sound.setVolume(v);
                 PropertiesManager.setProperties("soundVolume", String.valueOf(v));
+                Sound.pm.play();
             }
         }
     }
@@ -525,14 +526,17 @@ public class TomatoMenuBar implements ActionListener {
             boolean b = chatPing.isSelected();
             PropertiesManager.setProperties("chatPing", b ? "true" : "false");
             Sound.playPmSound = b;
+            Sound.pm.play();
         } else if (e.getSource() == chatPingGuild) { // sound chat ping guild
             boolean b = chatPingGuild.isSelected();
             PropertiesManager.setProperties("chatPingGuild", b ? "true" : "false");
             Sound.playGuildSound = b;
+            Sound.guild.play();
         } else if (e.getSource() == whiteBagSound) { // white bag sound
             boolean b = whiteBagSound.isSelected();
             PropertiesManager.setProperties("whiteBagSound", b ? "true" : "false");
             Sound.playWhiteBagSound = b;
+            Sound.whitebag.play();
         } else if (e.getSource() == clearChat) { // clears the text chat
             ChatGUI.clearTextAreaChat();
         } else if (e.getSource() == borders) { // Removes the boarder of the window
