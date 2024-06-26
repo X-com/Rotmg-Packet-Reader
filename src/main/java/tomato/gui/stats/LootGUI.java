@@ -9,7 +9,10 @@ import tomato.backend.data.Entity;
 import tomato.gui.SmartScroller;
 import tomato.realmshark.ParseEnchants;
 import tomato.realmshark.RealmCharacter;
+import tomato.realmshark.SendLoot;
+import tomato.realmshark.Sound;
 import tomato.realmshark.enums.CharacterStatistics;
+import tomato.realmshark.enums.LootBags;
 
 import javax.swing.*;
 import java.awt.*;
@@ -87,12 +90,20 @@ public class LootGUI extends JPanel {
 //        textArea.append(s);
 
         if (player == null || !update) return;
+        if (Sound.playWhiteBagSound && isWhiteBag(bag)) {
+            Sound.whitebag.play();
+        }
         JPanel panel = createMainBox(map, bag, dropper, player, time);
         lootPanel.add(panel, 0);
         INSTANCE.guiUpdate();
         if (!disableLootSharing) {
             SendLoot.sendLoot(map, bag, dropper, player, time);
         }
+    }
+
+    private boolean isWhiteBag(Entity bag) {
+        int id = bag.objectType;
+        return id == LootBags.WHITE.getId() || id == LootBags.BOOSTED_WHITE.getId();
     }
 
     private void guiUpdate() {

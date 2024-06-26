@@ -53,4 +53,8 @@ public enum LootBags {
     public static String lootBagName(int id) {
         return lootBagName.get(id);
     }
+
+    public int getId() {
+        return id;
+    }
 }

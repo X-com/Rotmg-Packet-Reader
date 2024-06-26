@@ -5,18 +5,14 @@ import packets.data.enums.NotificationEffectType;
 import packets.incoming.NotificationPacket;
 import tomato.backend.data.TomatoData;
 import tomato.gui.TomatoGUI;
-import tomato.realmshark.AudioNotification;
+import tomato.realmshark.Sound;
 import tomato.realmshark.RealmCharacterStats;
 import tomato.realmshark.enums.CharacterStatistics;
 import util.PropertiesManager;
 import util.Util;
 
-import javax.sound.sampled.*;
 import javax.swing.*;
 import java.awt.*;
-import java.io.BufferedInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.regex.Matcher;
@@ -75,9 +71,9 @@ public class KeypopGUI extends JPanel {
                 appendTextAreaKeypop(String.format("%s [%s]: %s\n", Util.getHourTime(), playerName, dungeonName));
 
                 if (selectedDungeons.contains(dungeonName)) {
-                    AudioNotification.playNotificationSound();
+                    Sound.keypop.play();
                 } else if (isMissingDungeonsSelected() && isMissingDungeon(data.getCurrentDungeonStats(), dungeonName)) {
-                    AudioNotification.playNotificationSound();
+                    Sound.keypop.play();
                 }
             }
         } else if (packet.effect == NotificationEffectType.ServerMessage && packet.message != null) {
@@ -170,7 +166,7 @@ public class KeypopGUI extends JPanel {
                 }
             }
             saveDungeonChoices();
-            AudioNotification.playNotificationSound();
+            Sound.keypop.play();
             configureDialog.dispose();
         });
 

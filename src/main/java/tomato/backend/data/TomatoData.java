@@ -20,6 +20,7 @@ import tomato.gui.stats.LootGUI;
 import tomato.realmshark.HttpCharListRequest;
 import tomato.realmshark.RealmCharacter;
 import tomato.realmshark.RealmCharacterStats;
+import tomato.realmshark.Sound;
 import tomato.realmshark.enums.CharacterClass;
 import tomato.realmshark.enums.LootBags;
 import util.RNG;

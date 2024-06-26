@@ -8,9 +8,11 @@ import tomato.gui.chat.ChatGUI;
 import tomato.gui.dps.DpsDisplayOptions;
 import tomato.gui.dps.DpsGUI;
 import tomato.gui.stats.LootGUI;
+import tomato.realmshark.Sound;
 import util.PropertiesManager;
 
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -18,13 +20,14 @@ import java.awt.event.ActionListener;
  * Menu bar builder class
  */
 public class TomatoMenuBar implements ActionListener {
-    private JMenuItem about, borders, clearChat, bandwidth, javav, clearDpsLogs, theme, fontMenu, dpsOptions, chat;
+    private JMenuItem about, borders, clearChat, bandwidth, javav, clearDpsLogs, theme, fontMenu, dpsOptions, chat, sound;
     private JRadioButtonMenuItem fontSize8, fontSize12, fontSize16, fontSize24, fontSize48, fontSizeCustom;
     private JRadioButtonMenuItem themeDarcula, themeighContrastDark, themeHighContrastLight, themeIntelliJ, themeSolarizedDark, themeSolarizedLight;
     private JRadioButtonMenuItem fontNameMonospaced, fontNameDialog, fontNameDialogInput, fontNameSerif, fontNameSansSerif, fontNameSegoe;
     private JRadioButtonMenuItem dpsEquipmentNone, dpsEquipmentSimple, dpsEquipmentFull, dpsIcon;
     private JRadioButtonMenuItem dpsSortLastHit, dpsSortFirstHit, dpsSortMaxHp, dpsSortFightTimer;
-    private JCheckBoxMenuItem fontStyleBold, fontStyleItalic, dpsShowMe, saveChat, chatPing, disableDataSending;
+    private JCheckBoxMenuItem fontStyleBold, fontStyleItalic, dpsShowMe, saveChat, chatPing, chatPingGuild, whiteBagSound, disableDataSending;
+    private JSlider soundSlider;
     private JMenu file, edit, info;
     private JMenuBar jMenuBar;
     private JFrame frame;
@@ -42,35 +45,18 @@ public class TomatoMenuBar implements ActionListener {
         jMenuBar.add(file);
 
         chat = new JMenu("Chat");
-        chat.addActionListener(this);
+        sound = new JMenu("Sound");
         theme = new JMenu("Theme");
-        theme.addActionListener(this);
         fontMenu = new JMenu("Font");
-        fontMenu.addActionListener(this);
         dpsOptions = new JMenu("DPS Options");
-        dpsOptions.addActionListener(this);
 
         edit = new JMenu("Edit");
         edit.add(chat);
+        edit.add(sound);
         edit.add(theme);
         edit.add(fontMenu);
         edit.add(dpsOptions);
         jMenuBar.add(edit);
-
-        saveChat = new JCheckBoxMenuItem("Save Chat");
-        saveChat.addActionListener(this);
-        chatPing = new JCheckBoxMenuItem("Ping Chat PMs");
-        chatPing.addActionListener(this);
-        clearChat = new JMenuItem("Clear Chat");
-        clearChat.addActionListener(this);
-
-        chat.add(saveChat);
-        chat.add(chatPing);
-        chat.add(new JSeparator(SwingConstants.HORIZONTAL));
-        chat.add(clearChat);
-
-        borders = new JMenuItem("Borders");
-        borders.addActionListener(this);
 
         sniffer = new JMenuItem("Start Sniffer");
         sniffer.addActionListener(this);
@@ -80,7 +66,37 @@ public class TomatoMenuBar implements ActionListener {
         disableDataSending.setToolTipText("Disables sending loot to server");
         disableDataSending.addActionListener(this);
         file.add(disableDataSending);
+        setFileCheckbox();
+
+        saveChat = new JCheckBoxMenuItem("Save Chat");
+        saveChat.addActionListener(this);
+        clearChat = new JMenuItem("Clear Chat");
+        clearChat.addActionListener(this);
+
+        chat.add(saveChat);
+        chat.add(new JSeparator(SwingConstants.HORIZONTAL));
+        chat.add(clearChat);
         setChatCheckbox();
+
+        soundSlider = new JSlider(0, 100, 100);
+        soundSlider.addChangeListener(this::sliderChange);
+        chatPing = new JCheckBoxMenuItem("Ping PM Chat");
+        chatPing.addActionListener(this);
+        chatPingGuild = new JCheckBoxMenuItem("Ping Guild Chat");
+        chatPingGuild.addActionListener(this);
+        whiteBagSound = new JCheckBoxMenuItem("Ping White Bag");
+        whiteBagSound.addActionListener(this);
+
+        sound.add(new JLabel("Volume:"));
+        sound.add(soundSlider);
+        sound.add(new JSeparator(SwingConstants.HORIZONTAL));
+        sound.add(chatPing);
+        sound.add(chatPingGuild);
+        sound.add(whiteBagSound);
+        setSoundCheckbox();
+
+        borders = new JMenuItem("Borders");
+        borders.addActionListener(this);
 
         theme.add(borders);
         theme.add(new JSeparator(SwingConstants.HORIZONTAL));
@@ -164,6 +180,17 @@ public class TomatoMenuBar implements ActionListener {
         autoStartSnifferPreset();
 
         return jMenuBar;
+    }
+
+    private void sliderChange(ChangeEvent changeEvent) {
+        JSlider source = (JSlider) changeEvent.getSource();
+        if (!source.getValueIsAdjusting()) {
+            if (soundSlider == source) {
+                int v = source.getValue();
+                Sound.setVolume(v);
+                PropertiesManager.setProperties("soundVolume", String.valueOf(v));
+            }
+        }
     }
 
     /**
@@ -301,22 +328,54 @@ public class TomatoMenuBar implements ActionListener {
         }
     }
 
-    private void setChatCheckbox() {
+    private void setFileCheckbox() {
         String dataSending = PropertiesManager.getProperty("disableDataSending");
         if (dataSending != null) {
             boolean b = dataSending.equals("true");
             disableDataSending.setSelected(b);
             LootGUI.lootSharing(b);
         }
+    }
 
+    private void setChatCheckbox() {
         String save = PropertiesManager.getProperty("saveChat");
         if (save != null) {
             saveChat.setSelected(save.equals("true"));
+            ChatGUI.save = save.equals("true");
+        }
+    }
+
+    private void setSoundCheckbox() {
+        String volume = PropertiesManager.getProperty("soundVolume");
+        if (volume != null) {
+            try {
+                int v = Integer.parseInt(volume);
+                soundSlider.setValue(v);
+                Sound.setVolume(v);
+            } catch (NumberFormatException ignore) {
+            }
         }
 
-        String ping = PropertiesManager.getProperty("chatPing");
-        if (ping != null) {
-            chatPing.setSelected(ping.equals("true"));
+        String pm = PropertiesManager.getProperty("chatPing");
+        if (pm != null) {
+            chatPing.setSelected(pm.equals("true"));
+            Sound.playPmSound = pm.equals("true");
+        }
+
+        String guild = PropertiesManager.getProperty("chatPingGuild");
+        if (guild != null) {
+            chatPingGuild.setSelected(guild.equals("true"));
+            Sound.playGuildSound = guild.equals("true");
+        }
+
+        String white = PropertiesManager.getProperty("whiteBagSound");
+        if (white != null) {
+            whiteBagSound.setSelected(white.equals("true"));
+            Sound.playWhiteBagSound = white.equals("true");
+        } else {
+            whiteBagSound.setSelected(true);
+            Sound.playWhiteBagSound = true;
+            PropertiesManager.setProperties("whiteBagSound", "true");
         }
     }
 
@@ -458,10 +517,18 @@ public class TomatoMenuBar implements ActionListener {
             boolean b = saveChat.isSelected();
             PropertiesManager.setProperties("saveChat", b ? "true" : "false");
             ChatGUI.save = b;
-        } else if (e.getSource() == chatPing) { // chat ping pm
+        } else if (e.getSource() == chatPing) { // sound chat ping pm
             boolean b = chatPing.isSelected();
             PropertiesManager.setProperties("chatPing", b ? "true" : "false");
-            ChatGUI.ping = b;
+            Sound.playPmSound = b;
+        } else if (e.getSource() == chatPingGuild) { // sound chat ping guild
+            boolean b = chatPingGuild.isSelected();
+            PropertiesManager.setProperties("chatPingGuild", b ? "true" : "false");
+            Sound.playGuildSound = b;
+        } else if (e.getSource() == whiteBagSound) { // white bag sound
+            boolean b = whiteBagSound.isSelected();
+            PropertiesManager.setProperties("whiteBagSound", b ? "true" : "false");
+            Sound.playWhiteBagSound = b;
         } else if (e.getSource() == clearChat) { // clears the text chat
             ChatGUI.clearTextAreaChat();
         } else if (e.getSource() == borders) { // Removes the boarder of the window

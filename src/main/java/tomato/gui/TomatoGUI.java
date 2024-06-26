@@ -16,6 +16,7 @@ import tomato.gui.quest.QuestGUI;
 import tomato.gui.security.ParsePanelGUI;
 import tomato.gui.security.SecurityGUI;
 import tomato.backend.data.TomatoData;
+import tomato.realmshark.Sound;
 import util.PropertiesManager;
 
 import javax.swing.*;
@@ -89,7 +90,6 @@ public class TomatoGUI {
         mainPanel.add(statusLabel, BorderLayout.SOUTH);
 
         icon = Toolkit.getDefaultToolkit().getImage(Tomato.imagePath);
-        loadChatPreset();
         loadFontSizePreset();
         loadFontNamePreset();
         DpsGUI.loadFilterPreset();
@@ -120,21 +120,6 @@ public class TomatoGUI {
             new SmartScroller(scrollChat);
         }
         return scrollChat;
-    }
-
-    /**
-     * Loads chat presets
-     */
-    private void loadChatPreset() {
-        String save = PropertiesManager.getProperty("saveChat");
-        if (save != null) {
-            ChatGUI.save = save.equals("true");
-        }
-
-        String ping = PropertiesManager.getProperty("chatPing");
-        if (ping != null) {
-            ChatGUI.ping = ping.equals("true");
-        }
     }
 
     /**

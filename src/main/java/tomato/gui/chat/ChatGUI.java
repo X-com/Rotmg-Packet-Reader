@@ -2,7 +2,7 @@ package tomato.gui.chat;
 
 import packets.incoming.TextPacket;
 import tomato.gui.TomatoGUI;
-import tomato.realmshark.AudioNotification;
+import tomato.realmshark.Sound;
 import util.Util;
 
 import javax.swing.*;
@@ -12,7 +12,6 @@ public class ChatGUI extends JPanel {
 
     private static JTextArea textAreaChat;
     public static boolean save;
-    public static boolean ping;
 
     public ChatGUI() {
         setLayout(new BorderLayout());
@@ -54,9 +53,12 @@ public class ChatGUI extends JPanel {
         String a = "";
         if (p.recipient.contains("*Guild*")) {
             a = "[G]";
+            if (Sound.playGuildSound) {
+                Sound.ping.play();
+            }
         } else if (!p.recipient.trim().isEmpty()) {
-            if (ping) {
-                AudioNotification.playNotificationSound();
+            if (Sound.playPmSound) {
+                Sound.ping2.play();
             }
             a = "[P]";
         }
