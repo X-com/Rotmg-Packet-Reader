@@ -1,4 +1,4 @@
-package tomato.gui.stats;
+package tomato.realmshark;
 
 import com.google.gson.*;
 import packets.data.StatData;
@@ -6,10 +6,6 @@ import packets.data.WorldPosData;
 import packets.data.enums.StatType;
 import packets.incoming.MapInfoPacket;
 import tomato.backend.data.Entity;
-import tomato.realmshark.ParseDungeonMods;
-import tomato.realmshark.ParseEnchants;
-import tomato.realmshark.RealmCharacter;
-import tomato.realmshark.WebSocket;
 
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
