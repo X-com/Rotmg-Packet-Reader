@@ -13,6 +13,7 @@ import java.util.concurrent.TimeUnit;
 public class WebSocket extends WebSocketClient {
     public boolean isConnected = false;
     private String uri;
+    private long timeout;
 
     public static void main(String[] args) throws URISyntaxException, InterruptedException {
         WebSocket ws = new WebSocket("ws://localhost:8080");
@@ -37,9 +38,13 @@ public class WebSocket extends WebSocketClient {
     }
 
     public void con() {
-        if (isConnected) return;
+        if (isConnected || (timeout - System.currentTimeMillis() > 0)) {
+            return;
+        }
         try {
             connectBlocking(10, TimeUnit.SECONDS);
+        } catch (IllegalStateException e) {
+            timeout = System.currentTimeMillis() + 300000; // 5 min timout
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
