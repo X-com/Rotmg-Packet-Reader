@@ -7,10 +7,7 @@ import packets.data.enums.StatType;
 import packets.incoming.MapInfoPacket;
 import tomato.backend.data.Entity;
 import tomato.gui.SmartScroller;
-import tomato.realmshark.ParseEnchants;
-import tomato.realmshark.RealmCharacter;
-import tomato.realmshark.SendLoot;
-import tomato.realmshark.Sound;
+import tomato.realmshark.*;
 import tomato.realmshark.enums.CharacterStatistics;
 import tomato.realmshark.enums.LootBags;
 
@@ -293,14 +290,10 @@ public class LootGUI extends JPanel {
         if (map != null) {
             dungeonName = map.name;
             dungeonModifiers = dungeonBuff(map.dungeonModifiers3);
-
-            CharacterStatistics dungeonIndex = CharacterStatistics.statByName(map.name);
-            if (dungeonIndex != null) {
-                dungeon = dungeonIndex.getSpriteId();
-            }
+            dungeon = ParseDungeon.getPortalId(dungeonName);
+            if (dungeon == -1) dungeon = 100;
         }
 
-        if (dungeonName.equals("Realm of the Mad God")) dungeon = 1796;
         JLabel icon = new JLabel(ImageBuffer.getOutlinedIcon(dungeon, 20));
         if (!dungeonModifiers.isEmpty()) {
             dungeonName += "<br>" + dungeonModifiers;

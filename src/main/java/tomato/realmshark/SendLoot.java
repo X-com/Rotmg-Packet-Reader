@@ -71,7 +71,7 @@ public class SendLoot {
         }
         if (map != null) {
             dungeon = map.name;
-            int[] dungeonMods = ParseDungeonMods.getModIds(map.dungeonModifiers3);
+            int[] dungeonMods = ParseDungeon.getModIds(map.dungeonModifiers3);
             for (int i = 0; i < dungeonMods.length; i++) {
                 mods.add(dungeonMods[i]);
             }
@@ -113,7 +113,7 @@ public class SendLoot {
         int bagId = -1;
         WorldPosData pos = new WorldPosData();
         String dungeon = "Realm of the Mad God";
-        int[] dungeonMods = ParseDungeonMods.getModIds("BONUSCONSUMABLES;ENERGIZEDMINIONS_1;|D");
+        int[] dungeonMods = ParseDungeon.getModIds("BONUSCONSUMABLES;ENERGIZEDMINIONS_1;|D");
         int mob = 17735;
         int sharedLoot = 1;
         int exaltBonus = 35;
