@@ -72,9 +72,9 @@ public enum CharacterStatistics {
     MOUNTAIN_TEMPLE(52, 311, "Mountain Temple"), // MountainTemplesCompleted
     OCEAN_TRENCH(14, 1840, "Ocean Trench"),
     MAD_GOD_MAYHEM(91, 3873, "Mad God Mayhem"), // MadGodMayhemsCompleted
-    ORYXS_CASTLE(93, 3465, "Oryxs Castle"),
-    ORYXS_CHAMBER(94, 3451, "Oryxs Chamber"),
-    ORYXS_SANCTUARY(95, 6218, "Oryxs Sanctuary"),
+    ORYXS_CASTLE(93, 3465, "Oryx's Castle"),
+    ORYXS_CHAMBER(94, 3451, "Oryx's Chamber"),
+    ORYXS_SANCTUARY(95, 6218, "Oryx's Sanctuary"),
     PARASITE_CHAMBERS(44, 1944, "Parasite Chambers"),
     PIRATE_CAVE(21, 1815, "Pirate Cave"),
     PUPPET_MASTERS_ENCORE(42, 29798, "Puppet Master's Encore"),
