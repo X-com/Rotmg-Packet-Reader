@@ -180,10 +180,6 @@ public class Entity implements Serializable {
             Damage damage = new Damage(attacker, projectile, timePc, dmg);
             bossPhaseDamage(damage);
             addPlayerDmg(damage);
-            if (firstDamageTaken == -1) {
-                firstDamageTaken = timePc;
-            }
-            lastDamageTaken = timePc;
         }
     }
 
@@ -422,5 +418,12 @@ public class Entity implements Serializable {
             }
         }
         return dmg;
+    }
+
+    public void updateDamageTaken(long timePc) {
+        if (firstDamageTaken == -1) {
+            firstDamageTaken = timePc;
+        }
+        lastDamageTaken = timePc;
     }
 }

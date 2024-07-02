@@ -367,6 +367,7 @@ public class TomatoData {
         if (!entityHitList.containsKey(id)) {
             entityHitList.put(id, target);
         }
+        entityUpdateDamaged(target, attacker);
     }
 
     /**
@@ -375,14 +376,31 @@ public class TomatoData {
      * @param p Info on entity taking damage, amount and by what player.
      */
     public void damage(DamagePacket p) {
+        int id = p.targetId;
+        Entity target = entityList.computeIfAbsent(id, idd -> new Entity(this, idd, timePc));
+        Entity attacker = playerList.get(p.objectId);
         if (p.damageAmount > 0) {
             Projectile projectile = new Projectile(p.damageAmount);
-            int id = p.targetId;
-            Entity target = entityList.computeIfAbsent(id, idd -> new Entity(this, idd, timePc));
-            Entity attacker = playerList.get(p.objectId);
             target.genericDamageHit(attacker, projectile, timePc);
-            if (!entityHitList.containsKey(id) && !CharacterClass.isPlayerCharacter(id)) {
+            if (!entityHitList.containsKey(id)) {
                 entityHitList.put(id, target);
+            }
+        }
+        entityUpdateDamaged(target, attacker);
+    }
+
+    /**
+     * Update method for when entity takes damage
+     *
+     * @param target   Entity taking damage
+     * @param attacker Entity doing the damage
+     */
+    private void entityUpdateDamaged(Entity target, Entity attacker) {
+        if (target != null) {
+            target.updateDamageTaken(timePc);
+
+            if (attacker != null && map != null) {
+
             }
         }
     }
@@ -442,7 +460,7 @@ public class TomatoData {
      * @param p Ground tile packet update
      */
     public void groundDamage(GroundDamagePacket p) {
-        if(player != null) {
+        if (player != null) {
             WorldPosData pos = p.position;
             int id = mapTiles[(int) pos.x][(int) pos.y];
             int dmg = IdToAsset.getTileDamage(id);
