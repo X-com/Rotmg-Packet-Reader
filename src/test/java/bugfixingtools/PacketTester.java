@@ -34,8 +34,8 @@ public class PacketTester {
         System.out.println("clearconsole");
         try {
             Util.setSaveLogs(false);
-            new PacketTester().fileLoad();
-//            new PacketTester().crunch();
+            new PacketTester().crunch();
+//            new PacketTester().fileLoad();
 //            new PacketTester().errorSimulator();
         } catch (Exception e) {
             e.printStackTrace();
@@ -50,7 +50,8 @@ public class PacketTester {
     }
 
     public void crunch() {
-        String s = "";
+//        String s = "";
+        String s = "[0, 0, 0, 24, -107, 0, 16, 54, 53, 51, 50, 48, 52, 50, 57, 48, 55, 54, 52, 56, 48, 48, 48, -1]";
         byte[] data = getByteArray(s);
 //        byte[] data2 = getByteArray(s2);
 //        byte[] data3 = getByteArray(s3);
@@ -248,7 +249,8 @@ public class PacketTester {
 
     public void deserialize(byte[] data) {
         int size = Util.decodeInt(data);
-        int type = data[4];
+        int type = Byte.toUnsignedInt(data[4]);
+        System.out.println(size + " " + type);
         ByteBuffer bb = createBuffer(data);
         bb.position(5);
         Packet p = getPacket(type);

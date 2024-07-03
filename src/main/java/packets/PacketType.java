@@ -167,6 +167,7 @@ public enum PacketType { //ChristmasTree™   ⛧   <-crown
                  UPGRADE_ENCHANTER(185, Outgoing, UpgradeEnchanterPacket::new),
                UPGRADE_ENCHANTMENT(187, Outgoing, UpgradeEnchantmentPacket::new),
            REROLL_ALL_ENCHANTMENTS(189, Outgoing, RerollAllEnchantmentsPacket::new),
+                        UNKNOWN190(190, Incoming, UnknownPacket190::new),
     RESET_ENCHANTMENT_REROLL_COUNT(191, Outgoing, ResetEnchantmentRerollCountPacket::new),
               CREATE_PARTY_MESSAGE(200, Outgoing, CreatePartyMessagePacket::new),
                PARTY_ACTION_RESULT(204, Incoming, PartyActionResultPacket::new),

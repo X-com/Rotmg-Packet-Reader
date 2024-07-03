@@ -7,19 +7,19 @@ import packets.reader.BufferReader;
  * Packet sent when redeeming battle pass items
  */
 public class ClaimBattlePassItemPacket extends Packet {
-    /**
-     * Index of the battle pass item requested to be redeemed
-     */
-    public int battlePassItemIndex;
+    public String unknownString;
+    public int unknown;
 
     @Override
     public void deserialize(BufferReader buffer) throws Exception {
-        battlePassItemIndex = buffer.readByte();
+        unknownString = buffer.readString();
+        unknown = buffer.readByte();
     }
 
     @Override
     public String toString() {
         return "ClaimBattlePassItemPacket{" +
-                "\n   battlePassItemIndex=" + battlePassItemIndex;
+                "\n   unknownString=" + unknownString +
+                "\n   unknown=" + unknown;
     }
 }
