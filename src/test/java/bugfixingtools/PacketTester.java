@@ -17,6 +17,7 @@ import util.Util;
 import java.io.*;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.nio.file.Files;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -33,11 +34,19 @@ public class PacketTester {
         System.out.println("clearconsole");
         try {
             Util.setSaveLogs(false);
-            new PacketTester().crunch();
+            new PacketTester().fileLoad();
+//            new PacketTester().crunch();
 //            new PacketTester().errorSimulator();
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void fileLoad() {
+        String s = readFile("error/error-2024-07-03-13.40.33.data");
+        byte[] data = getByteArray(s);
+        System.out.println(new String(data));
+//        deserialize(data);
     }
 
     public void crunch() {
@@ -58,6 +67,15 @@ public class PacketTester {
 //        bruteforce(data);
 //        decrype(data);
 //        findFits(data);
+    }
+
+    public String readFile(String s) {
+        try {
+            File file = new File(s);
+            return new BufferedReader(new InputStreamReader(Files.newInputStream(file.toPath()))).lines().collect(java.util.stream.Collectors.joining("\n"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void findFits(byte[] data) {
