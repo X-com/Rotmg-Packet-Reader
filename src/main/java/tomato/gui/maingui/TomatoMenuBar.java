@@ -98,9 +98,9 @@ public class TomatoMenuBar implements ActionListener {
         sound.add(soundSlider);
         sound.add(new JSeparator(SwingConstants.HORIZONTAL));
         sound.add(chatPing);
+        sound.add(chatPingParty);
         sound.add(chatPingGuild);
         sound.add(whiteBagSound);
-        sound.add(chatPingParty);
         sound.add(orangeBagSound);
         sound.add(tradePing);
         setSoundCheckbox();
