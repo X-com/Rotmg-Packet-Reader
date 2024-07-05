@@ -57,7 +57,7 @@ public class TomatoGUI {
     public void create() {
         JTabbedPane tabbedPane = new JTabbedPane();
 
-        tabbedPane.addTab("Chat", new ChatGUI());
+        tabbedPane.addTab("Chat", new ChatGUI(data));
 
         tabbedPane.addTab("Key-pops", new KeypopGUI());
 
