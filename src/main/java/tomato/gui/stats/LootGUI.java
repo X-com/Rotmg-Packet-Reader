@@ -8,6 +8,7 @@ import packets.incoming.MapInfoPacket;
 import tomato.backend.data.Entity;
 import tomato.gui.SmartScroller;
 import tomato.realmshark.*;
+import tomato.realmshark.enums.CharacterClass;
 import tomato.realmshark.enums.CharacterStatistics;
 import tomato.realmshark.enums.LootBags;
 
@@ -35,7 +36,7 @@ public class LootGUI extends JPanel {
 
         lootPanel.setLayout(new BoxLayout(lootPanel, BoxLayout.Y_AXIS));
 
-        lootPanel.add(new JLabel("Enter Daily Quest Room or Pet Yard to get loot info."));
+        lootPanel.add(new JLabel("Change instance to get loot info."));
         validate();
 
         JScrollPane scroll = new JScrollPane(lootPanel);
@@ -291,7 +292,14 @@ public class LootGUI extends JPanel {
             dungeonName = map.name;
             dungeonModifiers = dungeonBuff(map.dungeonModifiers3);
             dungeon = ParseDungeon.getPortalId(dungeonName);
-            if (dungeon == -1) dungeon = 100;
+            if (dungeon == -1) {
+                CharacterStatistics cs = CharacterStatistics.statByName(dungeonName);
+                if (cs != null) {
+                    dungeon = cs.getSpriteId();
+                } else {
+                    dungeon = 100;
+                }
+            }
         }
 
         JLabel icon = new JLabel(ImageBuffer.getOutlinedIcon(dungeon, 20));

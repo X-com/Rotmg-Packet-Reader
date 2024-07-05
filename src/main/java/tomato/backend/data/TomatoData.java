@@ -621,7 +621,7 @@ public class TomatoData {
     public void charListHttpRequest() {
         try {
             String httpString = HttpCharListRequest.getChartList(token);
-            ArrayList<RealmCharacter> charList = HttpCharListRequest.getCharList(httpString);
+            ArrayList<RealmCharacter> charList = RealmCharacter.getCharList(httpString);
             if (charList != null) characterListUpdate(charList);
         } catch (IOException e) {
             e.printStackTrace();
@@ -674,5 +674,15 @@ public class TomatoData {
 
     public void logPacket(Packet packet) {
         dpsPacketLog.add(packet);
+    }
+
+    public void newCharInfo(NewCharacterInfoPacket p) {
+        String parse = p.characterXml;
+        if (p.size == -1) {
+            return;
+        }
+
+        RealmCharacter.getCharList("<a>" + parse + "</a>");
+        LootGUI.updateExaltStats();
     }
 }

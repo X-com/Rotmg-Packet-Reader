@@ -85,7 +85,6 @@ public class ParseDungeon {
                         }
                     }
                     if (name != null && id != 0) {
-                        System.out.println(name);
                         NAME_TO_ID_PORTAL.put(name, id);
                     }
                 }
