@@ -11,10 +11,13 @@ import packets.incoming.ip.IpAddress;
 import packets.outgoing.*;
 import packets.packetcapture.PacketProcessor;
 import packets.packetcapture.register.Register;
+import tomato.realmshark.HttpCharListRequest;
+import tomato.realmshark.RealmCharacter;
 import tomato.realmshark.enums.CharacterClass;
 import util.Util;
 
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -37,10 +40,7 @@ public class PacketRead {
             return;
         }
 
-        if (packet instanceof MovePacket) {
-            System.out.println(packet);
-            return;
-        }
+        if (packet instanceof MovePacket) return;
         if (packet instanceof PingPacket) return;
         if (packet instanceof PongPacket) return;
         if (packet instanceof UpdateAckPacket) return;
@@ -103,8 +103,19 @@ public class PacketRead {
 //            countPots((VaultContentPacket) packet);
             return;
         }
+        if (packet instanceof NewCharacterInfoPacket) {
+            NewCharacterInfoPacket p = (NewCharacterInfoPacket) packet;
+            System.out.println(p);
+//            ArrayList<RealmCharacter> charList = HttpCharListRequest.getCharList("<a>" + p.characterXml + "</a>");
+//            if (charList != null) {
+//                for(RealmCharacter r : charList) {
+//                    System.out.println(r);
+//                }
+//            characterListUpdate(charList);
+//            }
+        }
 
-        System.out.println(packet);
+//        System.out.println(packet);
     }
 
     private static void filterNotificationPacket(NotificationPacket packet) {

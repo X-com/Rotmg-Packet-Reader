@@ -331,7 +331,7 @@ public class WhatEncoding {
 //        FileInputStream is = new FileInputStream("tiles/assets/char");
 
         String result = new java.io.BufferedReader(new java.io.InputStreamReader(Util.resourceFilePath("request"))).lines().collect(java.util.stream.Collectors.joining("\n"));
-        ArrayList<RealmCharacter> charList = HttpCharListRequest.getCharList(result);
+        ArrayList<RealmCharacter> charList = RealmCharacter.getCharList(result);
         for (RealmCharacter rc : charList) {
 //            if (rc.hp == 246) {
 //            if(rc.skin == 10153) {

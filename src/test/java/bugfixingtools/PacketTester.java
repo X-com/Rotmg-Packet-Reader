@@ -17,6 +17,7 @@ import util.Util;
 import java.io.*;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.nio.file.Files;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -527,5 +528,14 @@ public class PacketTester {
 
     public Packet getPacket(int type) {
         return PacketType.getPacket(PacketType.byOrdinal(type).getIndex()).factory();
+    }
+
+    public static String readFile(String s) {
+        try {
+            File file = new File(s);
+            return new BufferedReader(new InputStreamReader(Files.newInputStream(file.toPath()))).lines().collect(java.util.stream.Collectors.joining("\n"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
