@@ -275,7 +275,7 @@ public class IconDpsGUI extends DisplayDpsGUI {
         return hp;
     }
 
-    private static int getStringSize(String str) {
+    public static int getStringSize(String str) {
         Graphics2D g2d = ig.createGraphics();
         FontMetrics fm = g2d.getFontMetrics(mainFont);
         int size = fm.stringWidth(str);

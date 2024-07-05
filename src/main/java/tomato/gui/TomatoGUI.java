@@ -8,6 +8,7 @@ import tomato.gui.chat.ChatGUI;
 import tomato.gui.dps.DpsDisplayOptions;
 import tomato.gui.dps.DpsGUI;
 import tomato.gui.character.CharacterPanelGUI;
+import tomato.gui.stats.DungeonStats;
 import tomato.gui.stats.StatisticsGUI;
 import tomato.gui.keypop.KeypopGUI;
 import tomato.gui.maingui.TomatoMenuBar;
@@ -213,10 +214,12 @@ public class TomatoGUI {
      */
     public static void fontSizeTextAreas(int size) {
         fontSize = size;
-        ChatGUI.editFont(new Font(fontName, fontStyle, size));
-        KeypopGUI.editFont(new Font(fontName, fontStyle, size));
-        DpsGUI.editFont(new Font(fontName, fontStyle, size));
-        ParsePanelGUI.editFont(new Font(fontName, fontStyle, size));
+        Font font = new Font(fontName, fontStyle, size);
+        ChatGUI.editFont(font);
+        KeypopGUI.editFont(font);
+        DpsGUI.editFont(font);
+        ParsePanelGUI.editFont(font);
+        DungeonStats.editFont(font);
     }
 
     /**
@@ -225,10 +228,12 @@ public class TomatoGUI {
     public static void fontNameTextAreas(String name, int style) {
         fontName = name;
         fontStyle = style;
-        ChatGUI.editFont(new Font(name, style, fontSize));
-        KeypopGUI.editFont(new Font(name, style, fontSize));
-        DpsGUI.editFont(new Font(name, style, fontSize));
-        ParsePanelGUI.editFont(new Font(name, style, fontSize));
+        Font font = new Font(name, style, fontSize);
+        ChatGUI.editFont(font);
+        KeypopGUI.editFont(font);
+        DpsGUI.editFont(font);
+        ParsePanelGUI.editFont(font);
+        DungeonStats.editFont(font);
     }
 
     /**

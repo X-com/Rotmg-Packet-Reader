@@ -2,9 +2,6 @@ package tomato;
 
 import assets.AssetExtractor;
 import packets.PacketType;
-import packets.incoming.EnemyShootPacket;
-import packets.outgoing.GroundDamagePacket;
-import packets.outgoing.PlayerHitPacket;
 import packets.packetcapture.PacketProcessor;
 import packets.packetcapture.register.Register;
 import packets.packetcapture.sniff.assembly.TcpStreamErrorHandler;
@@ -61,6 +58,7 @@ public class Tomato {
             TomatoData data = new TomatoData();
             loadControllers(data);
             new TomatoGUI(data).create();
+            bootload(data);
         } catch (OutOfMemoryError | StackOverflowError e) {
             JavaOutOfMemoryGUI.crashDialog();
             System.exit(0);
@@ -165,5 +163,12 @@ public class Tomato {
             }
 //            dpsLogger.clear(); // TODO clear tomatodata
         }
+    }
+
+    /**
+     * Load all presets
+     */
+    private static void bootload(TomatoData data) {
+        data.bootload();
     }
 }

@@ -14,5 +14,7 @@ public class StatisticsGUI extends JPanel {
         tabbedPane.addTab("Fame", fameTracker);
         LootGUI loot = new LootGUI();
         tabbedPane.addTab("Loot", loot);
+        DungeonStats dungeonStats = new DungeonStats();
+        tabbedPane.addTab("Dungeon Stats", dungeonStats);
     }
 }

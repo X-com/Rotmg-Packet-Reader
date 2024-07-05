@@ -2,7 +2,6 @@ package tomato.backend.data;
 
 import assets.IdToAsset;
 import packets.Packet;
-import packets.data.MoveRecord;
 import packets.data.ObjectData;
 import packets.data.StatData;
 import packets.data.WorldPosData;
@@ -20,8 +19,8 @@ import tomato.gui.stats.LootGUI;
 import tomato.realmshark.HttpCharListRequest;
 import tomato.realmshark.RealmCharacter;
 import tomato.realmshark.RealmCharacterStats;
-import tomato.realmshark.Sound;
 import tomato.realmshark.enums.CharacterClass;
+import tomato.realmshark.enums.CharacterStatistics;
 import tomato.realmshark.enums.LootBags;
 import util.RNG;
 
@@ -66,6 +65,7 @@ public class TomatoData {
     private final ArrayList<Entity>[] lootTickContainer = new ArrayList[]{new ArrayList<>(), new ArrayList<>()};
     private final ArrayList<Entity> killedEntitys = new ArrayList<>();
     protected final HashMap<Long, Projectile> enemyProjectiles = new HashMap<>();
+    private final DungeonStatData dungeonStatData = new DungeonStatData();
 
 
     /**
@@ -76,6 +76,7 @@ public class TomatoData {
     public void setNewRealm(MapInfoPacket map) {
         clear();
         ParsePanelGUI.clear();
+        petYardCheck(map.displayName);
         this.map = map;
         rng = new RNG(map.seed);
     }
@@ -91,6 +92,13 @@ public class TomatoData {
         this.worldPlayerId = objectId;
         this.charId = charId;
         updateDungeonStats(charId, str);
+    }
+
+    public void petYardCheck(String displayName) {
+        if (displayName.equals("Pet Yard")) {
+            petyard = true;
+            CharacterPetsGUI.clearPets();
+        }
     }
 
     public void webRequest() {
@@ -244,6 +252,9 @@ public class TomatoData {
                         mob = k;
                     }
                 }
+                if (map != null) {
+                    dungeonStatData.updateItems(map.name, mob, bag);
+                }
                 LootGUI.update(map, bag, mob, player, timePc);
             }
             lootTickContainer[lootTickToggle].clear();
@@ -366,8 +377,11 @@ public class TomatoData {
         target.userProjectileHit(attacker, projectile, timePc);
         if (!entityHitList.containsKey(id)) {
             entityHitList.put(id, target);
+            if (attacker != null && attacker.isUser() && map != null) {
+                dungeonStatData.updateEntityDamage(map.name, target);
+            }
         }
-        entityUpdateDamaged(target, attacker);
+        target.updateDamageTaken(timePc);
     }
 
     /**
@@ -384,25 +398,12 @@ public class TomatoData {
             target.genericDamageHit(attacker, projectile, timePc);
             if (!entityHitList.containsKey(id)) {
                 entityHitList.put(id, target);
+                if (attacker != null && attacker.isUser() && map != null) {
+                    dungeonStatData.updateEntityDamage(map.name, target);
+                }
             }
         }
-        entityUpdateDamaged(target, attacker);
-    }
-
-    /**
-     * Update method for when entity takes damage
-     *
-     * @param target   Entity taking damage
-     * @param attacker Entity doing the damage
-     */
-    private void entityUpdateDamaged(Entity target, Entity attacker) {
-        if (target != null) {
-            target.updateDamageTaken(timePc);
-
-            if (attacker != null && map != null) {
-
-            }
-        }
+        target.updateDamageTaken(timePc);
     }
 
     /**
@@ -499,6 +500,9 @@ public class TomatoData {
             dpsData.add(new DpsData(map, entityHitList, deathNotifications, dungeonTime(), timePcFirst, dpsPacketLog));
             DpsGUI.updateLabel();
         }
+        if (map != null) {
+            dungeonStatData.updateDungeon(map.name, dungeonTime());
+        }
         dpsPacketLog = new ArrayList<>();
         timePc = -1;
         timePcFirst = -1;
@@ -571,7 +575,6 @@ public class TomatoData {
             MyDamageGUI.updatePet(pet);
         }
         CharacterPanelGUI.updateRealmChars();
-        LootGUI.updateExaltStats();
     }
 
     private void makePet(RealmCharacter currentChar) {
@@ -684,5 +687,9 @@ public class TomatoData {
 
         RealmCharacter.getCharList("<a>" + parse + "</a>");
         LootGUI.updateExaltStats();
+    }
+
+    public void bootload() {
+        dungeonStatData.load();
     }
 }
