@@ -137,6 +137,7 @@ public class Tomato {
         Register.INSTANCE.register(PacketType.QUEST_FETCH_RESPONSE, packCap::packetCapture);
         Register.INSTANCE.register(PacketType.HELLO, packCap::packetCapture);
         Register.INSTANCE.register(PacketType.NEW_CHARACTER_INFORMATION, packCap::packetCapture);
+        Register.INSTANCE.register(PacketType.TRADEREQUESTED, packCap::packetCapture);
     }
 
     /**

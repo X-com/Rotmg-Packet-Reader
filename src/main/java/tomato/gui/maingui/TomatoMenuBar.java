@@ -26,7 +26,7 @@ public class TomatoMenuBar implements ActionListener {
     private JRadioButtonMenuItem fontNameMonospaced, fontNameDialog, fontNameDialogInput, fontNameSerif, fontNameSansSerif, fontNameSegoe;
     private JRadioButtonMenuItem dpsEquipmentNone, dpsEquipmentSimple, dpsEquipmentFull, dpsIcon;
     private JRadioButtonMenuItem dpsSortLastHit, dpsSortFirstHit, dpsSortMaxHp, dpsSortFightTimer;
-    private JCheckBoxMenuItem fontStyleBold, fontStyleItalic, dpsShowMe, saveChat, chatPing, chatPingGuild, whiteBagSound, disableDataSending;
+    private JCheckBoxMenuItem fontStyleBold, fontStyleItalic, dpsShowMe, saveChat, chatPing, chatPingGuild, whiteBagSound, chatPingParty, orangeBagSound, tradePing, disableDataSending;
     private JSlider soundSlider;
     private JMenu file, edit, info;
     private JMenuBar jMenuBar;
@@ -84,8 +84,15 @@ public class TomatoMenuBar implements ActionListener {
         chatPing.addActionListener(this);
         chatPingGuild = new JCheckBoxMenuItem("Ping Guild Chat");
         chatPingGuild.addActionListener(this);
+        chatPingParty = new JCheckBoxMenuItem("Ping Party Chat");
+        chatPingParty.addActionListener(this);
+
         whiteBagSound = new JCheckBoxMenuItem("Ping White Bag");
         whiteBagSound.addActionListener(this);
+        orangeBagSound = new JCheckBoxMenuItem("Ping Orange Bag");
+        orangeBagSound.addActionListener(this);
+        tradePing = new JCheckBoxMenuItem("Trade Ping");
+        tradePing.addActionListener(this);
 
         sound.add(new JLabel("Volume:"));
         sound.add(soundSlider);
@@ -93,6 +100,9 @@ public class TomatoMenuBar implements ActionListener {
         sound.add(chatPing);
         sound.add(chatPingGuild);
         sound.add(whiteBagSound);
+        sound.add(chatPingParty);
+        sound.add(orangeBagSound);
+        sound.add(tradePing);
         setSoundCheckbox();
 
         borders = new JMenuItem("Borders");
@@ -373,6 +383,14 @@ public class TomatoMenuBar implements ActionListener {
             Sound.playGuildSound = false;
         }
 
+        String party = PropertiesManager.getProperty("chatPingParty");
+        if (party != null) {
+            chatPingParty.setSelected(party.equals("true"));
+            Sound.playPartySound = party.equals("true");
+        } else {
+            Sound.playPartySound = false;
+        }
+
         String white = PropertiesManager.getProperty("whiteBagSound");
         if (white != null) {
             whiteBagSound.setSelected(white.equals("true"));
@@ -381,6 +399,22 @@ public class TomatoMenuBar implements ActionListener {
             whiteBagSound.setSelected(true);
             Sound.playWhiteBagSound = true;
             PropertiesManager.setProperties("whiteBagSound", "true");
+        }
+
+        String orange = PropertiesManager.getProperty("orangeBagSound");
+        if (orange != null) {
+            orangeBagSound.setSelected(orange.equals("true"));
+            Sound.playOrangeBagSound = orange.equals("true");
+        } else {
+            Sound.playOrangeBagSound = false;
+        }
+
+        String trade = PropertiesManager.getProperty("tradePing");
+        if (trade != null) {
+            tradePing.setSelected(trade.equals("true"));
+            Sound.playTradeSound = trade.equals("true");
+        } else {
+            Sound.playTradeSound = false;
         }
     }
 
@@ -537,6 +571,21 @@ public class TomatoMenuBar implements ActionListener {
             PropertiesManager.setProperties("whiteBagSound", b ? "true" : "false");
             Sound.playWhiteBagSound = b;
             if(b) Sound.whitebag.play();
+        } else if (e.getSource() == chatPingParty) { // sound chat ping party
+            boolean b = chatPingParty.isSelected();
+            PropertiesManager.setProperties("chatPingParty", b ? "true" : "false");
+            Sound.playPartySound = b;
+            if(b) Sound.party.play();
+        } else if (e.getSource() == orangeBagSound) { // orange bag sound
+            boolean b = orangeBagSound.isSelected();
+            PropertiesManager.setProperties("orangeBagSound", b ? "true" : "false");
+            Sound.playOrangeBagSound = b;
+            if(b) Sound.orangebag.play();
+        } else if (e.getSource() == tradePing) { // trade sound
+            boolean b = tradePing.isSelected();
+            PropertiesManager.setProperties("tradePing", b ? "true" : "false");
+            Sound.playTradeSound = b;
+            if(b) Sound.trade.play();
         } else if (e.getSource() == clearChat) { // clears the text chat
             ChatGUI.clearTextAreaChat();
         } else if (e.getSource() == borders) { // Removes the boarder of the window

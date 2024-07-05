@@ -13,15 +13,20 @@ public class Sound {
 
     private Clip soundClip;
 
-    public static Sound notification;
+    public static Sound party;
     public static Sound guild;
     public static Sound pm;
     public static Sound keypop;
     public static Sound whitebag;
+    public static Sound orangebag;
+    public static Sound trade;
 
     public static boolean playPmSound = false;
+    public static boolean playPartySound = false;
     public static boolean playGuildSound = false;
     public static boolean playWhiteBagSound = true;
+    public static boolean playOrangeBagSound = false;
+    public static boolean playTradeSound = false;
 
     public Sound(String file) {
         soundClip = loadSound(file);
@@ -31,11 +36,13 @@ public class Sound {
      * Loads auto clip to be played later
      */
     static {
-        notification = new Sound("sound/notification.wav");
+        party = new Sound("sound/party.wav");
         guild = new Sound("sound/guild.wav");
         pm = new Sound("sound/pm.wav");
         keypop = new Sound("sound/keypop.wav");
         whitebag = new Sound("sound/whitebag.wav");
+        orangebag = new Sound("sound/orangebag.wav");
+        trade = new Sound("sound/trade.wav");
     }
 
     private static Clip loadSound(String file) {

@@ -7,6 +7,7 @@ import packets.outgoing.*;
 import tomato.backend.data.TomatoData;
 import tomato.gui.dps.DpsGUI;
 import tomato.gui.TomatoGUI;
+import tomato.realmshark.Sound;
 
 import java.util.Arrays;
 import java.util.Comparator;
@@ -102,6 +103,10 @@ public class TomatoPacketCapture implements Controller {
             QuestFetchResponsePacket p = (QuestFetchResponsePacket) packet;
             Stream<QuestData> list = Arrays.stream(p.quests).sorted(Comparator.comparing(questData -> questData.category));
             TomatoGUI.updateQuests(list.toArray(QuestData[]::new));
+        } else if (packet instanceof TradeRequestedPacket) {
+            if (Sound.playTradeSound) {
+                Sound.trade.play();
+            }
         }
     }
 
