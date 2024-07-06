@@ -367,12 +367,11 @@ public class IdToAsset {
      */
     public static String getObjectTextureName(int id, int num) {
         IdToAsset i = objectID.get(id);
-        if (i != null && i.textures == null) i.textures = parseObjectTexture(i);
-        if (i.textures == null) return null;
+        if (i == null) return null;
+        if (i.textures == null) i.textures = parseObjectTexture(i);
         try {
             return i.textures[num].name;
         } catch (Exception e) {
-//            System.out.println(id + " " + i);
             return null;
         }
     }
@@ -386,13 +385,14 @@ public class IdToAsset {
      */
     public static int getObjectTextureIndex(int id, int num) {
         IdToAsset i = objectID.get(id);
+        if (i == null) return 0;
         if (i.textures == null) i.textures = parseObjectTexture(i);
         if (i.textures == null) return 0;
         try {
             return i.textures[num].index;
         } catch (ArrayIndexOutOfBoundsException e) {
             System.out.println(id + " " + i);
-            return -1;
+            return 0;
         }
     }
 
@@ -405,6 +405,7 @@ public class IdToAsset {
      */
     public static String getTileTextureName(int id, int num) {
         IdToAsset i = tileID.get(id);
+        if (i == null) return null;
         if (i.textures == null) i.textures = parseObjectTexture(i);
         if (i.textures == null) return null;
         return i.textures[num].name;
@@ -419,6 +420,7 @@ public class IdToAsset {
      */
     public static int getTileTextureIndex(int id, int num) {
         IdToAsset i = tileID.get(id);
+        if (i == null) return -1;
         if (i.textures == null) i.textures = parseObjectTexture(i);
         if (i.textures == null) return 0;
         return i.textures[num].index;
