@@ -99,6 +99,7 @@ public class DungeonStats extends JPanel {
 
             String str = IdToAsset.objectName(id);
             JPanel p = addMobTitle(id, e.getValue(), info);
+            if (p == null) continue;
             list.put(str, p);
         }
         list.keySet().stream().sorted().forEach(s -> dungeonStatPanel.add(list.get(s)));
@@ -120,7 +121,7 @@ public class DungeonStats extends JPanel {
             sb.append("Unknown");
         } else {
             String str = IdToAsset.objectName(id);
-            if (str == null) str = "";
+            if (str == null) return null;
             sb.append(str).append(" : ").append(num);
         }
         try {
