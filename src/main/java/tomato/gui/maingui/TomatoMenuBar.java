@@ -25,7 +25,7 @@ public class TomatoMenuBar implements ActionListener {
     private JRadioButtonMenuItem themeDarcula, themeighContrastDark, themeHighContrastLight, themeIntelliJ, themeSolarizedDark, themeSolarizedLight;
     private JRadioButtonMenuItem fontNameMonospaced, fontNameDialog, fontNameDialogInput, fontNameSerif, fontNameSansSerif, fontNameSegoe;
     private JRadioButtonMenuItem dpsEquipmentNone, dpsEquipmentSimple, dpsEquipmentFull, dpsIcon;
-    private JRadioButtonMenuItem dpsSortLastHit, dpsSortFirstHit, dpsSortMaxHp, dpsSortFightTimer;
+    private JRadioButtonMenuItem dpsSortLastHit, dpsSortFirstHit, dpsSortMaxHp, dpsSortFightTimer, dpsSortBossOnly;
     private JCheckBoxMenuItem fontStyleBold, fontStyleItalic, dpsShowMe, saveChat, chatPing, chatPingGuild, whiteBagSound, chatPingParty, orangeBagSound, tradePing, disableDataSending;
     private JSlider soundSlider;
     private JMenu file, edit, info;
@@ -168,6 +168,7 @@ public class TomatoMenuBar implements ActionListener {
         dpsSortFirstHit = addRadioButtonMenuItem(groupDpsSort, dpsOptions, "First Hit");
         dpsSortMaxHp = addRadioButtonMenuItem(groupDpsSort, dpsOptions, "Health Points");
         dpsSortFightTimer = addRadioButtonMenuItem(groupDpsSort, dpsOptions, "Fight Time");
+        dpsSortBossOnly = addRadioButtonMenuItem(groupDpsSort, dpsOptions, "Only Bosses");
         setDpsSortRadioButton();
 
         dpsOptions.add(new JSeparator(SwingConstants.HORIZONTAL));
@@ -468,6 +469,9 @@ public class TomatoMenuBar implements ActionListener {
             case "3":
                 dpsSortFightTimer.setSelected(true);
                 break;
+            case "4":
+                dpsSortBossOnly.setSelected(true);
+                break;
             default:
             case "0":
                 dpsSortLastHit.setSelected(true);
@@ -696,6 +700,10 @@ public class TomatoMenuBar implements ActionListener {
         } else if (e.getSource() == dpsSortFightTimer) { // dps sort getFightTimer
             PropertiesManager.setProperties("sortDps", "3");
             DpsDisplayOptions.sortOption = 3;
+            DpsGUI.update();
+        } else if (e.getSource() == dpsSortBossOnly) { // dps sort only bosses
+            PropertiesManager.setProperties("sortDps", "4");
+            DpsDisplayOptions.sortOption = 4;
             DpsGUI.update();
         } else if (e.getSource() == clearDpsLogs) { // clears the dps logs
             DpsGUI.clearDpsLogs();

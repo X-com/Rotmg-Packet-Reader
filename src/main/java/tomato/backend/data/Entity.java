@@ -426,4 +426,15 @@ public class Entity implements Serializable {
         }
         lastDamageTaken = timePc;
     }
+
+    public boolean isBossMob() {
+        String label = IdToAsset.getIdLabel(objectType);
+        if (label != null) {
+            String[] split = label.split(",");
+            for (String s : split) {
+                if (s.equals("BOSS")) return true;
+            }
+        }
+        return false;
+    }
 }

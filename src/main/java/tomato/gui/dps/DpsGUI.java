@@ -169,6 +169,8 @@ public class DpsGUI extends JPanel {
             return Arrays.stream(entityHitList).sorted(Comparator.comparingLong(Entity::maxHp).reversed()).collect(Collectors.toList());
         } else if (DpsDisplayOptions.sortOption == 3) {
             return Arrays.stream(entityHitList).sorted(Comparator.comparingLong(Entity::getFightTimer).reversed()).collect(Collectors.toList());
+        } else if (DpsDisplayOptions.sortOption == 4) {
+            return Arrays.stream(entityHitList).filter(Entity::isBossMob).sorted(Comparator.comparingLong(Entity::maxHp).reversed()).collect(Collectors.toList());
         } else {
             return Arrays.stream(entityHitList).sorted(Comparator.comparingLong(Entity::getLastDamageTaken).reversed()).collect(Collectors.toList());
         }
