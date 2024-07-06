@@ -48,9 +48,9 @@ public class AssetExtractor {
     private static JOptionPane pane;
 
     public static void main(String[] args) throws Throwable {
-        checkForExtraction(Version.VERSION);
-//        pane = new JOptionPane();
-//        extractAssetsFromXML();
+//        checkForExtraction(Version.VERSION);
+        pane = new JOptionPane();
+        extractAssetsFromXML();
     }
 
     /**
@@ -558,11 +558,11 @@ public class AssetExtractor {
 
         @Override
         public String toString() {
-            if (clazz != null && clazz.equals("Equipment") && labels.contains("UT")) {
-                idName = "UT " + idName;
-            } else if (clazz != null && clazz.equals("Equipment") && !tier.equals("")) {
-                idName = "T" + tier + " " + idName;
-            }
+//            if (clazz != null && clazz.equals("Equipment") && labels.contains("UT")) {
+//                idName = "UT " + idName;
+//            } else if (clazz != null && clazz.equals("Equipment") && !tier.equals("")) {
+//                idName = "T" + tier + " " + idName;
+//            }
 
             StringBuilder projectileString = new StringBuilder();
             if (projectiles != null) {
@@ -587,7 +587,7 @@ public class AssetExtractor {
                 textureString.deleteCharAt(textureString.length() - 1);
             }
 
-            return String.format("%s;%s;%s;%s;%s;%s;%s", id, display, clazz, group, projectileString, textureString, idName);
+            return String.format("%s;%s;%s;%s;%s;%s;%s;%s", id, display, clazz, group, projectileString, textureString, labels, idName);
         }
     }
 

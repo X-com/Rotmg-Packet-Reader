@@ -2,8 +2,8 @@ package assets;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.InputStreamReader;
+import java.nio.file.Files;
 import java.util.HashMap;
 
 /**
@@ -16,6 +16,7 @@ public class IdToAsset {
     private final String display;
     private final String clazz;
     private final String group;
+    private final String label;
     private int tileDmg;
     private Projectile[] projectiles = null;
     private final String texture;
@@ -26,16 +27,17 @@ public class IdToAsset {
     /**
      * Constructor for the object resources.
      *
-     * @param l             Base string before parsing
-     * @param id            Id of the resource
-     * @param idName        Name of the resource
-     * @param display       Display name of the resource
-     * @param clazz         Class of the resource
-     * @param projectiles   Projectile min,max,armorPiercin
-     * @param texture       Texture name and index used to f
-     * @param group         Group of the resource
+     * @param l           Base string before parsing
+     * @param id          Id of the resource
+     * @param idName      Name of the resource
+     * @param display     Display name of the resource
+     * @param clazz       Class of the resource
+     * @param projectiles Projectile min,max,armorPiercin
+     * @param texture     Texture name and index used to f
+     * @param label       Label of the resource
+     * @param group       Group of the resource
      */
-    public IdToAsset(String l, int id, String idName, String display, String clazz, Projectile[] projectiles, String texture, String group) {
+    public IdToAsset(String l, int id, String idName, String display, String clazz, Projectile[] projectiles, String texture, String label, String group) {
         this.l = l;
         this.id = id;
         this.idName = idName;
@@ -43,6 +45,7 @@ public class IdToAsset {
         this.clazz = clazz;
         this.projectiles = projectiles;
         this.texture = texture;
+        this.label = label;
         this.group = group;
     }
 
@@ -65,9 +68,10 @@ public class IdToAsset {
         display = "";
         clazz = "";
         group = "";
+        label = "";
     }
 
-    /**
+    /*
      * Construct the list on start of using this class.
      */
     static {
@@ -93,7 +97,7 @@ public class IdToAsset {
         if (!objectsFile.exists()) return;
         String lineCheck = "";
         try {
-            BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(objectsFile)));
+            BufferedReader br = new BufferedReader(new InputStreamReader(Files.newInputStream(objectsFile.toPath())));
             String line;
 
             while ((line = br.readLine()) != null) {
@@ -106,8 +110,9 @@ public class IdToAsset {
                 String projectile = l[4];
                 Projectile[] projectiles = parseProjectile(projectile);
                 String texture = l[5];
-                String idName = l[6];
-                objectID.put(id, new IdToAsset(line, id, idName, display, clazz, projectiles, texture, group));
+                String label = l[6];
+                String idName = l[7];
+                objectID.put(id, new IdToAsset(line, id, idName, display, clazz, projectiles, texture, label, group));
             }
             br.close();
         } catch (Exception e) {
@@ -115,7 +120,7 @@ public class IdToAsset {
             e.printStackTrace();
         }
 
-        objectID.put(-1, new IdToAsset("", -1, "Unloaded", "Unloaded", "", null, "", "Unloaded"));
+        objectID.put(-1, new IdToAsset("", -1, "Unloaded", "Unloaded", "", null, "", "", "Unloaded"));
     }
 
     /**
@@ -125,7 +130,7 @@ public class IdToAsset {
         File tilesFile = new File(AssetExtractor.ASSETS_TILE_FILE_DIR_PATH);
         if (!tilesFile.exists()) return;
         try {
-            BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(tilesFile)));
+            BufferedReader br = new BufferedReader(new InputStreamReader(Files.newInputStream(tilesFile.toPath())));
             String line;
 
             while ((line = br.readLine()) != null) {
@@ -166,6 +171,7 @@ public class IdToAsset {
      */
     public static String objectName(int id) {
         IdToAsset i = objectID.get(id);
+        if (i == null) return null;
         if (i.display.equals("")) return i.idName;
         return i.display;
     }
@@ -179,6 +185,7 @@ public class IdToAsset {
      */
     public static String tileName(int id) {
         IdToAsset i = tileID.get(id);
+        if (i == null) return null;
         return i.idName;
     }
 
@@ -188,8 +195,9 @@ public class IdToAsset {
      * @param id Id of the object.
      * @return Regular name of the object.
      */
-    public static String getOjbectIdName(int id) {
+    public static String getObjectIdName(int id) {
         IdToAsset i = objectID.get(id);
+        if (i == null) return null;
         return i.idName;
     }
 
@@ -201,6 +209,7 @@ public class IdToAsset {
      */
     public static String getDisplayName(int id) {
         IdToAsset i = objectID.get(id);
+        if (i == null) return null;
         return i.display;
     }
 
@@ -212,6 +221,7 @@ public class IdToAsset {
      */
     public static String getClazz(int id) {
         IdToAsset i = objectID.get(id);
+        if (i == null) return null;
         return i.clazz;
     }
 
@@ -223,7 +233,20 @@ public class IdToAsset {
      */
     public static String getIdGroup(int id) {
         IdToAsset i = objectID.get(id);
+        if (i == null) return null;
         return i.group;
+    }
+
+    /**
+     * Label of the object.
+     *
+     * @param id Id of the object.
+     * @return Label of the object.
+     */
+    public static String getIdLabel(int id) {
+        IdToAsset i = objectID.get(id);
+        if (i == null) return null;
+        return i.label;
     }
 
     /**
@@ -279,7 +302,9 @@ public class IdToAsset {
      * @return Damage of the tile when walking on it
      */
     public static int getTileDamage(int id) {
-        return tileID.get(id).tileDmg;
+        IdToAsset i = tileID.get(id);
+        if (i == null) return -1;
+        return i.tileDmg;
     }
 
     /**
@@ -291,6 +316,7 @@ public class IdToAsset {
      */
     public static int getIdProjectileMinDmg(int id, int projectileId) {
         IdToAsset i = objectID.get(id);
+        if (i == null) return -1;
         return i.projectiles[projectileId].min;
     }
 
@@ -303,6 +329,7 @@ public class IdToAsset {
      */
     public static int getIdProjectileMaxDmg(int id, int projectileId) {
         IdToAsset i = objectID.get(id);
+        if (i == null) return -1;
         return i.projectiles[projectileId].max;
     }
 
@@ -315,6 +342,7 @@ public class IdToAsset {
      */
     public static boolean getIdProjectileArmorPierces(int id, int projectileId) {
         IdToAsset i = objectID.get(id);
+        if (i == null) return false;
         return i.projectiles[projectileId].ap;
     }
 
@@ -326,6 +354,7 @@ public class IdToAsset {
      */
     public static int getIdProjectileSlotType(int id) {
         IdToAsset i = objectID.get(id);
+        if (i == null) return 0;
         return i.projectiles[0].slotType;
     }
 
@@ -339,6 +368,7 @@ public class IdToAsset {
     public static String getObjectTextureName(int id, int num) {
         IdToAsset i = objectID.get(id);
         if (i != null && i.textures == null) i.textures = parseObjectTexture(i);
+        if (i.textures == null) return null;
         try {
             return i.textures[num].name;
         } catch (Exception e) {
@@ -357,6 +387,7 @@ public class IdToAsset {
     public static int getObjectTextureIndex(int id, int num) {
         IdToAsset i = objectID.get(id);
         if (i.textures == null) i.textures = parseObjectTexture(i);
+        if (i.textures == null) return 0;
         try {
             return i.textures[num].index;
         } catch (ArrayIndexOutOfBoundsException e) {
@@ -375,6 +406,7 @@ public class IdToAsset {
     public static String getTileTextureName(int id, int num) {
         IdToAsset i = tileID.get(id);
         if (i.textures == null) i.textures = parseObjectTexture(i);
+        if (i.textures == null) return null;
         return i.textures[num].name;
     }
 
@@ -388,6 +420,7 @@ public class IdToAsset {
     public static int getTileTextureIndex(int id, int num) {
         IdToAsset i = tileID.get(id);
         if (i.textures == null) i.textures = parseObjectTexture(i);
+        if (i.textures == null) return 0;
         return i.textures[num].index;
     }
 
