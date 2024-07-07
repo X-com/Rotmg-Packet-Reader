@@ -10,13 +10,16 @@ import java.awt.image.*;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.TreeSet;
 
 /**
  * Class extracted from UnityPy https://github.com/K0lb3/UnityPy
  */
 public class UnityExtractor {
-    int counter = 0;
+    private int counter = 0;
+    private TreeSet<String> checkDupes = new TreeSet<>();
 
     public void extract(File input, File[] output) throws IOException {
         AssetExtractor.setDisplay("Creating Folders");
@@ -56,7 +59,8 @@ public class UnityExtractor {
             AssetExtractor.setDisplay("Extracting Xml Files " + counter);
 
             if (!Arrays.asList(TextAsset.NON_XML_FILES).contains(t.name)) {
-                File outputFile = new File(outputFolder + "/" + t.name + ".xml");
+                String name = checkDuplicates(t.name);
+                File outputFile = new File(outputFolder + "/" + name + ".xml");
                 try {
                     FileOutputStream outputStream = new FileOutputStream(outputFile);
                     outputStream.write(t.m_Script);
@@ -64,6 +68,20 @@ public class UnityExtractor {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+            }
+        }
+    }
+
+    private String checkDuplicates(String name) {
+        String n = name;
+        int count = 1;
+        while (true) {
+            if (!checkDupes.contains(n)) {
+                checkDupes.add(n);
+                return n;
+            } else {
+                count++;
+                n = name + count;
             }
         }
     }
