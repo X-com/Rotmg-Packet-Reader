@@ -239,23 +239,27 @@ public class TomatoData {
     private void lootTick() {
         lootTickToggle ^= 1;
         if (!lootTickContainer[lootTickToggle].isEmpty()) {
-            for (Entity bag : lootTickContainer[lootTickToggle]) {
-                double dist = 0;
-                Entity mob = null;
-                for (Entity k : killedEntitys) {
-                    double d = bag.distSqrd(k.pos);
-                    if (mob == null) {
-                        dist = d;
-                        mob = k;
-                    } else if (d < dist) {
-                        dist = d;
-                        mob = k;
+            try {
+                for (Entity bag : lootTickContainer[lootTickToggle]) {
+                    double dist = 0;
+                    Entity mob = null;
+                    for (Entity k : killedEntitys) {
+                        double d = bag.distSqrd(k.pos);
+                        if (mob == null) {
+                            dist = d;
+                            mob = k;
+                        } else if (d < dist) {
+                            dist = d;
+                            mob = k;
+                        }
                     }
+                    if (map != null) {
+                        dungeonStatData.updateItems(map.name, mob, bag);
+                    }
+                    LootGUI.update(map, bag, mob, player, timePc);
                 }
-                if (map != null) {
-                    dungeonStatData.updateItems(map.name, mob, bag);
-                }
-                LootGUI.update(map, bag, mob, player, timePc);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
             lootTickContainer[lootTickToggle].clear();
         }
