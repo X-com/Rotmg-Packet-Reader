@@ -85,6 +85,7 @@ public class ChatGUI extends JPanel {
         if (data.player != null) {
             isPlayer = p.name.equals(data.player.name());
         }
+        String name = p.name.split(",")[0];
         if (p.recipient.contains("*Guild*")) {
             type = 1;
             a = "[Guild]";
@@ -103,8 +104,17 @@ public class ChatGUI extends JPanel {
                 Sound.pm.play();
             }
             a = "[PM]";
+
+            if (data.player != null) {
+                if (p.recipient.equals(data.player.name())) {
+                    a += " From: ";
+                } else if (name.equals(data.player.name())) {
+                    name = p.recipient.split(",")[0];
+                    a += " To: ";
+                }
+            }
         }
-        String s = String.format("%s %s[%s]: %s", Util.getHourTime(), a, p.name.split(",")[0], p.text);
+        String s = String.format("%s %s[%s]: %s", Util.getHourTime(), a, name, p.text);
         switch (type) {
             case 1:
                 if (textAreaChatGuild != null) textAreaChatGuild.append(s + "\n");
