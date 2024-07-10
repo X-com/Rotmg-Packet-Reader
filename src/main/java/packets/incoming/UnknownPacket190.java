@@ -15,7 +15,6 @@ public class UnknownPacket190 extends Packet {
     @Override
     public void deserialize(BufferReader buffer) throws Exception {
         unknown = buffer.readByte();
-        Thread.dumpStack();
     }
 
     @Override
