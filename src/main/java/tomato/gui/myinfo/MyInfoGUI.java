@@ -66,8 +66,8 @@ public class MyInfoGUI extends JPanel {
             String[] amount = player.stat.get(StatType.DUST_STAT).stringStatValue.split(",");
             dust = new int[]{
                     Integer.parseInt(amount[0].split(":")[1]), Integer.parseInt(max[0].split(":")[1]),
-                    Integer.parseInt(amount[3].split(":")[1]), Integer.parseInt(max[3].split(":")[1]),
                     Integer.parseInt(amount[4].split(":")[1]), Integer.parseInt(max[4].split(":")[1]),
+                    Integer.parseInt(amount[3].split(":")[1]), Integer.parseInt(max[3].split(":")[1]),
             };
         } catch (Exception ignore) {
         }
@@ -88,9 +88,9 @@ public class MyInfoGUI extends JPanel {
 
         StringBuilder sb = new StringBuilder();
         if (dust != null) {
-            sb.append("Dust Green: ").append(dust[0]).append("/").append(dust[1]);
-            sb.append(" Red: ").append(dust[2]).append("/").append(dust[3]);
-            sb.append(" Purple: ").append(dust[4]).append("/").append(dust[5]);
+            sb.append("Dust Green: ").append(dust[0]).append(" / ").append(dust[1]);
+            sb.append("   Red: ").append(dust[2]).append(" / ").append(dust[3]);
+            sb.append("   Purple: ").append(dust[4]).append(" / ").append(dust[5]);
             sb.append("\n\n");
         }
         sb.append("Dex: ").append(dex).append("\n");

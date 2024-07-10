@@ -9,7 +9,6 @@ import packets.data.enums.NotificationEffectType;
 import packets.data.enums.StatType;
 import packets.incoming.*;
 import packets.outgoing.*;
-import sun.security.krb5.Realm;
 import tomato.gui.character.*;
 import tomato.gui.chat.ChatGUI;
 import tomato.gui.dps.DpsGUI;
