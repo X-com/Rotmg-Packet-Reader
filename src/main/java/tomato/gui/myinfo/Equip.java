@@ -1,4 +1,4 @@
-package tomato.gui.mydmg;
+package tomato.gui.myinfo;
 
 import org.xml.sax.SAXException;
 import util.StringXML;

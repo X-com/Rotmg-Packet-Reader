@@ -1,4 +1,4 @@
-package tomato.gui.mydmg;
+package tomato.gui.myinfo;
 
 import java.util.ArrayList;
 import java.util.Arrays;

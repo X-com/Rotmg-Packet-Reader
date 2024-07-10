@@ -12,12 +12,11 @@ import tomato.gui.stats.DungeonStats;
 import tomato.gui.stats.StatisticsGUI;
 import tomato.gui.keypop.KeypopGUI;
 import tomato.gui.maingui.TomatoMenuBar;
-import tomato.gui.mydmg.MyDamageGUI;
+import tomato.gui.myinfo.MyInfoGUI;
 import tomato.gui.quest.QuestGUI;
 import tomato.gui.security.ParsePanelGUI;
 import tomato.gui.security.SecurityGUI;
 import tomato.backend.data.TomatoData;
-import tomato.realmshark.Sound;
 import util.PropertiesManager;
 
 import javax.swing.*;
@@ -38,7 +37,7 @@ public class TomatoGUI {
     private static SecurityGUI securityPanel;
     private static CharacterPanelGUI characterPanel;
     private static QuestGUI questPanel;
-    private static MyDamageGUI myDmg;
+    private static MyInfoGUI myDmg;
     private static StatisticsGUI statistics;
     private JMenuBar jMenuBar;
     private JPanel mainPanel, dpsPanel;
@@ -73,8 +72,8 @@ public class TomatoGUI {
         questPanel = new QuestGUI();
         tabbedPane.addTab("Daily Quests", questPanel);
 
-        myDmg = new MyDamageGUI(data);
-        tabbedPane.addTab("My Dmg", myDmg);
+        myDmg = new MyInfoGUI(data);
+        tabbedPane.addTab("My Info", myDmg);
 
         dpsPanel = new DpsGUI(data);
         tabbedPane.addTab("DPS Logger", dpsPanel);

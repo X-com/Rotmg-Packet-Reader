@@ -1,4 +1,4 @@
-package tomato.gui.mydmg;
+package tomato.gui.myinfo;
 
 import assets.IdToAsset;
 import assets.ImageBuffer;
@@ -10,9 +10,9 @@ import tomato.gui.TomatoGUI;
 import javax.swing.*;
 import java.awt.*;
 
-public class MyDamageGUI extends JPanel {
+public class MyInfoGUI extends JPanel {
 
-    private static MyDamageGUI INSTANCE;
+    private static MyInfoGUI INSTANCE;
 
     private JLabel[] icons;
     private TomatoData data;
@@ -24,7 +24,7 @@ public class MyDamageGUI extends JPanel {
     private static final int[] petManaPerLevel = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 5, 5, 5, 5, 6, 6, 6, 7, 7, 7, 8, 8, 8, 9, 9, 9, 10, 10, 11, 11, 11, 12, 12, 13, 13, 14, 14, 15, 16, 16, 17, 17, 18, 19, 19, 20, 21, 21, 22, 23, 24, 24, 25, 26, 27, 28, 28, 29, 30, 31, 32, 33, 34, 35, 36, 38, 39, 40, 41, 42, 44, 45};
     private static final int[] petHpPerLevel = {10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 11, 11, 11, 11, 11, 11, 12, 12, 12, 12, 12, 13, 13, 13, 14, 14, 14, 14, 15, 15, 16, 16, 16, 17, 17, 18, 18, 19, 19, 20, 20, 21, 21, 22, 22, 23, 24, 24, 25, 26, 26, 27, 28, 29, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 45, 46, 47, 48, 50, 51, 53, 54, 55, 57, 59, 60, 62, 64, 65, 67, 69, 71, 73, 75, 77, 79, 81, 83, 85, 88, 90};
 
-    public MyDamageGUI(TomatoData data) {
+    public MyInfoGUI(TomatoData data) {
         INSTANCE = this;
         this.data = data;
         setLayout(new BorderLayout());

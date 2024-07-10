@@ -1,4 +1,4 @@
-package tomato.gui.mydmg;
+package tomato.gui.myinfo;
 
 public class Bullet {
     int id;

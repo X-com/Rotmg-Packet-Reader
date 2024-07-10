@@ -13,14 +13,13 @@ import tomato.gui.character.*;
 import tomato.gui.chat.ChatGUI;
 import tomato.gui.dps.DpsGUI;
 import tomato.gui.keypop.KeypopGUI;
-import tomato.gui.mydmg.MyDamageGUI;
+import tomato.gui.myinfo.MyInfoGUI;
 import tomato.gui.security.ParsePanelGUI;
 import tomato.gui.stats.LootGUI;
 import tomato.realmshark.HttpCharListRequest;
 import tomato.realmshark.RealmCharacter;
 import tomato.realmshark.RealmCharacterStats;
 import tomato.realmshark.enums.CharacterClass;
-import tomato.realmshark.enums.CharacterStatistics;
 import tomato.realmshark.enums.LootBags;
 import util.RNG;
 
@@ -223,7 +222,7 @@ public class TomatoData {
             if (id == worldPlayerId) {
                 player = entity;
                 entity.setUser(charId);
-                MyDamageGUI.updatePlayer(player);
+                MyInfoGUI.updatePlayer(player);
             } else {
                 entity.isPlayer();
             }
@@ -576,7 +575,7 @@ public class TomatoData {
         RealmCharacter currentChar = charMap.get(charId);
         if (charId != -1 && currentChar != null) {
             makePet(currentChar);
-            MyDamageGUI.updatePet(pet);
+            MyInfoGUI.updatePet(pet);
         }
         CharacterPanelGUI.updateRealmChars();
     }

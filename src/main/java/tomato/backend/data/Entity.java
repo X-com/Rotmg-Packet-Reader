@@ -10,7 +10,7 @@ import packets.data.enums.StatType;
 import tomato.backend.StasisCheck;
 import tomato.gui.character.CharacterStatMaxingGUI;
 import tomato.gui.dps.DpsGUI;
-import tomato.gui.mydmg.MyDamageGUI;
+import tomato.gui.myinfo.MyInfoGUI;
 import tomato.gui.security.ParsePanelGUI;
 import tomato.realmshark.RealmCharacter;
 import tomato.realmshark.enums.CharacterClass;
@@ -85,7 +85,7 @@ public class Entity implements Serializable {
             if (isUser) {
                 fame(timePC);
                 tomatoData.player.charStat(charId, calculateBaseStats());
-                MyDamageGUI.updatePlayer(this);
+                MyInfoGUI.updatePlayer(this);
             } else if (isPlayer) {
                 baseStats = calculateBaseStats();
             }
