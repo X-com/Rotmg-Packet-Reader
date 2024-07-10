@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 
 public class ParseDungeon {
 
-    private static final String MODS_XML_PATH = "assets/xml/mods.xml";
+    private static final String MODS_XML_PATHS[] = {"assets/xml/mods.xml", "assets/xml/mods2.xml"};
     private static final String PORTAL_XML_PATH = "assets/xml/portals.xml";
     private static final HashMap<Integer, String> ID_TO_NAME_MODS = new HashMap<>();
     private static final HashMap<String, Integer> NAME_TO_ID_MODS = new HashMap<>();
@@ -29,39 +29,41 @@ public class ParseDungeon {
     }
 
     private static void parseDungeonModifier() {
-        try {
-            FileInputStream file = new FileInputStream(MODS_XML_PATH);
-            String result = new BufferedReader(new InputStreamReader(file)).lines().collect(Collectors.joining("\n"));
-            StringXML base = StringXML.getParsedXML(result);
-            for (StringXML xml : base) {
-                if (Objects.equals(xml.name, "DungeonModifier")) {
-                    DungeonModifier modifier = new DungeonModifier();
+        for (String path : MODS_XML_PATHS) {
+            try {
+                FileInputStream file = new FileInputStream(path);
+                String result = new BufferedReader(new InputStreamReader(file)).lines().collect(Collectors.joining("\n"));
+                StringXML base = StringXML.getParsedXML(result);
+                for (StringXML xml : base) {
+                    if (Objects.equals(xml.name, "DungeonModifier")) {
+                        DungeonModifier modifier = new DungeonModifier();
 
-                    for (StringXML info : xml) {
-                        if (Objects.equals(info.name, "id")) {
-                            modifier.name = info.value;
+                        for (StringXML info : xml) {
+                            if (Objects.equals(info.name, "id")) {
+                                modifier.name = info.value;
+                            }
+                            if (Objects.equals(info.name, "type")) {
+                                modifier.modId = Short.decode(info.value);
+                            }
                         }
-                        if (Objects.equals(info.name, "type")) {
-                            modifier.modId = Short.decode(info.value);
+                        for (StringXML x : xml) {
+                            if (Objects.equals(x.name, "Description")) {
+                                modifier.description = x.children.get(0).value;
+                            }
                         }
+                        ID_TO_NAME_MODS.put(modifier.modId, modifier.name);
+                        NAME_TO_ID_MODS.put(modifier.name, modifier.modId);
                     }
-                    for (StringXML x : xml) {
-                        if (Objects.equals(x.name, "Description")) {
-                            modifier.description = x.children.get(0).value;
-                        }
-                    }
-                    ID_TO_NAME_MODS.put(modifier.modId, modifier.name);
-                    NAME_TO_ID_MODS.put(modifier.name, modifier.modId);
                 }
+            } catch (ParserConfigurationException | IOException | SAXException e) {
+                throw new RuntimeException(e);
             }
-            NAME_TO_ID_MODS.put("|S", -11);
-            NAME_TO_ID_MODS.put("|A", -12);
-            NAME_TO_ID_MODS.put("|B", -13);
-            NAME_TO_ID_MODS.put("|C", -14);
-            NAME_TO_ID_MODS.put("|D", -15);
-        } catch (ParserConfigurationException | IOException | SAXException e) {
-            throw new RuntimeException(e);
         }
+        NAME_TO_ID_MODS.put("|S", -11);
+        NAME_TO_ID_MODS.put("|A", -12);
+        NAME_TO_ID_MODS.put("|B", -13);
+        NAME_TO_ID_MODS.put("|C", -14);
+        NAME_TO_ID_MODS.put("|D", -15);
     }
 
     private static void parseDungeonPortalId() {
