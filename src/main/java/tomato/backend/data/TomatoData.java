@@ -9,6 +9,7 @@ import packets.data.enums.NotificationEffectType;
 import packets.data.enums.StatType;
 import packets.incoming.*;
 import packets.outgoing.*;
+import sun.security.krb5.Realm;
 import tomato.gui.character.*;
 import tomato.gui.chat.ChatGUI;
 import tomato.gui.dps.DpsGUI;
@@ -688,7 +689,12 @@ public class TomatoData {
             return;
         }
 
-        RealmCharacter.getCharList("<a>" + parse + "</a>");
+        ArrayList<RealmCharacter> list = RealmCharacter.getCharList("<a>" + parse + "</a>");
+        if (list != null && list.size() > 0) {
+            RealmCharacter r = list.get(0);
+            makePet(r);
+            MyInfoGUI.updatePet(pet);
+        }
         LootGUI.updateExaltStats();
     }
 

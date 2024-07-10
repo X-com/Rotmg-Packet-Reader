@@ -49,6 +49,7 @@ public class MyInfoGUI extends JPanel {
             System.out.println("nulled on dex stat");
             return;
         }
+
         int dex = player.stat.get(StatType.DEXTERITY_STAT).statValue;
         int atk = player.stat.get(StatType.ATTACK_STAT).statValue;
         int wis = player.stat.get(StatType.WISDOM_STAT).statValue;
@@ -59,6 +60,18 @@ public class MyInfoGUI extends JPanel {
         slots[2] = player.stat.get(StatType.INVENTORY_2_STAT).statValue;
         slots[3] = player.stat.get(StatType.INVENTORY_3_STAT).statValue;
 
+        int dust[] = null;
+        try {
+            String[] max = player.stat.get(StatType.DUST_AMOUNT_STAT).stringStatValue.split(",");
+            String[] amount = player.stat.get(StatType.DUST_STAT).stringStatValue.split(",");
+            dust = new int[]{
+                    Integer.parseInt(amount[0].split(":")[1]), Integer.parseInt(max[0].split(":")[1]),
+                    Integer.parseInt(amount[3].split(":")[1]), Integer.parseInt(max[3].split(":")[1]),
+                    Integer.parseInt(amount[4].split(":")[1]), Integer.parseInt(max[4].split(":")[1]),
+            };
+        } catch (Exception ignore) {
+        }
+
         for (int i = 0; i < 4; i++) {
             displayImg(icons[i], slots[i]);
         }
@@ -68,13 +81,18 @@ public class MyInfoGUI extends JPanel {
         } else {
             displayImg(icons[4], pet.stat.get(StatType.SKIN_ID).statValue);
         }
-        icons[4].setToolTipText("Enter Pet Yard to update pet");
 
         Weapon w = Equip.get(slots[0]);
         if (w == null) return;
         float exaltDmg = exalt / 1000f;
 
         StringBuilder sb = new StringBuilder();
+        if (dust != null) {
+            sb.append("Dust Green: ").append(dust[0]).append("/").append(dust[1]);
+            sb.append(" Red: ").append(dust[2]).append("/").append(dust[3]);
+            sb.append(" Purple: ").append(dust[4]).append("/").append(dust[5]);
+            sb.append("\n\n");
+        }
         sb.append("Dex: ").append(dex).append("\n");
         sb.append("Atk: ").append(atk).append("\n");
         sb.append("Wis: ").append(wis).append("\n");
@@ -201,6 +219,5 @@ public class MyInfoGUI extends JPanel {
 
     public static void updatePet(Entity pet) {
         INSTANCE.pet = pet;
-        INSTANCE.updateMe();
     }
 }
