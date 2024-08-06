@@ -7,8 +7,8 @@ import packets.data.enums.StatType;
 import packets.incoming.MapInfoPacket;
 import tomato.backend.data.Entity;
 import tomato.gui.SmartScroller;
+import tomato.gui.dps.IconDpsGUI;
 import tomato.realmshark.*;
-import tomato.realmshark.enums.CharacterClass;
 import tomato.realmshark.enums.CharacterStatistics;
 import tomato.realmshark.enums.LootBags;
 
@@ -26,9 +26,11 @@ public class LootGUI extends JPanel {
     private static JPanel lootPanel;
     private static JTextArea textArea;
     private static Font mainFont;
+    private static int lootDrops;
     private boolean disableLootSharing = false;
 
     public LootGUI() {
+        lootDrops = 0;
         this.INSTANCE = this;
         setLayout(new BorderLayout());
 
@@ -133,6 +135,8 @@ public class LootGUI extends JPanel {
 
         mainPanel.add(Box.createHorizontalGlue());
 
+        width = displayCount(mainPanel, width);
+        mainPanel.add(Box.createHorizontalStrut(10));
         width = displayTime(mainPanel, width);
         mainPanel.add(Box.createHorizontalStrut(10));
         width = displayBagDungMob(map, bag, player, dropper, mainPanel, width, exaltBonus, lootTime);
@@ -163,15 +167,40 @@ public class LootGUI extends JPanel {
         return width;
     }
 
+    private static int displayCount(JPanel mainPanel, int width) {
+        JPanel o = new JPanel();
+        int pannelSize = IconDpsGUI.getStringSize("#1234");
+        width += pannelSize;
+
+        o.setPreferredSize(new Dimension(pannelSize, 24));
+        o.setMaximumSize(new Dimension(pannelSize, 24));
+        o.setLayout(new BorderLayout());
+        lootDrops++;
+
+        try {
+            String text = "#" + lootDrops;
+            JLabel timeLabel = new JLabel(text, JLabel.CENTER);
+
+            timeLabel.setAlignmentX(JLabel.LEFT);
+            o.setAlignmentX(JLabel.LEFT);
+            o.setAlignmentX(LEFT_ALIGNMENT);
+            timeLabel.setHorizontalAlignment(SwingConstants.LEFT);
+            timeLabel.setFont(mainFont);
+            o.add(timeLabel);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        mainPanel.add(o);
+        return width;
+    }
+
     private static int displayTime(JPanel mainPanel, int width) {
         JPanel o = new JPanel();
-//            panel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        int pannelSize = IconDpsGUI.getStringSize("HH:mm:ss");
+        width += pannelSize;
 
-//            int x = fm.stringWidth("HH:mm:ss") + 2;
-        width += 50;
-
-        o.setPreferredSize(new Dimension(50, 24));
-        o.setMaximumSize(new Dimension(50, 24));
+        o.setPreferredSize(new Dimension(pannelSize, 24));
+        o.setMaximumSize(new Dimension(pannelSize, 24));
         o.setLayout(new BorderLayout());
 
         try {
