@@ -2,10 +2,12 @@ package tomato.gui.myinfo;
 
 import assets.IdToAsset;
 import assets.ImageBuffer;
+import packets.data.StatData;
 import packets.data.enums.StatType;
 import tomato.backend.data.Entity;
 import tomato.backend.data.TomatoData;
 import tomato.gui.TomatoGUI;
+import tomato.realmshark.ParseEnchants;
 
 import javax.swing.*;
 import java.awt.*;
@@ -59,6 +61,18 @@ public class MyInfoGUI extends JPanel {
         slots[1] = player.stat.get(StatType.INVENTORY_1_STAT).statValue;
         slots[2] = player.stat.get(StatType.INVENTORY_2_STAT).statValue;
         slots[3] = player.stat.get(StatType.INVENTORY_3_STAT).statValue;
+
+//        String[] enchants = null;
+//        StatData udata = player.stat.get(StatType.UNIQUE_DATA_STRING);
+//        if (udata != null && udata.stringStatValue != null) {
+//            enchants = udata.stringStatValue.split(",");
+//            System.out.println("---");
+//            for (String e : enchants) {
+//                String name = ParseEnchants.parse(e);
+//                if (name.isEmpty()) continue;
+//                System.out.println(name);
+//            }
+//        }
 
         int dust[] = null;
         try {
