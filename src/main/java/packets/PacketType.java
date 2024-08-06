@@ -180,6 +180,7 @@ public enum PacketType { //ChristmasTree™   ⛧   <-crown
                 PARTY_JOIN_REQUEST(215, Incoming, PartyJoinRequestPacket::new),
             PARTY_REQUEST_RESPONSE(217, Incoming, PartyRequestResponsePacket::new),
                      FOR_RECONNECT(218, Incoming, ForReconnectPacket::new),
+                    LOADING_SCREEN(222, Incoming, LoadingScreenPacket::new),
                        IP_ADDRESS(1000, Incoming, IpAddress::new);
 
 
