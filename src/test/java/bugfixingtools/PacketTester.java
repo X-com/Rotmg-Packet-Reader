@@ -50,8 +50,7 @@ public class PacketTester {
     }
 
     public void crunch() {
-//        String s = "";
-        String s = "[0, 0, 0, 24, -107, 0, 16, 54, 53, 51, 50, 48, 52, 50, 57, 48, 55, 54, 52, 56, 48, 48, 48, -1]";
+        String s = "";
         byte[] data = getByteArray(s);
 //        byte[] data2 = getByteArray(s2);
 //        byte[] data3 = getByteArray(s3);

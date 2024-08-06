@@ -87,6 +87,10 @@ public class MapInfoPacket extends Packet {
      * Current score of the realm
      */
     public int currentRealmScore;
+    /**
+     * Unknown
+     */
+    public byte unknownByte;
 
     @Override
     public void deserialize(BufferReader buffer) throws Exception {
@@ -104,10 +108,10 @@ public class MapInfoPacket extends Packet {
         maxPlayers = buffer.readShort();
         gameOpenedTime = buffer.readUnsignedInt();
         buildVersion = buffer.readString();
-
         if (buffer.getRemainingBytes() > 0) {
             BGColor = buffer.readInt();
         }
+        unknownByte = buffer.readByte();
         if (buffer.getRemainingBytes() > 0) {
             dungeonModifiers = buffer.readString();
             dungeonModifiers2 = buffer.readString();
@@ -117,6 +121,7 @@ public class MapInfoPacket extends Packet {
             maxRealmScore = buffer.readInt();
             currentRealmScore = buffer.readInt();
         }
+        System.out.println(this);
     }
 
     @Override
@@ -137,6 +142,7 @@ public class MapInfoPacket extends Packet {
                 "\n   gameOpenedTime=" + gameOpenedTime +
                 "\n   buildVersion=" + buildVersion +
                 "\n   BGColor=" + BGColor +
+                "\n   unknownByte=" + unknownByte +
                 "\n   dungeonModifiers=" + dungeonModifiers +
                 "\n   dungeonModifiers2=" + dungeonModifiers2 +
                 "\n   dungeonModifiers3=" + dungeonModifiers3 +
