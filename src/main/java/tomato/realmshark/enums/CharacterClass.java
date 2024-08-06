@@ -8,10 +8,10 @@ import java.util.TreeSet;
  * Character class enum to get class name and stats from class id.
  */
 public enum CharacterClass {
-    Rogue(768, 720, 252, 50, 25, 75, 75, 40, 50, new int[]{768, 800, 804}),
+    Rogue(768, 720, 252, 55, 25, 65, 75, 40, 50, new int[]{768, 800, 804}),
     Archer(775, 700, 252, 75, 25, 55, 50, 40, 50, new int[]{775, 802, 796}),
     Wizard(782, 670, 385, 75, 25, 50, 75, 40, 60, new int[]{782, 801, 803}),
-    Priest(784, 670, 385, 50, 25, 55, 55, 40, 75, new int[]{784, 805, 817}),
+    Priest(784, 670, 385, 55, 25, 55, 60, 40, 75, new int[]{784, 805, 817}),
     Warrior(797, 770, 252, 75, 25, 50, 50, 75, 50, new int[]{797, 798, 799}),
     Knight(798, 770, 252, 50, 40, 50, 50, 75, 50, new int[]{797, 798, 799}),
     Paladin(799, 770, 252, 55, 30, 55, 55, 60, 75, new int[]{797, 798, 799}),
@@ -20,13 +20,14 @@ public enum CharacterClass {
     Huntress(802, 700, 305, 65, 25, 50, 60, 40, 50, new int[]{775, 802, 796}),
     Trickster(804, 720, 252, 65, 25, 75, 75, 40, 60, new int[]{768, 800, 804}),
     Mystic(803, 670, 385, 65, 25, 60, 65, 40, 75, new int[]{782, 801, 803}),
-    Sorcerer(805, 670, 385, 75, 25, 60, 65, 75, 60, new int[]{784, 805, 817}),
+    Sorcerer(805, 670, 385, 70, 25, 60, 60, 75, 60, new int[]{784, 805, 817}),
     Ninja(806, 720, 252, 70, 25, 60, 70, 60, 70, new int[]{806, 785, 818}),
-    Samurai(785, 720, 252, 75, 30, 55, 50, 60, 60, new int[]{806, 785, 818}),
+    Samurai(785, 720, 252, 75, 30, 55, 55, 60, 60, new int[]{806, 785, 818}),
     Bard(796, 670, 385, 55, 25, 55, 70, 45, 75, new int[]{775, 802, 796}),
-    Summoner(817, 670, 385, 50, 25, 60, 75, 40, 75, new int[]{784, 805, 817}),
+    Summoner(817, 670, 385, 60, 25, 60, 75, 40, 75, new int[]{784, 805, 817}),
     Kensei(818, 720, 252, 65, 25, 60, 65, 60, 50, new int[]{806, 785, 818});
     public static final CharacterClass[] CHAR_CLASS_LIST;
+
 
     private final int life, mana, atk, def, spd, dex, vit, wis;
     private final int id;
