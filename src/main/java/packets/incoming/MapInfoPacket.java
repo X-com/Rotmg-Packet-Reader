@@ -121,7 +121,6 @@ public class MapInfoPacket extends Packet {
             maxRealmScore = buffer.readInt();
             currentRealmScore = buffer.readInt();
         }
-        System.out.println(this);
     }
 
     @Override
