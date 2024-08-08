@@ -586,7 +586,7 @@ public class DataModel {
     }
 
     public void unknownPacket169(RealmScoreUpdatePacket p) {
-        realmScore = (float) p.score / 1500;
+        realmScore = (float) p.score / 3000;
     }
 
     public float unknownPacket169() {
