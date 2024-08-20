@@ -15,6 +15,7 @@ import java.awt.datatransfer.StringSelection;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -139,7 +140,11 @@ public class ParsePanelGUI extends JPanel {
             JLabel characterLabel = new JLabel(text, ImageBuffer.getOutlinedIcon(eq, 20), JLabel.CENTER);
             characterLabel.addMouseListener(new MouseAdapter() {
                 public void mouseClicked(MouseEvent e) {
-                    copyToClipboard(player.name());
+                    if (e.isControlDown()) {
+                        openWebpage("https://www.realmeye.com/player/" + player.name());
+                    } else {
+                        copyToClipboard(player.name());
+                    }
                 }
             });
 
@@ -168,6 +173,14 @@ public class ParsePanelGUI extends JPanel {
             try {
                 String text = player.getStatGuild();
                 JLabel characterLabel = new JLabel(text, JLabel.CENTER);
+
+                characterLabel.addMouseListener(new MouseAdapter() {
+                    public void mouseClicked(MouseEvent e) {
+                        if (e.isControlDown()) {
+                            openWebpage("https://www.realmeye.com/guild/" + player.getStatGuild().replace(" ", "%20"));
+                        }
+                    }
+                });
 
                 characterLabel.setAlignmentX(JLabel.LEFT);
                 panel.setAlignmentX(JLabel.LEFT);
@@ -234,6 +247,21 @@ public class ParsePanelGUI extends JPanel {
         g2d.dispose();
 
         return mainPanel;
+    }
+
+    /**
+     * Opens websight with given URL.
+     *
+     * @param url Opens website with specific URL.
+     */
+    private static void openWebpage(String url) {
+        try {
+            Desktop desktop = Desktop.getDesktop();
+            URI uri = new URI(url);
+            desktop.browse(uri);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     /**
