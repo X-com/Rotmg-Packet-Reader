@@ -6,6 +6,8 @@ import packets.data.WorldPosData;
 import packets.data.enums.StatType;
 import packets.incoming.MapInfoPacket;
 import tomato.backend.data.Entity;
+import tomato.backend.data.TomatoData;
+import tomato.gui.stats.LootGUI;
 
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
@@ -22,7 +24,7 @@ public class SendLoot {
         }
     }
 
-    public static void sendLoot(MapInfoPacket map, Entity bag, Entity dropper, Entity player, long time) {
+    public static void sendLoot(TomatoData data, MapInfoPacket map, Entity bag, Entity dropper, Entity player, long time) {
         webSocket.con();
 
         int bagId = -1;
@@ -74,6 +76,12 @@ public class SendLoot {
             int[] dungeonMods = ParseDungeon.getModIds(map.dungeonModifiers3);
             for (int i = 0; i < dungeonMods.length; i++) {
                 mods.add(dungeonMods[i]);
+            }
+            if (dungeon.equals("Moonlight Village")) {
+                int flames = data.getMoonlightFlameCount();
+                if (flames > 0) {
+                    mods.add("Flames:" + flames);
+                }
             }
         }
         if (dropper != null) {

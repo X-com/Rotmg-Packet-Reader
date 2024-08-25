@@ -41,7 +41,7 @@ public class TomatoData {
     public Entity player;
     public Entity pet;
     protected final int[][] mapTiles = new int[2048][2048];
-    protected final HashMap<Integer, Entity> entityList = new HashMap<>();
+    public final HashMap<Integer, Entity> entityList = new HashMap<>();
     protected final HashMap<Integer, Entity> playerList = new HashMap<>();
     public final HashMap<Integer, Entity> playerListUpdated = new HashMap<>();
     protected final Projectile[] projectiles = new Projectile[512];
@@ -65,7 +65,8 @@ public class TomatoData {
     private final ArrayList<Entity> killedEntitys = new ArrayList<>();
     protected final HashMap<Long, Projectile> enemyProjectiles = new HashMap<>();
     private final DungeonStatData dungeonStatData = new DungeonStatData();
-
+    private int moonlightFlames = 0;
+    private static final int MOONLIGHT_BOSS_FLAME_ID = 20518;
 
     /**
      * Sets the current realm.
@@ -205,10 +206,14 @@ public class TomatoData {
      */
     private void entityUpdate(ObjectData object) {
         int id = object.status.objectId;
+        boolean newObject = entityList.containsKey(id);
         Entity entity = entityList.computeIfAbsent(id, idd -> new Entity(this, idd, timePc));
         int idType = object.objectType;
         entity.entityUpdate(idType, object.status, timePc);
 
+        if (newObject) {
+            moonLightFlameCounter(idType);
+        }
         if (petyard) {
             addPet(object);
         } else if (isCrystal(idType)) {
@@ -527,6 +532,7 @@ public class TomatoData {
             if (p != null) p.clear();
         }
         petyard = false;
+        moonlightFlames = 0;
     }
 
     public Entity[] getEntityHitList() {
@@ -700,5 +706,30 @@ public class TomatoData {
 
     public void bootload() {
         dungeonStatData.load();
+    }
+
+    /**
+     * Counts the number of moonlight boss flames that are observed by the player in moonlight village.
+     *
+     * @param idType Object ID to check if it's a boss flame.
+     */
+    private void moonLightFlameCounter(int idType) {
+        if (idType == MOONLIGHT_BOSS_FLAME_ID) moonlightFlames++;
+    }
+
+    /**
+     * Gets the number of flames from moonlight village boss phases
+     *
+     * @return Moonlight village boss flames
+     */
+    public int getMoonlightFlameCount() {
+        return moonlightFlames;
+    }
+
+    /**
+     * Used to reset the flames in moonlight village to separate umi flames from other boss flames.
+     */
+    public void resetMoonlightFlames() {
+        moonlightFlames = 0;
     }
 }

@@ -6,6 +6,7 @@ import packets.data.StatData;
 import packets.data.enums.StatType;
 import packets.incoming.MapInfoPacket;
 import tomato.backend.data.Entity;
+import tomato.backend.data.TomatoData;
 import tomato.gui.SmartScroller;
 import tomato.gui.dps.IconDpsGUI;
 import tomato.realmshark.*;
@@ -21,6 +22,7 @@ public class LootGUI extends JPanel {
 
     private static LootGUI INSTANCE;
 
+    private static TomatoData data;
     private static boolean cleared = false;
     private static boolean update = false;
     private static JPanel lootPanel;
@@ -29,7 +31,8 @@ public class LootGUI extends JPanel {
     private static int lootDrops;
     private boolean disableLootSharing = false;
 
-    public LootGUI() {
+    public LootGUI(TomatoData data) {
+        this.data = data;
         lootDrops = 0;
         this.INSTANCE = this;
         setLayout(new BorderLayout());
@@ -100,7 +103,7 @@ public class LootGUI extends JPanel {
         lootPanel.add(panel, 0);
         INSTANCE.guiUpdate();
         if (!disableLootSharing) {
-            SendLoot.sendLoot(map, bag, dropper, player, time);
+            SendLoot.sendLoot(data, map, bag, dropper, player, time);
         }
     }
 
@@ -343,6 +346,14 @@ public class LootGUI extends JPanel {
         if (!dungeonModifiers.isEmpty()) {
             dungeonName += "<br>" + dungeonModifiers;
         }
+
+        if (dungeonName.equals("Moonlight Village")) {
+            int flames = data.getMoonlightFlameCount();
+            if (flames > 0) {
+                dungeonName += "<br>Flames: " + flames;
+            }
+        }
+
         icon.setToolTipText("<html>" + dungeonName + "</html>");
         panel.add(icon);
     }

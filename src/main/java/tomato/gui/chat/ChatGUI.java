@@ -20,6 +20,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import java.lang.reflect.Type;
+
 import com.google.gson.reflect.TypeToken;
 
 public class ChatGUI extends JPanel {
@@ -115,7 +116,8 @@ public class ChatGUI extends JPanel {
      * @param jsonResponse The JSON response from the API.
      */
     private static void parseAndUpdateBlockedSpam(String jsonResponse) {
-        Type listType = new TypeToken<ArrayList<String>>(){}.getType();
+        Type listType = new TypeToken<ArrayList<String>>() {
+        }.getType();
         blockedSpam = new Gson().fromJson(jsonResponse, listType);
     }
 
@@ -220,6 +222,9 @@ public class ChatGUI extends JPanel {
                     break;
             }
             if (textAreaChatAll != null) textAreaChatAll.append(responseFormatted + "\n");
+
+            // Reset the flames for loot tracking here.
+            data.resetMoonlightFlames();
         }
 
         if (save) {

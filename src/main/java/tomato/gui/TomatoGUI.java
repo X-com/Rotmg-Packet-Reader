@@ -66,7 +66,7 @@ public class TomatoGUI {
         characterPanel = new CharacterPanelGUI(data);
         tabbedPane.addTab("Characters", characterPanel);
 
-        statistics = new StatisticsGUI();
+        statistics = new StatisticsGUI(data);
         tabbedPane.addTab("Statistics", statistics);
 
         questPanel = new QuestGUI();
