@@ -126,8 +126,6 @@ public class CharacterExaltGUI extends JPanel {
      * Update exalt stats
      */
     private void update() {
-        if (data.chars == null) return;
-
         int[] sum = new int[8];
         int[] missing = new int[8];
 

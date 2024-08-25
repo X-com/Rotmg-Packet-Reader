@@ -325,6 +325,49 @@ public class RealmCharacter {
         }
     }
 
+    public static boolean checkExaltNew(String r) {
+        StringXML base;
+
+        try {
+            base = StringXML.getParsedXML(r);
+        } catch (ParserConfigurationException | IOException | SAXException e) {
+            e.printStackTrace();
+            return false;
+        }
+        if (Objects.equals(base.name, "AccountPowerups")) {
+            for (StringXML info : base) {
+                if (Objects.equals(info.name, "ClassPowerup")) {
+                    int clazz = 0;
+                    int[] exalts = new int[8];
+                    for (StringXML c : info) {
+                        if (Objects.equals(c.name, "Class")) {
+                            clazz = Integer.parseInt(c.children.get(0).value);
+                        } else if (Objects.equals(c.name, "Dex")) {
+                            exalts[0] = Integer.parseInt(c.children.get(0).value);
+                        } else if (Objects.equals(c.name, "Spd")) {
+                            exalts[1] = Integer.parseInt(c.children.get(0).value);
+                        } else if (Objects.equals(c.name, "Vit")) {
+                            exalts[2] = Integer.parseInt(c.children.get(0).value);
+                        } else if (Objects.equals(c.name, "Wis")) {
+                            exalts[3] = Integer.parseInt(c.children.get(0).value);
+                        } else if (Objects.equals(c.name, "Def")) {
+                            exalts[4] = Integer.parseInt(c.children.get(0).value);
+                        } else if (Objects.equals(c.name, "Att")) {
+                            exalts[5] = Integer.parseInt(c.children.get(0).value);
+                        } else if (Objects.equals(c.name, "Mana")) {
+                            exalts[6] = Integer.parseInt(c.children.get(0).value);
+                        } else if (Objects.equals(c.name, "Life")) {
+                            exalts[7] = Integer.parseInt(c.children.get(0).value);
+                        }
+                    }
+                    RealmCharacter.exalts.put(clazz, exalts);
+                }
+            }
+        }
+
+        return true;
+    }
+
     @Override
     public String toString() {
         return "RealmCharacter{" +

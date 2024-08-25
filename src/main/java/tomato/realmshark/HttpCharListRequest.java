@@ -1,25 +1,10 @@
 package tomato.realmshark;
 
-import org.xml.sax.SAXException;
-import util.StringXML;
-
-import javax.xml.XMLConstants;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Source;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 /**
  * HTTP Requests character data from realm servers and converts data to character info.
@@ -33,8 +18,27 @@ public class HttpCharListRequest {
      * @return Char list data as XML string.
      */
     public static String getChartList(String accessToken) throws IOException {
+        return webRequest(accessToken, "char/list");
+    }
+
+    /**
+     * Request exalt stats
+     *
+     * @param accessToken Access token of the currently logged in user.
+     * @return Exalt data of all characters
+     */
+    public static String getPowerUpStats(String accessToken) throws IOException {
+        return webRequest(accessToken, "account/listPowerUpStats");
+    }
+
+    /**
+     * Web request packet sent.
+     *
+     * @return Request info
+     */
+    public static String webRequest(String accessToken, String requestType) throws IOException {
         String encoded = URLEncoder.encode(accessToken, "UTF-8");
-        String s1 = "https://www.realmofthemadgod.com/char/list?";
+        String s1 = "https://www.realmofthemadgod.com/" + requestType + "?";
         String s2 = "do_login=true&accessToken=" + encoded + "&game_net=Unity&play_platform=Unity&game_net_user_id";
 
         URL obj = new URL(s1 + s2);
@@ -74,15 +78,5 @@ public class HttpCharListRequest {
             System.out.println(response);
         }
         return null;
-    }
-
-    /**
-     * Test function
-     */
-    public static void main(String[] args) throws FileNotFoundException {
-        FileInputStream file = new FileInputStream("tiles/httpraw");
-        String s = new BufferedReader(new InputStreamReader(file)).lines().collect(Collectors.joining("\n"));
-
-        RealmCharacter.getCharList(s);
     }
 }

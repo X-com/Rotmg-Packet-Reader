@@ -67,6 +67,7 @@ public class TomatoData {
     private final DungeonStatData dungeonStatData = new DungeonStatData();
     private int moonlightFlames = 0;
     private static final int MOONLIGHT_BOSS_FLAME_ID = 20518;
+    private boolean updatedExaltStats = false;
 
     /**
      * Sets the current realm.
@@ -584,7 +585,6 @@ public class TomatoData {
             MyInfoGUI.updatePet(pet);
         }
         CharacterPanelGUI.updateRealmChars();
-        LootGUI.updateExaltStats();
     }
 
     private void makePet(RealmCharacter currentChar) {
@@ -648,6 +648,22 @@ public class TomatoData {
      */
     public void updateToken(String token) {
         this.token = token;
+
+        updateExalts(token);
+    }
+
+    private void updateExalts(String token) {
+        if (updatedExaltStats) return;
+        updatedExaltStats = true;
+        try {
+            String s = HttpCharListRequest.getPowerUpStats(token);
+            if (RealmCharacter.checkExaltNew(s)) {
+                LootGUI.updateExaltStats();
+                CharacterExaltGUI.updateExalts();
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -687,21 +703,6 @@ public class TomatoData {
 
     public void logPacket(Packet packet) {
         dpsPacketLog.add(packet);
-    }
-
-    public void newCharInfo(NewCharacterInfoPacket p) {
-        String parse = p.characterXml;
-        if (p.size == -1) {
-            return;
-        }
-
-        ArrayList<RealmCharacter> list = RealmCharacter.getCharList("<a>" + parse + "</a>");
-        if (list != null && list.size() > 0) {
-            RealmCharacter r = list.get(0);
-            makePet(r);
-            MyInfoGUI.updatePet(pet);
-        }
-        LootGUI.updateExaltStats();
     }
 
     public void bootload() {

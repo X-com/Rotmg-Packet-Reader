@@ -278,6 +278,7 @@ public class ChatGUI extends JPanel {
 
     public void loadChatPingMessages() {
         String messages = PropertiesManager.getProperty("chatPingMessages");
+        if (messages == null) return;
         pingMessages = new ArrayList<>();
         pingMessages.addAll(Arrays.asList(messages.split("§")));
     }

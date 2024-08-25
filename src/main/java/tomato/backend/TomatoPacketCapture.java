@@ -96,9 +96,6 @@ public class TomatoPacketCapture implements Controller {
         } else if (packet instanceof HelloPacket) {
             HelloPacket p = (HelloPacket) packet;
             data.updateToken(p.accessToken);
-        } else if (packet instanceof NewCharacterInfoPacket) {
-            NewCharacterInfoPacket p = (NewCharacterInfoPacket) packet;
-            data.newCharInfo(p);
         } else if (packet instanceof QuestFetchResponsePacket) {
             QuestFetchResponsePacket p = (QuestFetchResponsePacket) packet;
             Stream<QuestData> list = Arrays.stream(p.quests).sorted(Comparator.comparing(questData -> questData.category));
