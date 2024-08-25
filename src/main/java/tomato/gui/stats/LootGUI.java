@@ -38,7 +38,7 @@ public class LootGUI extends JPanel {
 
         lootPanel.setLayout(new BoxLayout(lootPanel, BoxLayout.Y_AXIS));
 
-        lootPanel.add(new JLabel("Change instance to get loot info."));
+        lootPanel.add(new JLabel("Visit Daily Quest Room or Pet Yard for loot info."));
         validate();
 
         JScrollPane scroll = new JScrollPane(lootPanel);
