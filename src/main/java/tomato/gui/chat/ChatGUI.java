@@ -1,16 +1,26 @@
 package tomato.gui.chat;
 
+import com.google.gson.Gson;
 import packets.incoming.TextPacket;
 import tomato.backend.data.TomatoData;
 import tomato.gui.TomatoGUI;
-import tomato.gui.stats.DungeonStats;
-import tomato.gui.stats.FameTrackerGUI;
-import tomato.gui.stats.LootGUI;
 import tomato.realmshark.Sound;
 import util.Util;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
+import java.lang.reflect.Type;
+import com.google.gson.reflect.TypeToken;
 
 public class ChatGUI extends JPanel {
 
@@ -20,6 +30,9 @@ public class ChatGUI extends JPanel {
     private static JTextArea textAreaChatGuild;
     public static boolean save;
     private static TomatoData data;
+
+    private static ArrayList<String> blockedSpam;
+    private static final String API_URL = "https://api.realmshark.cc/blocked-keywords";
 
     public ChatGUI(TomatoData data) {
         ChatGUI.data = data;
@@ -46,6 +59,64 @@ public class ChatGUI extends JPanel {
         tabbedPane.addTab("Party", party);
         tabbedPane.addTab("Guild", guild);
         add(tabbedPane);
+
+        loadBlockedSpam();
+    }
+
+    /**
+     * Creates a server request worker to request from server phrases to be blocked by chat. Phrases used by bots.
+     */
+    private void loadBlockedSpam() {
+        try {
+            // Create a URL object
+            URL url = new URL(API_URL);
+
+            // Open connection
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("GET");
+            conn.setRequestProperty("User-Agent", "Mozilla/5.0");
+
+            // Check response code and follow redirect if necessary
+            int responseCode = conn.getResponseCode();
+            if (responseCode == HttpURLConnection.HTTP_MOVED_PERM || responseCode == HttpURLConnection.HTTP_MOVED_TEMP) {
+                String newUrl = conn.getHeaderField("Location");
+                URL redirectedUrl = new URL(newUrl);
+                conn = (HttpURLConnection) redirectedUrl.openConnection();
+                conn.setRequestMethod("GET");
+                conn.setRequestProperty("User-Agent", "Mozilla/5.0");
+            }
+
+            // Read the response
+            BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            String inputLine;
+            StringBuilder response = new StringBuilder();
+
+            while ((inputLine = in.readLine()) != null) {
+                response.append(inputLine);
+            }
+            in.close();
+
+            // Process the response (assuming it's a JSON array of keywords)
+            parseAndUpdateBlockedSpam(response.toString());
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.err.println("Error during HTTP request: " + e.getMessage());
+        }
+        System.out.println("Repopulating List\n" + blockedSpam);
+
+        ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+        scheduler.scheduleAtFixedRate(this::loadBlockedSpam, 30, 30, TimeUnit.MINUTES);
+    }
+
+    /**
+     * Parse the JSON response and update the list of blocked potential spam.
+     *
+     * @param jsonResponse The JSON response from the API.
+     */
+    private static void parseAndUpdateBlockedSpam(String jsonResponse) {
+        Type listType = new TypeToken<ArrayList<String>>(){}.getType();
+        blockedSpam = new Gson().fromJson(jsonResponse, listType);
     }
 
     /**
@@ -79,6 +150,11 @@ public class ChatGUI extends JPanel {
      * @param p Text packet with chat data.
      */
     public static void updateChat(TextPacket p) {
+        boolean containsBlockedSpam = blockedSpam.stream().anyMatch(p.text::contains);
+        if (containsBlockedSpam) {
+            return;
+        }
+
         String a = "";
         int type = 0;
         boolean isPlayer = false;
@@ -100,10 +176,10 @@ public class ChatGUI extends JPanel {
             }
         } else if (!p.recipient.trim().isEmpty()) {
             type = 3;
+            a = "[PM]";
             if (!isPlayer && Sound.playPmSound) {
                 Sound.pm.play();
             }
-            a = "[PM]";
 
             if (data.player != null) {
                 if (p.recipient.equals(data.player.name())) {
