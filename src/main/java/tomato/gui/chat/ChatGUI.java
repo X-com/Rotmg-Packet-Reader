@@ -104,7 +104,7 @@ public class ChatGUI extends JPanel {
             e.printStackTrace();
             System.err.println("Error during HTTP request: " + e.getMessage());
         }
-        System.out.println("Repopulating List\n" + blockedSpam);
+//        System.out.println("Repopulating List\n" + blockedSpam);
 
         ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
         scheduler.scheduleAtFixedRate(this::loadBlockedSpam, 30, 30, TimeUnit.MINUTES);
@@ -234,11 +234,11 @@ public class ChatGUI extends JPanel {
 
     private static String getString(TextPacket p) {
         String response = null;
-        if ("I've been intrigued by folktales from foreign lands recently.".equals(p.text) && "Village Girl Umi".equals(p.name)) {
+        if ("I've been intrigued by folktales from foreign lands recently.".equals(p.text) && "#Village Girl Umi".equals(p.name)) {
             response = "The Happy Prince";
-        } else if ("The delicious smells coming from the festival stalls are making me hungry...".equals(p.text) && "Village Girl Umi".equals(p.name)) {
+        } else if ("The delicious smells coming from the festival stalls are making me hungry...".equals(p.text) && "#Village Girl Umi".equals(p.name)) {
             response = "Mushroom";
-        } else if ("How did you find tonight's performance? It looked extremely fun, I couldn't help cheering you on!".equals(p.text) && "Village Girl Umi".equals(p.name)) {
+        } else if ("How did you find tonight's performance? It looked extremely fun, I couldn't help cheering you on!".equals(p.text) && "#Village Girl Umi".equals(p.name)) {
             response = "Carosburg";
         }
         return response;
