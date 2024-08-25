@@ -127,8 +127,39 @@ public class ChatGUI extends JPanel {
                 break;
         }
         if (textAreaChatAll != null) textAreaChatAll.append(s + "\n");
+
+        String response = getString(p);
+
+        if (response != null) {
+            String responseFormatted = String.format("%s %s[Umi Response]: %s", Util.getHourTime(), a, response);
+            switch (type) {
+                case 1:
+                    if (textAreaChatGuild != null) textAreaChatGuild.append(responseFormatted + "\n");
+                    break;
+                case 2:
+                    if (textAreaChatParty != null) textAreaChatParty.append(responseFormatted + "\n");
+                    break;
+                case 3:
+                    if (textAreaChatPm != null) textAreaChatPm.append(responseFormatted + "\n");
+                    break;
+            }
+            if (textAreaChatAll != null) textAreaChatAll.append(responseFormatted + "\n");
+        }
+
         if (save) {
             Util.print("chat/chat", s);
         }
+    }
+
+    private static String getString(TextPacket p) {
+        String response = null;
+        if ("I've been intrigued by folktales from foreign lands recently.".equals(p.text) && "Village Girl Umi".equals(p.name)) {
+            response = "The Happy Prince";
+        } else if ("The delicious smells coming from the festival stalls are making me hungry...".equals(p.text) && "Village Girl Umi".equals(p.name)) {
+            response = "Mushroom";
+        } else if ("How did you find tonight's performance? It looked extremely fun, I couldn't help cheering you on!".equals(p.text) && "Village Girl Umi".equals(p.name)) {
+            response = "Carosburg";
+        }
+        return response;
     }
 }
