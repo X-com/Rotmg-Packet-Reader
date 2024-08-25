@@ -210,13 +210,11 @@ public class FilterGUI extends JPanel {
     private void largeMethod(JPanel mainPanel) {
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
 
-        namePanelBody = new JPanel();
-        textFieldOptions(mainPanel, "By Name", namePanelBody, textFieldNames, false);
+        textFieldOptions(mainPanel, "By Name", textFieldNames, false);
 
         mainPanel.add(new JSeparator(SwingConstants.HORIZONTAL));
 
-        guildPanelBody = new JPanel();
-        textFieldOptions(mainPanel, "By Guild", guildPanelBody, textFieldGuild, true);
+        textFieldOptions(mainPanel, "By Guild", textFieldGuild, true);
 
         mainPanel.add(new JSeparator(SwingConstants.HORIZONTAL));
 
@@ -249,7 +247,8 @@ public class FilterGUI extends JPanel {
         mainPanel.add(topPanel);
     }
 
-    private void textFieldOptions(JPanel mainPanel, String labelName, JPanel body, ArrayList<JTextField> fields, boolean isGuild) {
+    private void textFieldOptions(JPanel mainPanel, String labelName, ArrayList<JTextField> fields, boolean isGuild) {
+        JPanel body = new JPanel();
         JPanel topPanel = new JPanel();
         topPanel.setLayout(new BorderLayout());
 
@@ -300,8 +299,6 @@ public class FilterGUI extends JPanel {
 
     public static void open(DpsGUI dpsGui) {
         FilterGUI filter = new FilterGUI(dpsGui);
-        JPanel p = new JPanel();
-        p.add(new TextArea());
 
         JButton close = new JButton("Close");
         JOptionPane pane = new JOptionPane(filter, JOptionPane.PLAIN_MESSAGE, JOptionPane.OK_CANCEL_OPTION, null, new JButton[]{close}, close);

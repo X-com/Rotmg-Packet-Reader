@@ -5,6 +5,7 @@ import packets.incoming.TextPacket;
 import tomato.backend.data.TomatoData;
 import tomato.gui.TomatoGUI;
 import tomato.realmshark.Sound;
+import util.PropertiesManager;
 import util.Util;
 
 import javax.swing.*;
@@ -15,6 +16,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -34,6 +36,8 @@ public class ChatGUI extends JPanel {
 
     private static ArrayList<String> blockedSpam;
     private static final String API_URL = "https://api.realmshark.cc/blocked-keywords";
+
+    private static ArrayList<String> pingMessages;
 
     public ChatGUI(TomatoData data) {
         ChatGUI.data = data;
@@ -62,6 +66,7 @@ public class ChatGUI extends JPanel {
         add(tabbedPane);
 
         loadBlockedSpam();
+        loadChatPingMessages();
     }
 
     /**
@@ -164,23 +169,27 @@ public class ChatGUI extends JPanel {
             isPlayer = p.name.equals(data.player.name());
         }
         String name = p.name.split(",")[0];
+        boolean pinged = false;
         if (p.recipient.contains("*Guild*")) {
             type = 1;
             a = "[Guild]";
             if (!isPlayer && Sound.playGuildSound) {
                 Sound.guild.play();
+                pinged = true;
             }
         } else if (p.recipient.contains("*Party*")) {
             type = 2;
             a = "[Party]";
             if (!isPlayer && Sound.playPartySound) {
                 Sound.party.play();
+                pinged = true;
             }
         } else if (!p.recipient.trim().isEmpty()) {
             type = 3;
             a = "[PM]";
             if (!isPlayer && Sound.playPmSound) {
                 Sound.pm.play();
+                pinged = true;
             }
 
             if (data.player != null) {
@@ -189,6 +198,14 @@ public class ChatGUI extends JPanel {
                 } else if (name.equals(data.player.name())) {
                     name = p.recipient.split(",")[0];
                     a += " To: ";
+                }
+            }
+        }
+        if (!pinged) {
+            for (String s : pingMessages) {
+                if (p.text.contains(s)) {
+                    Sound.pm.play();
+                    break;
                 }
             }
         }
@@ -242,5 +259,26 @@ public class ChatGUI extends JPanel {
             response = "Carosburg";
         }
         return response;
+    }
+
+    public void setPingMessages(ArrayList<String> messages) {
+        pingMessages = messages;
+
+        if (messages.isEmpty()) return;
+        StringBuilder s = new StringBuilder();
+        for (String m : messages) {
+            s.append("§").append(m);
+        }
+        PropertiesManager.setProperties("chatPingMessages", s.substring(2));
+    }
+
+    public ArrayList<String> getPingMessages() {
+        return pingMessages;
+    }
+
+    public void loadChatPingMessages() {
+        String messages = PropertiesManager.getProperty("chatPingMessages");
+        pingMessages = new ArrayList<>();
+        pingMessages.addAll(Arrays.asList(messages.split("§")));
     }
 }

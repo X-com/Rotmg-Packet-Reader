@@ -5,6 +5,7 @@ import com.github.weisj.darklaf.theme.*;
 import tomato.Tomato;
 import tomato.gui.TomatoGUI;
 import tomato.gui.chat.ChatGUI;
+import tomato.gui.chat.ChatPingGUI;
 import tomato.gui.dps.DpsDisplayOptions;
 import tomato.gui.dps.DpsGUI;
 import tomato.gui.stats.LootGUI;
@@ -20,7 +21,7 @@ import java.awt.event.ActionListener;
  * Menu bar builder class
  */
 public class TomatoMenuBar implements ActionListener {
-    private JMenuItem about, borders, clearChat, bandwidth, javav, clearDpsLogs, theme, fontMenu, dpsOptions, chat, sound;
+    private JMenuItem about, borders, clearChat, bandwidth, javav, clearDpsLogs, theme, fontMenu, dpsOptions, chat, sound, chatPingMessage;
     private JRadioButtonMenuItem fontSize8, fontSize12, fontSize16, fontSize24, fontSize48, fontSizeCustom;
     private JRadioButtonMenuItem themeDarcula, themeighContrastDark, themeHighContrastLight, themeIntelliJ, themeSolarizedDark, themeSolarizedLight;
     private JRadioButtonMenuItem fontNameMonospaced, fontNameDialog, fontNameDialogInput, fontNameSerif, fontNameSansSerif, fontNameSegoe;
@@ -68,11 +69,14 @@ public class TomatoMenuBar implements ActionListener {
         file.add(disableDataSending);
         setFileCheckbox();
 
+        chatPingMessage = new JMenuItem("Chat Message Pings");
+        chatPingMessage.addActionListener(this);
         saveChat = new JCheckBoxMenuItem("Save Chat");
         saveChat.addActionListener(this);
         clearChat = new JMenuItem("Clear Chat");
         clearChat.addActionListener(this);
 
+        chat.add(chatPingMessage);
         chat.add(saveChat);
         chat.add(new JSeparator(SwingConstants.HORIZONTAL));
         chat.add(clearChat);
@@ -552,10 +556,12 @@ public class TomatoMenuBar implements ActionListener {
                 stopPacketSniffer();
                 PropertiesManager.setProperties("sniffer", "F");
             }
-        } else if (e.getSource() == disableDataSending) { // chat save logs
+        } else if (e.getSource() == disableDataSending) { // disables data sharing
             boolean b = disableDataSending.isSelected();
             PropertiesManager.setProperties("disableDataSending", b ? "true" : "false");
             LootGUI.lootSharing(b);
+        } else if (e.getSource() == chatPingMessage) { // chat ping message
+            TomatoGUI.openChatPingMessage();
         } else if (e.getSource() == saveChat) { // chat save logs
             boolean b = saveChat.isSelected();
             PropertiesManager.setProperties("saveChat", b ? "true" : "false");
