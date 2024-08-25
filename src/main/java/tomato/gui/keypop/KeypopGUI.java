@@ -30,8 +30,10 @@ public class KeypopGUI extends JPanel {
 
     private static JTextArea textAreaKeypop;
 
-    private static final Pattern keypopParse = Pattern.compile("[^ ]*\"player\":\"([A-Za-z]*)[^ ]*");
+    private static final Pattern keypopParse = Pattern.compile("\"player\":\"([^\"]+)\"");
     private static final Pattern nonkeypopParse = Pattern.compile("[^ ]*\"name\":\"([A-Za-z ]*)\",\"player\":\"([A-Za-z]*)[^ ]*");
+    private static final Pattern calloutParsePlayer = Pattern.compile("([^;]+);");
+    private static final Pattern calloutParseDungeon = Pattern.compile("\"name\":\"([^\"]+)\"");
 
     private static HashSet<String> selectedDungeons = new HashSet<>();
 
@@ -64,10 +66,33 @@ public class KeypopGUI extends JPanel {
         if (packet.effect == NotificationEffectType.PortalOpened) {
             String msg = packet.message;
             Matcher m = keypopParse.matcher(msg);
-            if (m.matches()) {
+
+            if (m.find()) {
                 String playerName = m.group(1);
                 String dungeonName = IdToAsset.objectName(packet.pictureType);
 
+                appendTextAreaKeypop(String.format("%s [%s]: %s\n", Util.getHourTime(), playerName, dungeonName));
+
+                if (selectedDungeons.contains(dungeonName)) {
+                    Sound.keypop.play();
+                } else if (isMissingDungeonsSelected() && isMissingDungeon(data.getCurrentDungeonStats(), dungeonName)) {
+                    Sound.keypop.play();
+                }
+            }
+        } else if (packet.effect == NotificationEffectType.PlayerCallout) {
+            String msg = packet.message;
+            Matcher playerMatcher = calloutParsePlayer.matcher(msg);
+            String playerName = "";
+            if (playerMatcher.find()) {
+                playerName = playerMatcher.group(1);
+            }
+            Matcher dungeonMatcher = calloutParseDungeon.matcher(msg);
+            String dungeonName = "";
+            if (dungeonMatcher.find()) {
+                dungeonName = dungeonMatcher.group(1);
+            }
+
+            if (!playerName.isEmpty() && !dungeonName.isEmpty()) {
                 appendTextAreaKeypop(String.format("%s [%s]: %s\n", Util.getHourTime(), playerName, dungeonName));
 
                 if (selectedDungeons.contains(dungeonName)) {
