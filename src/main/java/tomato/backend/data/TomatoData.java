@@ -206,7 +206,7 @@ public class TomatoData {
      */
     private void entityUpdate(ObjectData object) {
         int id = object.status.objectId;
-        boolean newObject = entityList.containsKey(id);
+        boolean newObject = !entityList.containsKey(id);
         Entity entity = entityList.computeIfAbsent(id, idd -> new Entity(this, idd, timePc));
         int idType = object.objectType;
         entity.entityUpdate(idType, object.status, timePc);
