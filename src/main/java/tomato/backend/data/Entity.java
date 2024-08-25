@@ -432,7 +432,7 @@ public class Entity implements Serializable {
         if (label != null) {
             String[] split = label.split(",");
             for (String s : split) {
-                if (s.equals("BOSS")) return true;
+                if (s.equals("BOSS") || s.equals("MINIBOSS")) return true;
             }
         }
         return false;
