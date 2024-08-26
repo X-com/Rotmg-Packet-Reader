@@ -8,6 +8,7 @@ import packets.incoming.MapInfoPacket;
 import tomato.backend.data.Entity;
 import tomato.backend.data.TomatoData;
 import tomato.gui.stats.LootGUI;
+import tomato.version.Version;
 
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
@@ -102,6 +103,7 @@ public class SendLoot {
         jsonObject.addProperty("exalt", exaltBonus);
         jsonObject.addProperty("ld", lootDrop);
         jsonObject.addProperty("seas", isSeasonal);
+        jsonObject.addProperty("ver", Version.VERSION);
 
 //        System.out.println(jsonObject);
 
