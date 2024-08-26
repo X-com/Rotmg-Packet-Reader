@@ -37,7 +37,7 @@ public class ChatGUI extends JPanel {
     private static ArrayList<String> blockedSpam;
     private static final String API_URL = "https://api.realmshark.cc/blocked-keywords";
 
-    private static ArrayList<String> pingMessages;
+    private static ArrayList<String> pingMessages = new ArrayList<>();
 
     public ChatGUI(TomatoData data) {
         ChatGUI.data = data;
@@ -264,7 +264,10 @@ public class ChatGUI extends JPanel {
     public void setPingMessages(ArrayList<String> messages) {
         pingMessages = messages;
 
-        if (messages.isEmpty()) return;
+        if (messages.isEmpty()) {
+            PropertiesManager.setProperties("chatPingMessages", "");
+            return;
+        }
         StringBuilder s = new StringBuilder();
         for (String m : messages) {
             s.append("§").append(m);
@@ -279,7 +282,10 @@ public class ChatGUI extends JPanel {
     public void loadChatPingMessages() {
         String messages = PropertiesManager.getProperty("chatPingMessages");
         if (messages == null) return;
-        pingMessages = new ArrayList<>();
-        pingMessages.addAll(Arrays.asList(messages.split("§")));
+        for (String s : messages.split("§")) {
+            if (!s.isEmpty()) {
+                pingMessages.add(s);
+            }
+        }
     }
 }
