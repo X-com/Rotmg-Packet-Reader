@@ -40,6 +40,7 @@ public class ParsePanelGUI extends JPanel {
 
     private static TreeMap<String, SecurityFilter> filters = new TreeMap<>();
     private static SecurityFilter currentFilter = null;
+    private static boolean guiUpdateSuppression = false;
 
     public ParsePanelGUI() {
         INSTANCE = this;
@@ -114,6 +115,7 @@ public class ParsePanelGUI extends JPanel {
     }
 
     private void comboAction(ActionEvent actionEvent) {
+        if (guiUpdateSuppression) return;
         JComboBox<String> combo = (JComboBox<String>) actionEvent.getSource();
         String selectedItem = String.valueOf(combo.getSelectedItem());
         if (setupFilter(selectedItem)) {
@@ -250,7 +252,11 @@ public class ParsePanelGUI extends JPanel {
             points.setToolTipText("<html>" + missing + "</html>");
             panel.setBackground(Color.RED);
         } else {
-            panel.setBackground(Color.GREEN);
+            if (point < classPoint) {
+                panel.setBackground(Color.RED);
+            } else {
+                panel.setBackground(Color.GREEN);
+            }
         }
         points.setHorizontalAlignment(SwingConstants.CENTER);
         points.setFont(mainFont);
@@ -519,8 +525,10 @@ public class ParsePanelGUI extends JPanel {
             currentFilter = null;
             filterComboBox.setSelectedItem(DISABLE_FILTER);
         }
+        guiUpdateSuppression = true;
         filterComboBox.removeAllItems();
         filterComboBox.addItem(DISABLE_FILTER);
+        guiUpdateSuppression = false;
         for (SecurityFilter sf : filters.values()) {
             filterComboBox.addItem(sf.name);
             if (currentFilter != null && sf.name.equals(currentFilter.name)) {
