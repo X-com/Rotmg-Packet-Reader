@@ -30,6 +30,8 @@ public class SecurityFilterGUI extends JPanel {
     private JComboBox<String> filterComboBox;
     private JTextField jsonField;
     private JTextField nameField;
+    private JTextField exaltSkinPointsField;
+    private FilterEntity exaltSkin = new FilterEntity();
 
     public SecurityFilterGUI(ParsePanelGUI parrent) {
         this.parrent = parrent;
@@ -133,13 +135,14 @@ public class SecurityFilterGUI extends JPanel {
         if (!name.isEmpty()) {
             SecurityFilter sf = new SecurityFilter();
             sf.name = name;
-            for (FilterEntity classPoint : classPoints) {
-                sf.classPoint.put(classPoint.id, classPoint.point);
-            }
             for (FilterEntity item : items) {
                 if (item.checkBox.isSelected()) {
                     sf.itemPoint.put(item.id, item.point);
                 }
+            }
+            sf.exaltSkinPoints = exaltSkin.point;
+            for (FilterEntity classPoint : classPoints) {
+                sf.classPoint.put(classPoint.id, classPoint.point);
             }
             for (int i = 0; i < checkBoxStats.size(); i++) {
                 JCheckBox c = checkBoxStats.get(i);
@@ -187,6 +190,12 @@ public class SecurityFilterGUI extends JPanel {
 
     private void loadSF(SecurityFilter sf) {
         nameField.setText(sf.name);
+        for (int i = 0; i < checkBoxStats.size(); i++) {
+            JCheckBox c = checkBoxStats.get(i);
+            c.setSelected(sf.statMaxed[i]);
+        }
+        exaltSkinPointsField.setText(String.valueOf(sf.exaltSkinPoints));
+        exaltSkin.point = sf.exaltSkinPoints;
         for (FilterEntity classPoint : classPoints) {
             int c = sf.classPoint.get(classPoint.id);
             if (c != 0) {
@@ -213,10 +222,6 @@ public class SecurityFilterGUI extends JPanel {
                 item.checkBox.setSelected(true);
                 item.point = i;
             }
-        }
-        for (int i = 0; i < checkBoxStats.size(); i++) {
-            JCheckBox c = checkBoxStats.get(i);
-            c.setSelected(sf.statMaxed[i]);
         }
         jsonField.setText(sf.json);
     }
@@ -252,19 +257,21 @@ public class SecurityFilterGUI extends JPanel {
 
     private void clearAll() {
         nameField.setText("");
+        for (int i = 0; i < checkBoxStats.size(); i++) {
+            JCheckBox c = checkBoxStats.get(i);
+            c.setSelected(false);
+        }
+        exaltSkinPointsField.setText("");
+        exaltSkin.point = 0;
         for (FilterEntity classPoint : classPoints) {
             classPoint.field.setText("");
+            classPoint.point = 0;
         }
         for (FilterEntity item : items) {
             item.field.setText("");
             item.field.setEnabled(false);
             item.checkBox.setSelected(false);
             item.point = 0;
-
-        }
-        for (int i = 0; i < checkBoxStats.size(); i++) {
-            JCheckBox c = checkBoxStats.get(i);
-            c.setSelected(false);
         }
         jsonField.setText("");
     }
@@ -272,6 +279,8 @@ public class SecurityFilterGUI extends JPanel {
     private void leftColumn(JPanel panel) {
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         stats(panel);
+        panel.add(new JSeparator(SwingConstants.HORIZONTAL));
+        skinPoints(panel);
         panel.add(new JSeparator(SwingConstants.HORIZONTAL));
         classes(panel);
     }
@@ -291,6 +300,23 @@ public class SecurityFilterGUI extends JPanel {
         }
 
         panel.add(stats, BorderLayout.CENTER);
+
+        mainPanel.add(panel);
+    }
+
+    private void skinPoints(JPanel mainPanel) {
+        JPanel panel = new JPanel(new BorderLayout());
+
+        JLabel n = new JLabel("Skin points");
+        panel.add(n, BorderLayout.NORTH);
+
+        JPanel body = new JPanel();
+        body.setLayout(new GridLayout(1, 2));
+        panel.add(body, BorderLayout.CENTER);
+
+        exaltSkinPointsField = addTextField(1, exaltSkin);
+        body.add(new JLabel("Exalted"));
+        body.add(exaltSkinPointsField);
 
         mainPanel.add(panel);
     }
