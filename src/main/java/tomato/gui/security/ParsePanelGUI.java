@@ -27,6 +27,7 @@ public class ParsePanelGUI extends JPanel {
     private static ParsePanelGUI INSTANCE;
 
     private static Color seasonalColor = new Color(21, 220, 166);
+    private static Color redColor = new Color(140, 64, 64);
 
     private static JPanel charPanel;
     private static HashMap<Integer, Player> playerDisplay;
@@ -34,6 +35,26 @@ public class ParsePanelGUI extends JPanel {
     private static String[] missingStrings = new String[]{"HP", "MP", "Ak", "Df", "Sd", "Dx", "Vt", "Ws"};
     private static String[] missingStringsLonger = new String[]{"HP", "MP", "Atk", "Def", "Spd", "Dex", "Vit", "Wis"};
     private static String[] equipmentNames = {"weapon", "ability", "armor", "ring"};
+    private static int[] exaltedSkinIds = {
+            9497, //Rogue
+            9499, //Archer
+            9501, //Wizard
+            9503, //Priest
+            9505, //Warrior
+            9507, //Knight
+            9509, //Paladin
+            9511, //Assassin
+            9513, //Necromancer
+            9515, //Huntress
+            9519, //Trickster
+            9517, //Mystic
+            9521, //Sorcerer
+            9523, //Ninja
+            9525, //Samurai
+            9527, //Bard
+            30721, //Summoner
+            31238, //Kensei
+    };
 
     private static final String DISABLE_FILTER = "Default";
     private JComboBox<String> filterComboBox;
@@ -175,12 +196,14 @@ public class ParsePanelGUI extends JPanel {
         p.inv[1] = player.stat.get(StatType.INVENTORY_1_STAT).statValue;
         p.inv[2] = player.stat.get(StatType.INVENTORY_2_STAT).statValue;
         p.inv[3] = player.stat.get(StatType.INVENTORY_3_STAT).statValue;
+        int skinId = player.stat.get(StatType.SKIN_ID).statValue;
+        if (skinId == 0) skinId = player.objectType;
 
         mainPanel.add(Box.createHorizontalGlue());
 
         int[] statsMissing = statMissing(player);
         {
-            width = pointItems(p, player, statsMissing, mainPanel, fm, y, width);
+            width = pointItems(p, player, statsMissing, mainPanel, fm, y, width, skinId);
         }
         mainPanel.add(Box.createHorizontalStrut(5));
 
@@ -200,7 +223,7 @@ public class ParsePanelGUI extends JPanel {
         mainPanel.add(Box.createHorizontalStrut(5));
 
         {
-            width = nameLabel(player, mainPanel, fm, y, width);
+            width = nameLabel(player, mainPanel, fm, y, width, skinId);
         }
         mainPanel.add(Box.createHorizontalStrut(5));
 
@@ -217,7 +240,7 @@ public class ParsePanelGUI extends JPanel {
         return mainPanel;
     }
 
-    private static int pointItems(Player p, Entity player, int[] statsMissing, JPanel mainPanel, FontMetrics fm, int y, int width) {
+    private static int pointItems(Player p, Entity player, int[] statsMissing, JPanel mainPanel, FontMetrics fm, int y, int width, int skinId) {
         if (currentFilter == null) return width;
         JPanel panel = new JPanel();
         int x = fm.stringWidth("-- / --") + 2;
@@ -236,6 +259,14 @@ public class ParsePanelGUI extends JPanel {
         }
 
         int point = 0;
+        System.out.println(skinId);
+        for (int eid : exaltedSkinIds) {
+            if (skinId == eid) {
+                point += currentFilter.exaltSkinPoints;
+                break;
+            }
+        }
+
         int classPoint = currentFilter.classPoint.get(player.objectType);
         for (int i = 0; i < 4; i++) {
             int item = p.inv[i];
@@ -250,12 +281,10 @@ public class ParsePanelGUI extends JPanel {
         JLabel points = new JLabel(point + " / " + classPoint);
         if (!missing.isEmpty()) {
             points.setToolTipText("<html>" + missing + "</html>");
-            panel.setBackground(Color.RED);
+            panel.setBackground(redColor);
         } else {
             if (point < classPoint) {
-                panel.setBackground(Color.RED);
-            } else {
-                panel.setBackground(Color.GREEN);
+                panel.setBackground(redColor);
             }
         }
         points.setHorizontalAlignment(SwingConstants.CENTER);
@@ -344,7 +373,7 @@ public class ParsePanelGUI extends JPanel {
         return width;
     }
 
-    private static int nameLabel(Entity player, JPanel mainPanel, FontMetrics fm, int y, int width) {
+    private static int nameLabel(Entity player, JPanel mainPanel, FontMetrics fm, int y, int width, int skinId) {
         JPanel panel = new JPanel();
 //            panel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 
@@ -355,11 +384,9 @@ public class ParsePanelGUI extends JPanel {
         panel.setMaximumSize(new Dimension(x, y));
         panel.setLayout(new BorderLayout());
 
-        int eq = player.stat.get(StatType.SKIN_ID).statValue;
-        if (eq == 0) eq = player.objectType;
         int level = player.stat.get(StatType.LEVEL_STAT).statValue;
         String text = player.name() + " [" + level + "]";
-        JLabel characterLabel = new JLabel(text, ImageBuffer.getOutlinedIcon(eq, 20), JLabel.CENTER);
+        JLabel characterLabel = new JLabel(text, ImageBuffer.getOutlinedIcon(skinId, 20), JLabel.CENTER);
         characterLabel.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
                 if (e.isControlDown()) {
