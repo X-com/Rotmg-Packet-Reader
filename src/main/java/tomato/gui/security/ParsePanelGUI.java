@@ -7,17 +7,20 @@ import tomato.backend.data.Entity;
 import tomato.gui.SmartScroller;
 import tomato.realmshark.ParseEnchants;
 import tomato.realmshark.enums.CharacterClass;
+import util.PropertiesManager;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
+import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.TreeMap;
 
 public class ParsePanelGUI extends JPanel {
 
@@ -32,6 +35,11 @@ public class ParsePanelGUI extends JPanel {
     private static String[] missingStringsLonger = new String[]{"HP", "MP", "Atk", "Def", "Spd", "Dex", "Vit", "Wis"};
     private static String[] equipmentNames = {"weapon", "ability", "armor", "ring"};
 
+    private static final String DISABLE_FILTER = "Default";
+    private JComboBox<String> filterComboBox;
+
+    private static TreeMap<String, SecurityFilter> filters = new TreeMap<>();
+    private static SecurityFilter currentFilter = null;
 
     public ParsePanelGUI() {
         INSTANCE = this;
@@ -48,15 +56,77 @@ public class ParsePanelGUI extends JPanel {
         new SmartScroller(scroll, 0);
         add(scroll, BorderLayout.CENTER);
 
-        JPanel bottons = new JPanel();
-        bottons.setLayout(new GridLayout(1, 2));
+        JPanel top = new JPanel();
+        JButton filterButton = new JButton("Filter");
+        filterButton.addActionListener(this::filter);
+
+        filterComboBox = new JComboBox<>(new String[]{DISABLE_FILTER});
+        filterComboBox.setPreferredSize(new Dimension(10000, 0));
+        filterComboBox.addActionListener(this::comboAction);
+
+        loadFilters();
+
+        top.setLayout(new BoxLayout(top, BoxLayout.X_AXIS));
+        top.add(Box.createHorizontalGlue());
+        top.add(filterButton);
+        top.add(Box.createRigidArea(new Dimension(10, 0)));
+        top.add(filterComboBox);
+
+        add(top, BorderLayout.NORTH);
+
+        JPanel buttons = new JPanel();
+        buttons.setLayout(new GridLayout(1, 2));
         JButton buttonLeft = new JButton("Copy names to Clipboard");
         JButton buttonRight = new JButton("Copy all to Clipboard");
         buttonLeft.addActionListener(e -> clicked(false));
         buttonRight.addActionListener(e -> clicked(true));
-        bottons.add(buttonLeft);
-        bottons.add(buttonRight);
-        add(bottons, BorderLayout.SOUTH);
+        buttons.add(buttonLeft);
+        buttons.add(buttonRight);
+        add(buttons, BorderLayout.SOUTH);
+    }
+
+    private void loadFilters() {
+        String f = PropertiesManager.getProperty("securityFilters");
+        if (f != null) {
+            String[] split = f.split("§");
+            for (String s : split) {
+                SecurityFilter sf = SecurityFilter.loadJson(s);
+                filters.put(sf.name, sf);
+                filterComboBox.addItem(sf.name);
+            }
+        }
+
+        String selectedItem = PropertiesManager.getProperty("securityFilterName");
+        if (setupFilter(selectedItem)) {
+            filterComboBox.setSelectedItem(selectedItem);
+        }
+    }
+
+    private boolean setupFilter(String selectedItem) {
+        if (selectedItem == null) return false;
+        for (SecurityFilter sf : filters.values()) {
+            if (sf.name.equals(selectedItem)) {
+                currentFilter = sf;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void comboAction(ActionEvent actionEvent) {
+        JComboBox<String> combo = (JComboBox<String>) actionEvent.getSource();
+        String selectedItem = String.valueOf(combo.getSelectedItem());
+        if (setupFilter(selectedItem)) {
+            PropertiesManager.setProperties("securityFilterName", selectedItem);
+        } else {
+            currentFilter = null;
+            PropertiesManager.setProperties("securityFilterName", "");
+        }
+        update();
+    }
+
+    private void filter(ActionEvent actionEvent) {
+        SecurityFilterGUI.open(this);
     }
 
     private void clicked(boolean full) {
@@ -99,51 +169,158 @@ public class ParsePanelGUI extends JPanel {
         int y = Math.max(24, fm.getHeight());
         int width = 70;
 
+        p.inv[0] = player.stat.get(StatType.INVENTORY_0_STAT).statValue;
+        p.inv[1] = player.stat.get(StatType.INVENTORY_1_STAT).statValue;
+        p.inv[2] = player.stat.get(StatType.INVENTORY_2_STAT).statValue;
+        p.inv[3] = player.stat.get(StatType.INVENTORY_3_STAT).statValue;
+
         mainPanel.add(Box.createHorizontalGlue());
+
+        int[] statsMissing = statMissing(player);
         {
-            JPanel panel = new JPanel();
-            JPanel p1 = new JPanel();
-            p.crucible = new JPanel();
-
-            int x = 10;
-            width += x;
-
-            panel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-            Color bg = player.isSeasonal() ? seasonalColor : Color.WHITE;
-            p1.setBackground(bg);
-            p.crucible.setBackground(player.isCrucible() ? Color.RED : bg);
-            panel.add(p1);
-            panel.add(p.crucible);
-            panel.setLayout(new GridLayout(2, 1));
-
-            panel.setPreferredSize(new Dimension(10, 10));
-            panel.setMaximumSize(new Dimension(10, 10));
-            mainPanel.add(panel);
+            width = pointItems(p, player, statsMissing, mainPanel, fm, y, width);
         }
         mainPanel.add(Box.createHorizontalStrut(5));
 
         {
-            JPanel panel = new JPanel();
+            width = itemIcons(p, player, mainPanel, width);
+        }
+        mainPanel.add(Box.createHorizontalStrut(5));
+
+        {
+            width = statsMaxed(player, statsMissing, mainPanel, fm, y, width);
+        }
+        mainPanel.add(Box.createHorizontalStrut(5));
+
+        {
+            width = seasonCrucibleIcon(p, player, mainPanel, width);
+        }
+        mainPanel.add(Box.createHorizontalStrut(5));
+
+        {
+            width = nameLabel(player, mainPanel, fm, y, width);
+        }
+        mainPanel.add(Box.createHorizontalStrut(5));
+
+        {
+            width = guildLabel(player, mainPanel, fm, y, width);
+        }
+
+        mainPanel.add(Box.createHorizontalGlue());
+
+        mainPanel.setMaximumSize(new Dimension(width, y));
+
+        g2d.dispose();
+
+        return mainPanel;
+    }
+
+    private static int pointItems(Player p, Entity player, int[] statsMissing, JPanel mainPanel, FontMetrics fm, int y, int width) {
+        if (currentFilter == null) return width;
+        JPanel panel = new JPanel();
+        int x = fm.stringWidth("-- / --") + 2;
+        width += x;
+
+        panel.setPreferredSize(new Dimension(x, y));
+        panel.setMaximumSize(new Dimension(x, y));
+        panel.setLayout(new BorderLayout());
+
+        String missing = "";
+        for (int i = 0; i < currentFilter.statMaxed.length; i++) {
+            if (currentFilter.statMaxed[i] && statsMissing[i] > 0) {
+                missing = "Stats not maxed<br>";
+                break;
+            }
+        }
+
+        int point = 0;
+        int classPoint = currentFilter.classPoint.get(player.objectType);
+        for (int i = 0; i < 4; i++) {
+            int item = p.inv[i];
+            Integer ip = currentFilter.itemPoint.get(item);
+            if (ip == null) {
+                missing += "Under reqed: " + equipmentNames[i] + "<br>";
+            } else {
+                point += ip;
+            }
+        }
+
+        JLabel points = new JLabel(point + " / " + classPoint);
+        if (!missing.isEmpty()) {
+            points.setToolTipText("<html>" + missing + "</html>");
+            panel.setBackground(Color.RED);
+        } else {
+            panel.setBackground(Color.GREEN);
+        }
+        points.setHorizontalAlignment(SwingConstants.CENTER);
+        points.setFont(mainFont);
+
+        panel.add(points);
+        mainPanel.add(panel);
+        return width;
+    }
+
+    private static int statsMaxed(Entity player, int[] statsMissing, JPanel mainPanel, FontMetrics fm, int y, int width) {
+        JPanel panel = new JPanel();
 //            panel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 
-            int x = fm.stringWidth("12345678901234567890123") + 2;
-            width += x;
+        int x = fm.stringWidth("8 / 8") + 2;
+        width += x;
 
-            panel.setPreferredSize(new Dimension(x, y));
-            panel.setMaximumSize(new Dimension(x, y));
-            panel.setLayout(new BorderLayout());
+        panel.setPreferredSize(new Dimension(x, y));
+        panel.setMaximumSize(new Dimension(x, y));
+        panel.setLayout(new BorderLayout());
 
-            int eq = player.stat.get(StatType.SKIN_ID).statValue;
-            if (eq == 0) eq = player.objectType;
-            int level = player.stat.get(StatType.LEVEL_STAT).statValue;
-            String text = player.name() + " [" + level + "]";
-            JLabel characterLabel = new JLabel(text, ImageBuffer.getOutlinedIcon(eq, 20), JLabel.CENTER);
+        int stat = statsMaxed(player);
+        JLabel stats = new JLabel(stat + " / 8");
+        String toolTipStatString = getToolTipStatString(statsMissing);
+        stats.setToolTipText(String.valueOf(toolTipStatString));
+        stats.setHorizontalAlignment(SwingConstants.RIGHT);
+        stats.setFont(mainFont);
+
+        panel.add(stats);
+        mainPanel.add(panel);
+        return width;
+    }
+
+    private static int itemIcons(Player p, Entity player, JPanel mainPanel, int width) {
+        JPanel panel = new JPanel();
+//            panel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        width += 100;
+
+        panel.setPreferredSize(new Dimension(100, 24));
+        panel.setMaximumSize(new Dimension(100, 24));
+        panel.setLayout(new GridLayout(1, 4));
+        for (int i = 0; i < 4; i++) {
+            int eq = p.inv[i];
+            p.icon[i] = new JLabel(ImageBuffer.getOutlinedIcon(eq, 20));
+            p.itemName[i] = IdToAsset.objectName(eq);
+            panel.add(p.icon[i]);
+        }
+        p.updateToolTipText();
+        mainPanel.add(panel);
+        return width;
+    }
+
+    private static int guildLabel(Entity player, JPanel mainPanel, FontMetrics fm, int y, int width) {
+        JPanel panel = new JPanel();
+//            panel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+
+        int x = fm.stringWidth("12345678901234567890123") + 2;
+        width += x;
+
+        panel.setPreferredSize(new Dimension(x, y));
+        panel.setMaximumSize(new Dimension(x, y));
+        panel.setLayout(new BorderLayout());
+
+        try {
+            String text = player.getStatGuild();
+            JLabel characterLabel = new JLabel(text, JLabel.CENTER);
+
             characterLabel.addMouseListener(new MouseAdapter() {
                 public void mouseClicked(MouseEvent e) {
                     if (e.isControlDown()) {
-                        openWebpage("https://www.realmeye.com/player/" + player.name());
-                    } else {
-                        copyToClipboard(player.name());
+                        openWebpage("https://www.realmeye.com/guild/" + player.getStatGuild().replace(" ", "%20"));
                     }
                 }
             });
@@ -154,99 +331,70 @@ public class ParsePanelGUI extends JPanel {
             characterLabel.setHorizontalAlignment(SwingConstants.LEFT);
             characterLabel.setFont(mainFont);
             panel.add(characterLabel);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        mainPanel.add(panel);
+        return width;
+    }
+
+    private static int nameLabel(Entity player, JPanel mainPanel, FontMetrics fm, int y, int width) {
+        JPanel panel = new JPanel();
+//            panel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+
+        int x = fm.stringWidth("12345678901234567890123") + 2;
+        width += x;
+
+        panel.setPreferredSize(new Dimension(x, y));
+        panel.setMaximumSize(new Dimension(x, y));
+        panel.setLayout(new BorderLayout());
+
+        int eq = player.stat.get(StatType.SKIN_ID).statValue;
+        if (eq == 0) eq = player.objectType;
+        int level = player.stat.get(StatType.LEVEL_STAT).statValue;
+        String text = player.name() + " [" + level + "]";
+        JLabel characterLabel = new JLabel(text, ImageBuffer.getOutlinedIcon(eq, 20), JLabel.CENTER);
+        characterLabel.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+                if (e.isControlDown()) {
+                    openWebpage("https://www.realmeye.com/player/" + player.name());
+                } else {
+                    copyToClipboard(player.name());
+                }
+            }
+        });
+
+        characterLabel.setAlignmentX(JLabel.LEFT);
+        panel.setAlignmentX(JLabel.LEFT);
+        panel.setAlignmentX(LEFT_ALIGNMENT);
+        characterLabel.setHorizontalAlignment(SwingConstants.LEFT);
+        characterLabel.setFont(mainFont);
+        panel.add(characterLabel);
 //            characterLabel.setToolTipText(exaltStats(c));
-            mainPanel.add(panel);
-        }
-        mainPanel.add(Box.createHorizontalStrut(5));
+        mainPanel.add(panel);
+        return width;
+    }
 
-        {
-            JPanel panel = new JPanel();
-//            panel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+    private static int seasonCrucibleIcon(Player p, Entity player, JPanel mainPanel, int width) {
+        JPanel panel = new JPanel();
+        JPanel p1 = new JPanel();
+        p.crucible = new JPanel();
 
-            int x = fm.stringWidth("12345678901234567890123") + 2;
-            width += x;
+        int x = 10;
+        width += x;
 
-            panel.setPreferredSize(new Dimension(x, y));
-            panel.setMaximumSize(new Dimension(x, y));
-            panel.setLayout(new BorderLayout());
+        panel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        Color bg = player.isSeasonal() ? seasonalColor : Color.WHITE;
+        p1.setBackground(bg);
+        p.crucible.setBackground(player.isCrucible() ? Color.RED : bg);
+        panel.add(p1);
+        panel.add(p.crucible);
+        panel.setLayout(new GridLayout(2, 1));
 
-            try {
-                String text = player.getStatGuild();
-                JLabel characterLabel = new JLabel(text, JLabel.CENTER);
-
-                characterLabel.addMouseListener(new MouseAdapter() {
-                    public void mouseClicked(MouseEvent e) {
-                        if (e.isControlDown()) {
-                            openWebpage("https://www.realmeye.com/guild/" + player.getStatGuild().replace(" ", "%20"));
-                        }
-                    }
-                });
-
-                characterLabel.setAlignmentX(JLabel.LEFT);
-                panel.setAlignmentX(JLabel.LEFT);
-                panel.setAlignmentX(LEFT_ALIGNMENT);
-                characterLabel.setHorizontalAlignment(SwingConstants.LEFT);
-                characterLabel.setFont(mainFont);
-                panel.add(characterLabel);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            mainPanel.add(panel);
-        }
-        mainPanel.add(Box.createHorizontalStrut(5));
-
-        {
-            JPanel panel = new JPanel();
-//            panel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-            width += 100;
-
-            panel.setPreferredSize(new Dimension(100, 24));
-            panel.setMaximumSize(new Dimension(100, 24));
-            panel.setLayout(new GridLayout(1, 4));
-            p.inv[0] = player.stat.get(StatType.INVENTORY_0_STAT).statValue;
-            p.inv[1] = player.stat.get(StatType.INVENTORY_1_STAT).statValue;
-            p.inv[2] = player.stat.get(StatType.INVENTORY_2_STAT).statValue;
-            p.inv[3] = player.stat.get(StatType.INVENTORY_3_STAT).statValue;
-            for (int i = 0; i < 4; i++) {
-                int eq = p.inv[i];
-                p.icon[i] = new JLabel(ImageBuffer.getOutlinedIcon(eq, 20));
-                p.itemName[i] = IdToAsset.objectName(eq);
-                panel.add(p.icon[i]);
-            }
-            p.updateToolTipText();
-            mainPanel.add(panel);
-        }
-        mainPanel.add(Box.createHorizontalStrut(5));
-
-        {
-            JPanel panel = new JPanel();
-//            panel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-
-            int x = fm.stringWidth("8 / 8") + 2;
-            width += x;
-
-            panel.setPreferredSize(new Dimension(x, y));
-            panel.setMaximumSize(new Dimension(x, y));
-            panel.setLayout(new BorderLayout());
-
-            int stat = statsMaxed(player);
-            JLabel stats = new JLabel(stat + " / 8");
-            int[] stats1 = statMissing(player);
-            String toolTipStatString = getToolTipStatString(stats1);
-            stats.setToolTipText(java.lang.String.valueOf(toolTipStatString));
-            stats.setHorizontalAlignment(SwingConstants.RIGHT);
-            stats.setFont(mainFont);
-
-            panel.add(stats);
-            mainPanel.add(panel);
-        }
-        mainPanel.add(Box.createHorizontalGlue());
-
-        mainPanel.setMaximumSize(new Dimension(width, y));
-
-        g2d.dispose();
-
-        return mainPanel;
+        panel.setPreferredSize(new Dimension(10, 10));
+        panel.setMaximumSize(new Dimension(10, 10));
+        mainPanel.add(panel);
+        return width;
     }
 
     /**
@@ -334,9 +482,12 @@ public class ParsePanelGUI extends JPanel {
         }
     }
 
-    public static void clear() {
-        playerDisplay.clear();
+    public static void update() {
         charPanel.removeAll();
+        for (Player p : playerDisplay.values()) {
+            p.panel = createMainBox(p, p.playerEntity);
+            charPanel.add(p.panel);
+        }
         INSTANCE.guiUpdate();
     }
 
@@ -345,11 +496,36 @@ public class ParsePanelGUI extends JPanel {
         INSTANCE.updateFont(charPanel);
     }
 
+    public static void clear() {
+        playerDisplay.clear();
+        charPanel.removeAll();
+        INSTANCE.guiUpdate();
+    }
+
     private void updateFont(Component c) {
         charPanel.removeAll();
         for (Player p : playerDisplay.values()) {
             p.panel = createMainBox(p, p.playerEntity);
             charPanel.add(p.panel);
+        }
+    }
+
+    TreeMap<String, SecurityFilter> getFilters() {
+        return filters;
+    }
+
+    public void filterUpdate() {
+        if (currentFilter != null && !filters.containsKey(currentFilter.name)) {
+            currentFilter = null;
+            filterComboBox.setSelectedItem(DISABLE_FILTER);
+        }
+        filterComboBox.removeAllItems();
+        filterComboBox.addItem(DISABLE_FILTER);
+        for (SecurityFilter sf : filters.values()) {
+            filterComboBox.addItem(sf.name);
+            if (currentFilter != null && sf.name.equals(currentFilter.name)) {
+                filterComboBox.setSelectedItem(currentFilter.name);
+            }
         }
     }
 
