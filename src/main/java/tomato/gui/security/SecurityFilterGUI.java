@@ -201,7 +201,7 @@ public class SecurityFilterGUI extends JPanel {
             if (c != 0) {
                 classPoint.field.setText(String.valueOf(c));
             } else {
-                classPoint.field.setText("");
+                classPoint.field.setText("0");
             }
             classPoint.point = c;
         }
@@ -216,7 +216,7 @@ public class SecurityFilterGUI extends JPanel {
                 if (i != 0) {
                     item.field.setText(String.valueOf(i));
                 } else {
-                    item.field.setText("");
+                    item.field.setText("0");
                 }
                 item.field.setEnabled(true);
                 item.checkBox.setSelected(true);
