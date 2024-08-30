@@ -239,9 +239,6 @@ public class ChatGUI extends JPanel {
                     break;
             }
             if (textAreaChatAll != null) textAreaChatAll.append(responseFormatted + "\n");
-
-            // Reset the flames for loot tracking here.
-            data.resetMoonlightFlames();
         }
 
         if (save) {

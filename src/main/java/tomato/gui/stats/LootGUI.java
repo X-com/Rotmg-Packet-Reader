@@ -351,6 +351,16 @@ public class LootGUI extends JPanel {
             int flames = data.getMoonlightFlameCount();
             if (flames > 0) {
                 dungeonName += "<br>Flames: " + flames;
+
+                // Reset the flames for loot tracking here after 5 seconds
+                new Thread(() -> {
+                    try {
+                        Thread.sleep(5000);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                    data.resetMoonlightFlames();
+                }).start();
             }
         }
 
