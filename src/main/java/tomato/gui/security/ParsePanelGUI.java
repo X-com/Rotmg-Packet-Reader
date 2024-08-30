@@ -259,7 +259,6 @@ public class ParsePanelGUI extends JPanel {
         }
 
         int point = 0;
-        System.out.println(skinId);
         for (int eid : exaltedSkinIds) {
             if (skinId == eid) {
                 point += currentFilter.exaltSkinPoints;
