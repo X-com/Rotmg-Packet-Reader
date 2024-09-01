@@ -13,8 +13,12 @@ public class SecurityFilter {
     public TreeMap<Integer, Integer> classPoint = new TreeMap<>();
 
     public static SecurityFilter loadJson(String json) {
-        SecurityFilter sf = new Gson().fromJson(json, SecurityFilter.class);
-        sf.json = json;
-        return sf;
+        try {
+            SecurityFilter sf = new Gson().fromJson(json, SecurityFilter.class);
+            sf.json = json;
+            return sf;
+        } catch (Exception e) {
+            return null;
+        }
     }
 }

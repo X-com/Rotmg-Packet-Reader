@@ -21,17 +21,17 @@ import java.util.Comparator;
 
 public class SecurityFilterGUI extends JPanel {
 
-    private ParsePanelGUI parrent;
+    private final ParsePanelGUI parrent;
 
-    private ArrayList<FilterEntity> classPoints = new ArrayList<>();
-    private ArrayList<FilterEntity> items = new ArrayList<>();
-    private ArrayList<JCheckBox> checkBoxStats = new ArrayList<>();
+    private final ArrayList<FilterEntity> classPoints = new ArrayList<>();
+    private final ArrayList<FilterEntity> items = new ArrayList<>();
+    private final ArrayList<JCheckBox> checkBoxStats = new ArrayList<>();
 
-    private JComboBox<String> filterComboBox;
-    private JTextField jsonField;
+    private final JComboBox<String> filterComboBox;
+    private final JTextField jsonField;
     private JTextField nameField;
     private JTextField exaltSkinPointsField;
-    private FilterEntity exaltSkin = new FilterEntity();
+    private final FilterEntity exaltSkin = new FilterEntity();
 
     public SecurityFilterGUI(ParsePanelGUI parrent) {
         this.parrent = parrent;
@@ -177,7 +177,11 @@ public class SecurityFilterGUI extends JPanel {
                 str.append("§").append(sf.json);
             }
         }
-        PropertiesManager.setProperties("securityFilters", str.substring(2));
+        if (str.length() > 0) {
+            PropertiesManager.setProperties("securityFilters", str.substring(2));
+        } else {
+            PropertiesManager.setProperties("securityFilters", "");
+        }
     }
 
     private void load(ActionEvent actionEvent) {
@@ -251,14 +255,14 @@ public class SecurityFilterGUI extends JPanel {
             return;
         }
         SecurityFilter sf = SecurityFilter.loadJson(json);
+        if (sf == null) return;
         saveSF(sf);
         loadSF(sf);
     }
 
     private void clearAll() {
         nameField.setText("");
-        for (int i = 0; i < checkBoxStats.size(); i++) {
-            JCheckBox c = checkBoxStats.get(i);
+        for (JCheckBox c : checkBoxStats) {
             c.setSelected(false);
         }
         exaltSkinPointsField.setText("");
@@ -353,7 +357,7 @@ public class SecurityFilterGUI extends JPanel {
         panel.add(n, BorderLayout.NORTH);
 
         ArrayList<ParseEquipment.Equipment> list = ParseEquipment.getParseItems();
-        list.sort(Comparator.comparing(e -> e.name));
+        list.sort(Comparator.comparing(ParseEquipment.Equipment::name));
 
         JPanel body = new JPanel();
         body.setLayout(new GridBagLayout());
@@ -367,7 +371,7 @@ public class SecurityFilterGUI extends JPanel {
             item.id = e.id;
 
             JLabel icon = new JLabel(ImageBuffer.getOutlinedIcon(e.id, 24));
-            icon.setText(e.name);
+            icon.setText(e.name());
             item.field = addTextField(3, item);
             item.checkBox = new JCheckBox();
             gridBagConstraints.gridy = count;
@@ -434,7 +438,7 @@ public class SecurityFilterGUI extends JPanel {
         dialog.setVisible(true);
     }
 
-    private class FilterEntity {
+    private static class FilterEntity {
         int id;
         int point;
         JCheckBox checkBox;

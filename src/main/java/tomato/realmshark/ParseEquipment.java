@@ -56,6 +56,9 @@ public class ParseEquipment {
                         if (Objects.equals(info.name, "Labels")) {
                             equipment.labels = info.children.get(0).value;
                         }
+                        if (Objects.equals(info.name, "DisplayId")) {
+                            equipment.displayId = info.children.get(0).value;
+                        }
                     }
                     EQUIPMENT.put(equipment.id, equipment);
                 }
@@ -69,7 +72,7 @@ public class ParseEquipment {
         ArrayList<Equipment> list = new ArrayList<>();
 
         for (Equipment e : EQUIPMENT.values()) {
-            if (e.labels != null && !e.labels.contains("CONSUMABLE") && (e.labels.contains("UT") || e.labels.contains("T" + e.tier))) {
+            if (e.labels != null && !e.labels.contains("CONSUMABLE") && (e.labels.contains("ST") || e.labels.contains("UT") || e.labels.contains("T" + e.tier))) {
                 list.add(e);
             }
         }
@@ -85,5 +88,14 @@ public class ParseEquipment {
         public String description;
         public int feedpower;
         public String labels;
+        public String displayId;
+
+        public String name() {
+            if (displayId != null) {
+                return displayId;
+            } else {
+                return name;
+            }
+        }
     }
 }
