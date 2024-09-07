@@ -157,10 +157,7 @@ public class ChatGUI extends JPanel {
      * @param p Text packet with chat data.
      */
     public static void updateChat(TextPacket p) {
-        boolean containsBlockedSpam = blockedSpam.stream().anyMatch(p.text::contains);
-        if (containsBlockedSpam) {
-            return;
-        }
+        if (blockedSpam != null && blockedSpam.stream().anyMatch(p.text::contains)) return;
 
         String a = "";
         int type = 0;
