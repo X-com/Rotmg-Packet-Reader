@@ -19,6 +19,7 @@ public class Sound {
     public static Sound keypop;
     public static Sound whitebag;
     public static Sound orangebag;
+    public static Sound redbag;
     public static Sound trade;
 
     public static boolean playPmSound = false;
@@ -26,6 +27,7 @@ public class Sound {
     public static boolean playGuildSound = false;
     public static boolean playWhiteBagSound = true;
     public static boolean playOrangeBagSound = false;
+    public static boolean playRedBagSound = false;
     public static boolean playTradeSound = false;
 
     public Sound(String file) {
@@ -42,6 +44,7 @@ public class Sound {
         keypop = new Sound("sound/keypop.wav");
         whitebag = new Sound("sound/whitebag.wav");
         orangebag = new Sound("sound/orangebag.wav");
+        redbag = new Sound("sound/redbag.wav");
         trade = new Sound("sound/trade.wav");
     }
 
