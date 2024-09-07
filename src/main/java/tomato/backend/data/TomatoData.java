@@ -9,6 +9,7 @@ import packets.data.enums.NotificationEffectType;
 import packets.data.enums.StatType;
 import packets.incoming.*;
 import packets.outgoing.*;
+import tomato.backend.SecurityAbilityUseCheck;
 import tomato.gui.character.*;
 import tomato.gui.chat.ChatGUI;
 import tomato.gui.dps.DpsGUI;
@@ -214,6 +215,7 @@ public class TomatoData {
 
         if (newObject) {
             moonLightFlameCounter(idType);
+            SecurityAbilityUseCheck.decoy(entity);
         }
         if (petyard) {
             addPet(object);
@@ -340,6 +342,7 @@ public class TomatoData {
             Entity entity = entityList.computeIfAbsent(id, idd -> new Entity(this, idd, timePc));
             entity.updateStats(p.status[i], timePc);
         }
+        SecurityAbilityUseCheck.decreaseDecoyCounter();
         lootTick();
     }
 

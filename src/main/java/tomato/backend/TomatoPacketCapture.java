@@ -74,7 +74,7 @@ public class TomatoPacketCapture implements Controller {
             data.logPacket(packet);
         } else if (packet instanceof StasisPacket) {
             StasisPacket p = (StasisPacket) packet;
-            StasisCheck.stasis(p, data);
+            SecurityAbilityUseCheck.stasis(p, data);
         } else if (packet instanceof MapInfoPacket) {
             MapInfoPacket p = (MapInfoPacket) packet;
             data.setNewRealm(p);

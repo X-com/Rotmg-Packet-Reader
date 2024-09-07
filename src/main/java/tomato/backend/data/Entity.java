@@ -7,7 +7,7 @@ import packets.data.WorldPosData;
 import packets.data.enums.ConditionBits;
 import packets.data.enums.ConditionNewBits;
 import packets.data.enums.StatType;
-import tomato.backend.StasisCheck;
+import tomato.backend.SecurityAbilityUseCheck;
 import tomato.gui.character.CharacterStatMaxingGUI;
 import tomato.gui.dps.DpsGUI;
 import tomato.gui.myinfo.MyInfoGUI;
@@ -76,7 +76,8 @@ public class Entity implements Serializable {
     // TODO fix timePC
     public void updateStats(ObjectStatusData status, long timePC) {
         statUpdates.add(status);
-        StasisCheck.checkManaFromStasis(this, status.stats);
+        SecurityAbilityUseCheck.checkManaFromStasis(this, status.stats);
+        SecurityAbilityUseCheck.checkManaFromDecoyUsed(this, status.stats);
         stat.setStats(status.stats);
         pos = status.pos;
 
