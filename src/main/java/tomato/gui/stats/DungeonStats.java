@@ -12,6 +12,8 @@ import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -145,13 +147,19 @@ public class DungeonStats extends JPanel {
         Loot loot = di.getLoot(id);
         if (loot == null) return mobPanel;
 
+        ArrayList<JLabel> list = new ArrayList<>();
         for (Map.Entry<Integer, Integer> e : loot.getItems().entrySet()) {
             StringBuilder sb2 = new StringBuilder();
             Integer idItem = e.getKey();
             sb2.append(IdToAsset.objectName(idItem)).append(" : ").append(e.getValue()).append("\n");
             JLabel itemLabel = new JLabel(sb2.toString(), ImageBuffer.getOutlinedIcon(idItem, 16), JLabel.LEFT);
             itemLabel.setFont(mainFont);
-            mobPanel.add(itemLabel);
+            list.add(itemLabel);
+        }
+
+        list.sort(Comparator.comparing(JLabel::getText));
+        for (JLabel i : list) {
+            mobPanel.add(i);
         }
 
         return mobPanel;
