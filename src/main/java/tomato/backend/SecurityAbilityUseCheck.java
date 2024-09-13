@@ -15,6 +15,7 @@ public class SecurityAbilityUseCheck {
     private static int decoyCounter = 0;
     private static final int DECOY_ID = 1813;
     private static final int DECOY_FOOLSPRISM_ID = 5136;
+    private static final int DECOY_COIN_ID = 28831;
     private static final int DECOY_BRAIN_ID = 45313;
     private static final int DECOY_BRAIN_PUMPKIN_ID = 25736;
     private static final int[] PRISMS = {
