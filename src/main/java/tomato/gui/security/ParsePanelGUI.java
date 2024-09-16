@@ -6,6 +6,7 @@ import packets.data.enums.StatType;
 import tomato.backend.data.Entity;
 import tomato.gui.SmartScroller;
 import tomato.realmshark.ParseEnchants;
+import tomato.realmshark.ParseEquipment;
 import tomato.realmshark.enums.CharacterClass;
 import util.PropertiesManager;
 
@@ -58,6 +59,7 @@ public class ParsePanelGUI extends JPanel {
 
     private static final String DISABLE_FILTER = "Default";
     private JComboBox<String> filterComboBox;
+    private JCheckBox copyOnlyUnderReqCheckbox;
 
     private static TreeMap<String, SecurityFilter> filters = new TreeMap<>();
     private static SecurityFilter currentFilter = null;
@@ -86,6 +88,8 @@ public class ParsePanelGUI extends JPanel {
         filterComboBox.setPreferredSize(new Dimension(10000, 0));
         filterComboBox.addActionListener(this::comboAction);
 
+        copyOnlyUnderReqCheckbox = new JCheckBox("Only copy under req'd");
+
         loadFilters();
 
         top.setLayout(new BoxLayout(top, BoxLayout.X_AXIS));
@@ -93,6 +97,8 @@ public class ParsePanelGUI extends JPanel {
         top.add(filterButton);
         top.add(Box.createRigidArea(new Dimension(10, 0)));
         top.add(filterComboBox);
+        top.add(Box.createRigidArea(new Dimension(10, 0)));
+        top.add(copyOnlyUnderReqCheckbox);
 
         add(top, BorderLayout.NORTH);
 
@@ -122,6 +128,9 @@ public class ParsePanelGUI extends JPanel {
         String selectedItem = PropertiesManager.getProperty("securityFilterName");
         if (setupFilter(selectedItem)) {
             filterComboBox.setSelectedItem(selectedItem);
+        } else {
+            // disable the only copy under reqed checkbox
+            copyOnlyUnderReqCheckbox.setEnabled(false);
         }
     }
 
@@ -146,6 +155,10 @@ public class ParsePanelGUI extends JPanel {
             currentFilter = null;
             PropertiesManager.setProperties("securityFilterName", "");
         }
+
+        // disable the copy under reqs checkbox according to whether this is default filter
+        copyOnlyUnderReqCheckbox.setEnabled(currentFilter != null);
+
         update();
     }
 
@@ -154,10 +167,19 @@ public class ParsePanelGUI extends JPanel {
     }
 
     private void clicked(boolean full) {
+        // determine who's in scope to be copied
+        boolean onlyUnderReqs = copyOnlyUnderReqCheckbox.isSelected();
+
         StringBuilder sb = new StringBuilder();
         if (full) sb.append("[\n");
         boolean first = true;
         for (Player player : playerDisplay.values()) {
+            int playerPoints = getPointsForPlayer(player);
+            int classPoints = currentFilter.classPoint.get(player.playerEntity.objectType);
+
+            // apply under reqs filter
+            if (onlyUnderReqs && (playerPoints >= classPoints && !playerMissingStats(player))) continue;
+
             if (full) {
                 if (!first) {
                     sb.append(",").append("\n");
@@ -197,8 +219,7 @@ public class ParsePanelGUI extends JPanel {
         p.inv[1] = player.stat.get(StatType.INVENTORY_1_STAT).statValue;
         p.inv[2] = player.stat.get(StatType.INVENTORY_2_STAT).statValue;
         p.inv[3] = player.stat.get(StatType.INVENTORY_3_STAT).statValue;
-        int skinId = player.stat.get(StatType.SKIN_ID).statValue;
-        if (skinId == 0) skinId = player.objectType;
+        int skinId = playerSkin(player);
 
         mainPanel.add(Box.createHorizontalGlue());
 
@@ -259,6 +280,23 @@ public class ParsePanelGUI extends JPanel {
             }
         }
 
+        // equipment minimum reqs
+        for (int i = 0; i < currentFilter.minTier.size(); i++) {
+            int equipmentId = p.inv[i];
+            ParseEquipment.Equipment equipment = ParseEquipment.getEquipmentById(equipmentId);
+            Integer minimumTier = currentFilter.minTier.get(i);
+
+            // handle empty gear slots
+            if (equipment == null) {
+//                System.out.println(String.format("could not find equipment with id %s", equipmentId));
+                continue;
+            }
+
+             if (equipment.labels.contains("TIERED") && equipment.tier < minimumTier) {
+                missing += "Gear below reqs: T" + equipment.tier + " " + equipmentNames[i] + "<br>";
+            }
+        }
+
         int point = 0;
         for (int eid : exaltedSkinIds) {
             if (skinId == eid) {
@@ -272,7 +310,7 @@ public class ParsePanelGUI extends JPanel {
             int item = p.inv[i];
             Integer ip = currentFilter.itemPoint.get(item);
             if (ip == null) {
-                missing += "Under reqed: " + equipmentNames[i] + "<br>";
+                missing += "Blacklisted item: " + equipmentNames[i] + "<br>";
             } else {
                 point += ip;
             }
@@ -294,6 +332,49 @@ public class ParsePanelGUI extends JPanel {
         mainPanel.add(panel);
         return width;
     }
+
+    private static int getPointsForPlayer(Player p) {
+        Entity player = p.playerEntity;
+        int skinId = playerSkin(player);
+
+        String missing = "";
+        int point = 0;
+
+        for (int eid : exaltedSkinIds) {
+            if (skinId == eid) {
+                point += currentFilter.exaltSkinPoints;
+                break;
+            }
+        }
+
+        for (int i = 0; i < 4; i++) {
+            int item = p.inv[i];
+            Integer ip = currentFilter.itemPoint.get(item);
+            if (ip == null) {
+                missing += "Under reqed: " + equipmentNames[i] + "<br>";
+            } else {
+                point += ip;
+            }
+        }
+
+        return point;
+    }
+
+    private static boolean playerMissingStats(Player p) {
+        int[] statsMissing = statMissing(p.playerEntity);
+
+        for (int i = 0; i < currentFilter.statMaxed.length; i++) {
+            if (currentFilter.statMaxed[i] && statsMissing[i] > 0) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // TODO: finish this??
+    //    private static boolean playerMeetsEquipmentReqs(Player p) {
+//
+//    }
 
     private static int statsMaxed(Entity player, int[] statsMissing, JPanel mainPanel, FontMetrics fm, int y, int width) {
         JPanel panel = new JPanel();
@@ -426,6 +507,9 @@ public class ParsePanelGUI extends JPanel {
 
         panel.setPreferredSize(new Dimension(10, 10));
         panel.setMaximumSize(new Dimension(10, 10));
+
+        panel.setToolTipText(getToolTipSeasonCrucibleString(player));
+
         mainPanel.add(panel);
         return width;
     }
@@ -463,6 +547,16 @@ public class ParsePanelGUI extends JPanel {
     }
 
     /**
+     * Computes the skin ID for a player.
+     */
+    public static int playerSkin(Entity player) {
+        int skinId = player.stat.get(StatType.SKIN_ID).statValue;
+        if (skinId == 0) skinId = player.objectType;
+
+        return skinId;
+    }
+
+    /**
      * Gets the tool tip stats string from array of stats.
      *
      * @param stats Array of stats.
@@ -470,6 +564,22 @@ public class ParsePanelGUI extends JPanel {
      */
     private static String getToolTipStatString(int[] stats) {
         return String.format("<html>Missing<br>%d :Life<br>%d :Mana<br>%d :Atk<br>%d :Def<br>%d :Spd<br>%d :Dex<br>%d :Vit<br>%d :Wis</html>", stats[0], stats[1], stats[2], stats[3], stats[4], stats[5], stats[6], stats[7]);
+    }
+
+    /**
+     * Gets the tool tip seasonCrucible string from the entity.
+     *
+     * @param player Entity of the player.
+     * @return seasonCrucible as tooltip string.
+     */
+    private static String getToolTipSeasonCrucibleString(Entity player) {
+        String seasonalStr = player.isSeasonal() ? "Seasonal" : "Non-Seasonal";
+
+        if (player.isCrucible()) {
+            return String.format("<html>%s/Crucible</html>", seasonalStr);
+        } else {
+            return String.format("<html>%s</html>", seasonalStr);
+        }
     }
 
     /**

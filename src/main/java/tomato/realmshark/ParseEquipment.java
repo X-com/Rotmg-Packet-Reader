@@ -80,6 +80,10 @@ public class ParseEquipment {
         return list;
     }
 
+    public static Equipment getEquipmentById(int id) {
+        return EQUIPMENT.get(id);
+    }
+
     public static class Equipment {
         public int id;
         public String name;
