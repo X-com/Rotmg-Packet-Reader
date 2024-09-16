@@ -70,6 +70,16 @@ public class ChatGUI extends JPanel {
     }
 
     /**
+     * Schedules a recurring thread to request server phrases to be blocked by chat. Only the scheduler.
+     */
+    private void scheduleLoadBlockedSpam() {
+        ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+
+        // immediately run and then every 30 min after
+        scheduler.scheduleAtFixedRate(this::loadBlockedSpam, 0, 30, TimeUnit.MINUTES);
+    }
+
+    /**
      * Creates a server request worker to request from server phrases to be blocked by chat. Phrases used by bots.
      */
     private void loadBlockedSpam() {
@@ -110,9 +120,6 @@ public class ChatGUI extends JPanel {
             System.err.println("Error during HTTP request: " + e.getMessage());
         }
 //        System.out.println("Repopulating List\n" + blockedSpam);
-
-        ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-        scheduler.scheduleAtFixedRate(this::loadBlockedSpam, 30, 30, TimeUnit.MINUTES);
     }
 
     /**
