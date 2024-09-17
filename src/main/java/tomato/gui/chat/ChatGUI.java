@@ -202,7 +202,16 @@ public class ChatGUI extends JPanel {
         }
         if (!pinged) {
             for (String s : pingMessages) {
-                if (p.text.contains(s)) {
+                System.out.println(s);
+                if (s.startsWith("\"") && s.endsWith("\"")) {
+                    String exactMatch = s.substring(1, s.length() - 1).toLowerCase();
+                    for (String m : p.text.toLowerCase().split(" ")) {
+                        if (exactMatch.equals(m)) {
+                            Sound.pm.play();
+                            break;
+                        }
+                    }
+                } else if (p.text.toLowerCase().contains(s.toLowerCase())) {
                     Sound.pm.play();
                     break;
                 }
