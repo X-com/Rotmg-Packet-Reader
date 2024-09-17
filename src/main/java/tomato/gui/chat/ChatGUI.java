@@ -64,8 +64,27 @@ public class ChatGUI extends JPanel {
         tabbedPane.addTab("Guild", guild);
         add(tabbedPane);
 
-        loadBlockedSpam();
         loadChatPingMessages();
+        loadBlockedChatMessageSpamFromFile();
+        new Thread(this::loadBlockedSpam).start();
+    }
+
+    private void loadBlockedChatMessageSpamFromFile() {
+        try {
+            File f = new File(BLOCK_FILE);
+            if (f.exists()) {
+                FileInputStream file = new FileInputStream(BLOCK_FILE);
+                BufferedReader in = new BufferedReader(new InputStreamReader(file));
+                String inputLine;
+
+                while ((inputLine = in.readLine()) != null) {
+                    blockedSpam.add(inputLine);
+                }
+                in.close();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -109,22 +128,6 @@ public class ChatGUI extends JPanel {
         } catch (IOException e) {
             e.printStackTrace();
             System.err.println("Error during HTTP request: " + e.getMessage());
-        }
-
-        try {
-            File f = new File(BLOCK_FILE);
-            if (f.exists()) {
-                FileInputStream file = new FileInputStream(BLOCK_FILE);
-                BufferedReader in = new BufferedReader(new InputStreamReader(file));
-                String inputLine;
-
-                while ((inputLine = in.readLine()) != null) {
-                    blockedSpam.add(inputLine);
-                }
-                in.close();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 
