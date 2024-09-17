@@ -7,15 +7,18 @@ import packets.data.enums.StatType;
 import packets.incoming.MapInfoPacket;
 import tomato.backend.data.Entity;
 import tomato.backend.data.TomatoData;
-import tomato.gui.stats.LootGUI;
 import tomato.version.Version;
 
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
+import java.util.Stack;
+import java.util.concurrent.Semaphore;
 
 public class SendLoot {
 
     private static WebSocket webSocket;
+    private static Semaphore sem = new Semaphore(0);
+    private static Stack<byte[]> stack = new Stack<>();
 
     static {
         try {
@@ -23,6 +26,7 @@ public class SendLoot {
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }
+        sendLoop();
     }
 
     public static void sendLoot(TomatoData data, MapInfoPacket map, Entity bag, Entity dropper, Entity player, long time) {
@@ -108,8 +112,24 @@ public class SendLoot {
 //        System.out.println(jsonObject);
 
         byte[] out = jsonObject.toString().getBytes(StandardCharsets.UTF_8);
+        stack.push(out);
+        sem.release();
+    }
 
-        webSocket.sendBytes(out);
+    private static void sendLoop() {
+        new Thread(() -> {
+            while (true) {
+                try {
+                    sem.acquire();
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+                while (stack.size() > 0) {
+                    byte[] out = stack.pop();
+                    webSocket.sendBytes(out);
+                }
+            }
+        }).start();
     }
 
     public static void main(String[] args) {

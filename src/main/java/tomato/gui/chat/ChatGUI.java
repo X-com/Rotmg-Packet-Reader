@@ -10,9 +10,7 @@ import util.Util;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -34,8 +32,9 @@ public class ChatGUI extends JPanel {
     public static boolean save;
     private static TomatoData data;
 
-    private static ArrayList<String> blockedSpam;
+    private static ArrayList<String> blockedSpam = new ArrayList<>();
     private static final String API_URL = "https://api.realmshark.cc/blocked-keywords";
+    private static final String BLOCK_FILE = "block.txt";
 
     private static ArrayList<String> pingMessages = new ArrayList<>();
 
@@ -65,8 +64,27 @@ public class ChatGUI extends JPanel {
         tabbedPane.addTab("Guild", guild);
         add(tabbedPane);
 
-        loadBlockedSpam();
         loadChatPingMessages();
+        loadBlockedChatMessageSpamFromFile();
+        new Thread(this::loadBlockedSpam).start();
+    }
+
+    private void loadBlockedChatMessageSpamFromFile() {
+        try {
+            File f = new File(BLOCK_FILE);
+            if (f.exists()) {
+                FileInputStream file = new FileInputStream(BLOCK_FILE);
+                BufferedReader in = new BufferedReader(new InputStreamReader(file));
+                String inputLine;
+
+                while ((inputLine = in.readLine()) != null) {
+                    blockedSpam.add(inputLine);
+                }
+                in.close();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -103,27 +121,14 @@ public class ChatGUI extends JPanel {
             in.close();
 
             // Process the response (assuming it's a JSON array of keywords)
-            parseAndUpdateBlockedSpam(response.toString());
-
+            Type listType = new TypeToken<ArrayList<String>>() {
+            }.getType();
+            ArrayList<String> blocked = new Gson().fromJson(response.toString(), listType);
+            blockedSpam.addAll(blocked);
         } catch (IOException e) {
             e.printStackTrace();
             System.err.println("Error during HTTP request: " + e.getMessage());
         }
-//        System.out.println("Repopulating List\n" + blockedSpam);
-
-        ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-        scheduler.scheduleAtFixedRate(this::loadBlockedSpam, 30, 30, TimeUnit.MINUTES);
-    }
-
-    /**
-     * Parse the JSON response and update the list of blocked potential spam.
-     *
-     * @param jsonResponse The JSON response from the API.
-     */
-    private static void parseAndUpdateBlockedSpam(String jsonResponse) {
-        Type listType = new TypeToken<ArrayList<String>>() {
-        }.getType();
-        blockedSpam = new Gson().fromJson(jsonResponse, listType);
     }
 
     /**
@@ -200,7 +205,15 @@ public class ChatGUI extends JPanel {
         }
         if (!pinged) {
             for (String s : pingMessages) {
-                if (p.text.contains(s)) {
+                if (s.startsWith("\"") && s.endsWith("\"")) {
+                    String exactMatch = s.substring(1, s.length() - 1).toLowerCase();
+                    for (String m : p.text.toLowerCase().split(" ")) {
+                        if (exactMatch.equals(m)) {
+                            Sound.pm.play();
+                            break;
+                        }
+                    }
+                } else if (p.text.toLowerCase().contains(s.toLowerCase())) {
                     Sound.pm.play();
                     break;
                 }

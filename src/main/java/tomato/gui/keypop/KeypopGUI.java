@@ -68,16 +68,12 @@ public class KeypopGUI extends JPanel {
             Matcher m = keypopParse.matcher(msg);
 
             if (m.find()) {
-                String playerName = m.group(1);
+                String playerName = m.group(1).split(",")[0];
                 String dungeonName = IdToAsset.objectName(packet.pictureType);
 
                 appendTextAreaKeypop(String.format("%s [%s]: %s\n", Util.getHourTime(), playerName, dungeonName));
 
-                if (selectedDungeons.contains(dungeonName)) {
-                    Sound.keypop.play();
-                } else if (isMissingDungeonsSelected() && isMissingDungeon(data.getCurrentDungeonStats(), dungeonName)) {
-                    Sound.keypop.play();
-                }
+                playDungeonSound(data, dungeonName);
             }
         } else if (packet.effect == NotificationEffectType.PlayerCallout) {
             String msg = packet.message;
@@ -93,13 +89,7 @@ public class KeypopGUI extends JPanel {
             }
 
             if (!playerName.isEmpty() && !dungeonName.isEmpty()) {
-                appendTextAreaKeypop(String.format("%s [%s]: %s\n", Util.getHourTime(), playerName, dungeonName));
-
-                if (selectedDungeons.contains(dungeonName)) {
-                    Sound.keypop.play();
-                } else if (isMissingDungeonsSelected() && isMissingDungeon(data.getCurrentDungeonStats(), dungeonName)) {
-                    Sound.keypop.play();
-                }
+                playDungeonSound(data, dungeonName);
             }
         } else if (packet.effect == NotificationEffectType.ServerMessage && packet.message != null) {
             String msg = packet.message;
@@ -119,6 +109,14 @@ public class KeypopGUI extends JPanel {
                     appendTextAreaKeypop(String.format("%s [%s]: %s\n", Util.getHourTime(), playerName, pop));
                 }
             }
+        }
+    }
+
+    public static void playDungeonSound(TomatoData data, String dungeonName) {
+        if (selectedDungeons.contains(dungeonName)) {
+            Sound.keypop.play();
+        } else if (isMissingDungeonsSelected() && isMissingDungeon(data.getCurrentDungeonStats(), dungeonName)) {
+            Sound.keypop.play();
         }
     }
 
