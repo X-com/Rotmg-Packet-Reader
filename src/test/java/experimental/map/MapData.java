@@ -42,12 +42,7 @@ public class MapData {
         for (int i = 0; i < tiles.length; i++) {
             for (int j = 0; j < tiles[0].length; j++) {
                 if (tiles[i][j] != 0) {
-                    int color = 0;
-                    try {
-                        color = ImageBuffer.getColor(tiles[i][j]);
-                    } catch (AssetMissingException e) {
-                        throw new RuntimeException(e);
-                    }
+                    int color = getIntColor(tiles[i][j]);
                     bi.setRGB(i, j, color);
                 }
             }
@@ -57,6 +52,20 @@ public class MapData {
             ImageIO.write(bi, "PNG", new File(name + ".png"));
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    public static int getIntColor(int id) {
+        try {
+            float[] cc = ImageBuffer.getColor(id);
+            if(cc == null) return 0;
+            int r = (int) (cc[0] * 255.0);
+            int g = (int) (cc[1] * 255.0);
+            int b = (int) (cc[2] * 255.0);
+            int a = (int) (cc[3] * 255.0);
+            return a << 24 | r << 16 | g << 8 | b;
+        } catch (AssetMissingException e) {
+            throw new RuntimeException(e);
         }
     }
 }

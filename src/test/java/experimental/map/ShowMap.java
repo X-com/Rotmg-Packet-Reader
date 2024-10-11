@@ -106,15 +106,25 @@ public class ShowMap {
         for (int x = 0; x < bi.getWidth(); x++) {
             for (int y = 0; y < bi.getHeight(); y++) {
                 int id = map.mapArray[x][y];
-                try {
-                    bi.setRGB(x, y, ImageBuffer.getColor(id));
-                } catch (AssetMissingException e) {
-                    throw new RuntimeException(e);
-                }
+                bi.setRGB(x, y, getIntColor(id));
             }
         }
 
         g.drawImage(bi, 0, 0, canvas.getWidth(), canvas.getHeight(), null);
+    }
+
+    public static int getIntColor(int id) {
+        try {
+            float[] cc = ImageBuffer.getColor(id);
+            if(cc == null) return 0;
+            int r = (int) (cc[0] * 255.0);
+            int g = (int) (cc[1] * 255.0);
+            int b = (int) (cc[2] * 255.0);
+            int a = (int) (cc[3] * 255.0);
+            return a << 24 | r << 16 | g << 8 | b;
+        } catch (AssetMissingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private void prevMap() {

@@ -10,6 +10,8 @@ import potato.model.Config;
 import potato.model.DataModel;
 import potato.view.opengl.OpenGLPotato;
 
+import java.io.IOException;
+
 public class PacketController {
 
     private DataModel model;
@@ -47,8 +49,8 @@ public class PacketController {
         } else if (packet instanceof NotificationPacket) {
             NotificationPacket p = (NotificationPacket) packet;
             model.teleportTimer(p);
-        } else if (packet instanceof UnknownPacket169) {
-            UnknownPacket169 p = (UnknownPacket169) packet;
+        } else if (packet instanceof RealmScoreUpdatePacket) {
+            RealmScoreUpdatePacket p = (RealmScoreUpdatePacket) packet;
             model.unknownPacket169(p);
         } else if (packet instanceof IpAddress) {
             IpAddress p = (IpAddress) packet;
@@ -56,7 +58,11 @@ public class PacketController {
         } else if (packet instanceof MapInfoPacket) {
             MapInfoPacket p = (MapInfoPacket) packet;
             if (Config.instance.saveMapInfo) {
-                model.saveMap();
+                try {
+                    model.saveMap();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
             }
 
             model.resetSaver(p);
@@ -64,12 +70,16 @@ public class PacketController {
             model.setRealmName(p.realmName);
             model.reset();
 
-            if (p.displayName.equals("{s.rotmg}")) {
+            if(p.realmName.contains("NewRealm") && p.displayName.equals("{s.rotmg}")) {
+                model.setInNewRealm(p.seed, p.gameOpenedTime, p.width, p.height);
+            } else if (p.displayName.equals("{s.rotmg}")) {
                 model.setInRealm(p.realmName, p.seed, p.gameOpenedTime, p.width, p.height);
             } else if (p.displayName.equals("The Shatters")) {
                 model.setInShatters(p.seed, p.gameOpenedTime, p.width, p.height);
             } else if (p.displayName.equals("Crystal Cavern")) {
                 model.setInCrystal(p.seed, p.gameOpenedTime, p.width, p.height);
+            } else if (p.displayName.equals("{s.nexus}")) {
+                model.resetCastleTimer();
             }
         } else if (packet instanceof CreateSuccessPacket) {
             CreateSuccessPacket p = (CreateSuccessPacket) packet;

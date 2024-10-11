@@ -16,9 +16,9 @@ public class Bootloader {
     public static final int SNAKE_TILE_CENTERING = 36;
 
     public static BufferedImage[] loadMaps() {
-        BufferedImage[] img = new BufferedImage[13];
+        BufferedImage[] img = new BufferedImage[14];
         try {
-            for (int i = 1; i <= 13; i++) {
+            for (int i = 1; i <= 14; i++) {
                 String file = "potatoRes/map/map" + i + ".png";
                 InputStream is = Util.resourceFilePath(file);
                 img[i - 1] = ImageIO.read(is);

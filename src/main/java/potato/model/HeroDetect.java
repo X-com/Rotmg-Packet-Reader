@@ -219,7 +219,6 @@ public class HeroDetect {
             for (StatData sd : osd.stats) {
                 if (sd.statType == StatType.LEVEL_STAT && sd.statValue == 20) {
                     questUpdateLevel = true;
-                    System.out.println("questUpdateLevel " + questUpdateLevel);
                 }
             }
         }

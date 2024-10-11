@@ -27,4 +27,13 @@ public class Entity {
     public float getY() {
         return y;
     }
+
+    @Override
+    public String toString() {
+        return "Entity{" +
+                "\n   x=" + x +
+                "\n   y=" + y +
+                "\n   shape=" + shape +
+                "\n   size=" + size;
+    }
 }

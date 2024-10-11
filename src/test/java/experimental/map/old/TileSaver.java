@@ -252,11 +252,7 @@ public class TileSaver {
 //                    if (id == 45680) continue;
 //                    if (id == 45683) continue;
 //                    bi.setRGB(x, y, colors[id]);
-                    try {
-                        bi.setRGB(x, y, ImageBuffer.getColor(id));
-                    } catch (AssetMissingException e) {
-                        throw new RuntimeException(e);
-                    }
+                    bi.setRGB(x, y, getIntColor(id));
                 }
 //                    if(x+70 >= bi.getWidth()) continue;
 //                    if(y+80 >= bi.getHeight()) continue;
@@ -266,6 +262,20 @@ public class TileSaver {
 //            ImageIO.write(bi, "PNG", new File("assets/map/map" + (i + 1) + ".png"));
         ImageIO.write(bi, "PNG", new File("tiles/map" + (i + 1) + ".png"));
 //        }
+    }
+
+    public static int getIntColor(int id) {
+        try {
+            float[] cc = ImageBuffer.getColor(id);
+            if(cc == null) return 0;
+            int r = (int) (cc[0] * 255.0);
+            int g = (int) (cc[1] * 255.0);
+            int b = (int) (cc[2] * 255.0);
+            int a = (int) (cc[3] * 255.0);
+            return a << 24 | r << 16 | g << 8 | b;
+        } catch (AssetMissingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private boolean doGland(int i, BufferedImage bi) {

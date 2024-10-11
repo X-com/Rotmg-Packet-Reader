@@ -81,7 +81,7 @@ public class Potato {
         Register.INSTANCE.register(PacketType.CREATE_SUCCESS, controller::packets);
         Register.INSTANCE.register(PacketType.MOVE, controller::packets);
         Register.INSTANCE.register(PacketType.NOTIFICATION, controller::packets);
-        Register.INSTANCE.register(PacketType.UNKNOWN169, controller::packets);
+        Register.INSTANCE.register(PacketType.REALM_SCORE_UPDATE, controller::packets);
 
         PacketProcessor packetProcessor = new PacketProcessor();
         packetProcessor.start();
