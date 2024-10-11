@@ -243,8 +243,8 @@ public class OpenGLPotato extends Thread {
         System.out.println("Show info: " + show);
     }
 
-    public void setCamera(float x, float y, float zoom) {
-        this.zoom = zoom;
+    public void setCamera(float x, float y, int z) {
+        zoom = z / 25f;
         refresh = true;
         y = mapSize - y;
         view.identity();

@@ -68,9 +68,8 @@ public class DataModel {
     private final int[][] mapTiles = new int[2048][2048];
     private float mapWidth;
     private float mapHeight;
-    private float zoomStep = 7.8f;
-    private float zoomMax = 48f;
-    private float zoom = 1f;
+    private int zoomMax = 1200;
+    private int zoom = 25;
     private float realmScore;
 
 
@@ -162,11 +161,11 @@ public class DataModel {
 
     public void editZoom(boolean zoomIn) {
         if (!zoomIn) {
-            zoom += zoomStep;
+            zoom *= 2;
             if (zoom > zoomMax) zoom = zoomMax;
         } else if (zoomIn) {
-            zoom -= zoomStep;
-            if (zoom < 1) zoom = 1f;
+            zoom /= 2;
+            if (zoom < 25) zoom = 25;
         }
         renderer.setCamera(playerX, playerY, zoom);
     }
@@ -556,21 +555,17 @@ public class DataModel {
         entityList.remove(id);
     }
 
-    private void setZoom(int mapSize) {
+    public void setZoom(int mapSize) {
         renderer.mapSize(mapSize);
-        zoom = 1f;
-        if (mapSize == 2048) {
-            zoomMax = 48f;
-            zoomStep = 7.8f;
-        } else if (mapSize == 512) {
-            zoomMax = 12f;
-            zoomStep = 1.8f;
-        } else if (mapSize == 256) {
-            zoomMax = 6f;
-            zoomStep = 1f;
-        } else if (mapSize == 128) {
-            zoomMax = 3f;
-            zoomStep = 1f;
+        zoom = 25;
+        if (mapSize == 2048) { // 1200
+            zoomMax = 1200;
+        } else if (mapSize == 512) { // 300
+            zoomMax = 300;
+        } else if (mapSize == 256) { // 150
+            zoomMax = 150;
+        } else if (mapSize == 128) { // 75
+            zoomMax = 75;
         }
     }
 
