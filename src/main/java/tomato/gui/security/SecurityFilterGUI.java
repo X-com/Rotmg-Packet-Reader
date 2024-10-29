@@ -8,14 +8,13 @@ import tomato.realmshark.enums.StatPotion;
 import util.PropertiesManager;
 
 import javax.swing.*;
+import javax.swing.text.JTextComponent;
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
+import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.stream.IntStream;
@@ -40,6 +39,7 @@ public class SecurityFilterGUI extends JPanel {
     private JTextField nameField;
     private JTextField exaltSkinPointsField;
     private final FilterEntity exaltSkin = new FilterEntity();
+    private ActionEvent event;
 
     public SecurityFilterGUI(ParsePanelGUI parrent) {
         this.parrent = parrent;
@@ -324,6 +324,24 @@ public class SecurityFilterGUI extends JPanel {
         }
     }
 
+    private class MinTierFocusListener implements FocusListener {
+
+        @Override
+        public void focusGained(FocusEvent e) {
+            JTextComponent textField;
+            if (e.getComponent() instanceof JTextComponent) textField = (JTextField) e.getComponent();
+            else return;
+
+            textField.setSelectionStart(0);
+            textField.setSelectionEnd(textField.getText().length());
+        }
+
+        @Override
+        public void focusLost(FocusEvent e) {
+            return;
+        }
+    }
+
     private void leftColumn(JPanel panel) {
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         stats(panel);
@@ -380,7 +398,8 @@ public class SecurityFilterGUI extends JPanel {
             minTier.field = addTextField(1, minTier);
             body.add(label);
             body.add(minTier.field);
-            minTier.field.setText("0");
+            minTier.field.setText("1");
+            minTier.field.addFocusListener(new MinTierFocusListener());
         });
 
         mainPanel.add(panel);
