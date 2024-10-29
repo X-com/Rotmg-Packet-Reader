@@ -174,11 +174,14 @@ public class ParsePanelGUI extends JPanel {
         if (full) sb.append("[\n");
         boolean first = true;
         for (Player player : playerDisplay.values()) {
-            int playerPoints = getPointsForPlayer(player);
-            int classPoints = currentFilter.classPoint.get(player.playerEntity.objectType);
+            // we don't check if player meets filter criteria under default filter
+            if (currentFilter != null) {
+                int playerPoints = getPointsForPlayer(player);
+                int classPoints = currentFilter.classPoint.get(player.playerEntity.objectType);
 
-            // apply under reqs filter
-            if (onlyUnderReqs && (playerPoints >= classPoints && !playerMissingStats(player))) continue;
+                // apply under reqs filter
+                if (onlyUnderReqs && (playerPoints >= classPoints && !playerMissingStats(player))) continue;
+            }
 
             if (full) {
                 if (!first) {
@@ -336,6 +339,9 @@ public class ParsePanelGUI extends JPanel {
     private static int getPointsForPlayer(Player p) {
         Entity player = p.playerEntity;
         int skinId = playerSkin(player);
+
+        // can only calculate points for players with active filter
+        if (currentFilter == null) return 0;
 
         String missing = "";
         int point = 0;
