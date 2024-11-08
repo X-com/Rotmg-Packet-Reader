@@ -93,10 +93,11 @@ public class PacketTester {
     public void decrype(byte[] data) {
         System.out.println(Arrays.toString(data));
         RC4 rc4 = new RC4(RotMGRC4Keys.INCOMING_STRING);
+        RC4 rcopy = rc4.fork();
 
         int i = 0;
         while (i < 2000000) {
-            RC4 rcopy = rc4.fork();
+            rc4.copy(rcopy);
             byte[] dcopy = Arrays.copyOfRange(data, 5, data.length);
             rcopy.decrypt(dcopy);
             int int1 = decodeInt(dcopy, 0);

@@ -19,6 +19,7 @@ public class TickAligner {
     private boolean synced = false;
     private int packetBytes = 0;
     private RC4 rc4;
+    private RC4 rc4Fork;
     private byte[] TickA;
     private int CURRENT_TICK;
 
@@ -29,6 +30,7 @@ public class TickAligner {
      */
     public TickAligner(RC4 r) {
         rc4 = r;
+        rc4Fork = r.fork();
     }
 
     /**
@@ -47,7 +49,8 @@ public class TickAligner {
         if (synced) {
             if (type == PacketType.NEWTICK.getIndex() || type == PacketType.MOVE.getIndex()) {
                 byte[] duplicate = Arrays.copyOfRange(encryptedData.array(), 5, encryptedData.capacity());
-                rc4.fork().decrypt(duplicate);
+                rc4.copy(rc4Fork);
+                rc4Fork.decrypt(duplicate);
                 CURRENT_TICK++;
                 int tick = Util.decodeInt(duplicate);
                 if (CURRENT_TICK != tick) {

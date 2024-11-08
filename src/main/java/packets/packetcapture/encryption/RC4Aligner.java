@@ -35,6 +35,8 @@ public class RC4Aligner {
      */
     public static int syncCipher(RC4 cipher, byte[] textData, String name) {
         RC4 finder = cipher.fork();
+        RC4 forked = cipher.fork();
+
         byte[] target = encodeString(name);
         int nameOffset = 5;
         int offset = -1;
@@ -44,7 +46,7 @@ public class RC4Aligner {
             byte xor = finder.getXor();
             if (target[0] != (textData[nameOffset] ^ xor))
                 continue;
-            RC4 forked = finder.fork();
+            finder.copy(forked);
             for (int i = 1; i < target.length; i++) {
                 xor = forked.getXor();
                 if (target[i] != (textData[i + nameOffset] ^ xor)) {
@@ -78,13 +80,14 @@ public class RC4Aligner {
     public static int syncCipher(RC4 cipher, byte[] A, byte[] B, int delta) {
         RC4 finderA = cipher.fork();
         RC4 finderB = cipher.fork();
+        RC4 tmp = cipher.fork();
         finderB.skip(delta);
         int offset = -1;
         while (offset < SEARCH_SIZE) {
             offset++;
-            RC4 tmp = finderA.fork();
+            finderA.copy(tmp);
             int a = decodeInt(A, tmp);
-            tmp = finderB.fork();
+            finderB.copy(tmp);
             int b = decodeInt(B, tmp);
 
             if ((a + 1) != b) {

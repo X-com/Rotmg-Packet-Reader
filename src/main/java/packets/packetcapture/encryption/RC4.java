@@ -138,6 +138,14 @@ public class RC4 {
         return new RC4(state2, initState, i, j);
     }
 
+    public void copy(RC4 c) {
+        if(state.length != c.state.length) c.state = new int[state.length];
+        System.arraycopy(state, 0, c.state, 0, state.length);
+        c.initState = initState;
+        c.i = i;
+        c.j = j;
+    }
+
     public void reset() {
         System.arraycopy(initState, 0, state, 0, state.length);
         i = 0;
