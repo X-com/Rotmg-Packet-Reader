@@ -138,6 +138,7 @@ public enum PacketType { //ChristmasTree™   ⛧   <-crown
                         FAVOUR_PET(145, Outgoing, FavourPetPacket::new),
                       SKIN_RECYCLE(146, Outgoing, SkinRecyclePacket::new),
                         UNKNOWN147(147, Incoming, UnknownPacket147::new),
+                      DAMAGE_BOOST(148, Incoming, DamageBoostPacket::new),
                  CLAIM_BATTLE_PASS(149, Outgoing, ClaimBattlePassItemPacket::new),
          CLAIM_BP_MILESTONE_RESULT(150, Incoming, ClaimBPMilestoneResultPacket::new),
                 BOOST_BP_MILESTONE(151, Outgoing, BoostBPMilestonePacket::new),
