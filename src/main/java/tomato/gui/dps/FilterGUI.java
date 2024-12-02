@@ -239,7 +239,7 @@ public class FilterGUI extends JPanel {
         classCheckBoxes.add(myClass);
         body.add(myClass);
         for (CharacterClass s : CharacterClass.CHAR_CLASS_LIST) {
-            JCheckBox comp = new JCheckBox(s.name());
+            JCheckBox comp = new JCheckBox(CharacterClass.getName(s.id));
             classCheckBoxes.add(comp);
             body.add(comp);
         }

@@ -345,13 +345,14 @@ public class SecurityFilterGUI extends JPanel {
             FilterEntity classPoint = new FilterEntity();
             classPoints.add(classPoint);
 
-            JLabel label = new JLabel(s.name());
+            JLabel label = new JLabel(CharacterClass.getName(s.id));
             classPoint.id = s.getId();
             classPoint.field = addTextField(1, classPoint);
             body.add(label);
             body.add(classPoint.field);
-//            classPoint.field.setText("0");
+//    classPoint.field.setText("0");
         }
+
 
         mainPanel.add(panel);
     }

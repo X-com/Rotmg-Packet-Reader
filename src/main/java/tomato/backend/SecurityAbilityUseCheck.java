@@ -77,7 +77,7 @@ public class SecurityAbilityUseCheck {
     }
 
     public static void checkManaFromDecoyUsed(Entity entity, StatData[] stats) {
-        if (entity.objectType != CharacterClass.Trickster.getId()) return; // check if trickster
+        if (entity.objectType != 820) return; // check if trickster using ID 820
         if (decoyCounter == 0) {
             for (StatData sd : stats) {
                 if (sd.statType == StatType.MP_STAT) {
@@ -92,6 +92,7 @@ public class SecurityAbilityUseCheck {
             }
         }
     }
+
 
     public static void decreaseDecoyCounter() {
         decoyCounter--;
