@@ -28,6 +28,7 @@ public class ParsePanelGUI extends JPanel {
 
     private static Color seasonalColor = new Color(21, 220, 166);
     private static Color redColor = new Color(140, 64, 64);
+    private JCheckBox sortCheckBox; // Declare the checkbox at the class level
 
     private static JPanel charPanel;
     private static HashMap<Integer, Player> playerDisplay;
@@ -96,14 +97,32 @@ public class ParsePanelGUI extends JPanel {
 
         add(top, BorderLayout.NORTH);
 
+        // Update buttons panel layout to FlowLayout to allow more components horizontally
         JPanel buttons = new JPanel();
-        buttons.setLayout(new GridLayout(1, 2));
+        buttons.setLayout(new FlowLayout(FlowLayout.LEFT));  // Use FlowLayout with left alignment
+
         JButton buttonLeft = new JButton("Copy names to Clipboard");
         JButton buttonRight = new JButton("Copy all to Clipboard");
         buttonLeft.addActionListener(e -> clicked(false));
         buttonRight.addActionListener(e -> clicked(true));
         buttons.add(buttonLeft);
         buttons.add(buttonRight);
+
+        // Add Sort checkbox to the buttons panel
+        sortCheckBox = new JCheckBox("Sort By Guild");
+        sortCheckBox.setSelected(true);  // Optional: set it to be selected by default
+
+        // Add an action listener to the checkbox to update the player list when toggled
+        sortCheckBox.addActionListener(e -> {
+            if (sortCheckBox.isSelected()) {
+                update();  // Sort and update the list whenever a new player is added
+            }
+        });
+
+        // Add the Sort checkbox to the buttons panel
+        buttons.add(sortCheckBox);
+
+        // Add the updated buttons panel to the south of the main panel
         add(buttons, BorderLayout.SOUTH);
     }
 
@@ -497,7 +516,17 @@ public class ParsePanelGUI extends JPanel {
         playerDisplay.put(id, p);
         charPanel.add(p.panel);
 
-        INSTANCE.guiUpdate();
+        // Check if the "Sort" checkbox is selected, and update the list if necessary
+        if (INSTANCE.sortCheckBox.isSelected()) {
+            update();  // Calls update() to sort and refresh the player list
+        } else {
+            INSTANCE.guiUpdate();  // Simply refresh if not sorting
+        }
+    }
+
+    public JCheckBox getSortCheckBox() {
+        // Assuming the checkbox is saved in a class variable like `sortCheckBox`
+        return sortCheckBox;
     }
 
     public static void removePlayer(int dropId) {
@@ -516,8 +545,22 @@ public class ParsePanelGUI extends JPanel {
     }
 
     public static void update() {
+        // Sort players by guild name alphabetically, placing those without a guild name at the bottom
+        ArrayList<Player> sortedPlayers = new ArrayList<>(playerDisplay.values());
+        sortedPlayers.sort((p1, p2) -> {
+            String guild1 = p1.playerEntity.getStatGuild();
+            String guild2 = p2.playerEntity.getStatGuild();
+
+            // Handle null or empty guild names by placing them at the bottom
+            if (guild1 == null || guild1.isEmpty()) guild1 = "zzzz"; // Assign a value that sorts last
+            if (guild2 == null || guild2.isEmpty()) guild2 = "zzzz"; // Assign a value that sorts last
+
+            return guild1.compareToIgnoreCase(guild2); // Compare guild names ignoring case
+        });
+
+        // Clear the charPanel and add players in sorted order
         charPanel.removeAll();
-        for (Player p : playerDisplay.values()) {
+        for (Player p : sortedPlayers) {
             p.panel = createMainBox(p, p.playerEntity);
             charPanel.add(p.panel);
         }
