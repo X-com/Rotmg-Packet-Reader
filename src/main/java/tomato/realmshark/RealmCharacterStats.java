@@ -98,6 +98,7 @@ public class RealmCharacterStats {
     public int secluded_thicket;
     public int snake_pit;
     public int spider_den;
+    public int spectral_penitentiary;
     public int sprite_world;
     public int sulfurous_wetlands;
     public int the_crawling_depths;
@@ -119,6 +120,14 @@ public class RealmCharacterStats {
     public int[] dungeonStats;
     public String pcStats;
 
+    private static boolean debugMessage = false;
+
+    public static void main(String[] args) {
+        String s = "";
+        debugMessage = true;
+        new RealmCharacterStats().decode(s);
+    }
+
     public void decode(String pcStats) {
         this.pcStats = pcStats;
         byte[] data = PcStatsDecoder.sixBitStringToBytes(pcStats);
@@ -128,22 +137,28 @@ public class RealmCharacterStats {
         if (flag != 0) {
             try {
                 boolean[] bitArray = parseBits(reader);
-//                for (int i = 0; i < bitArray.length; i++) {
-//                    if (CharacterStatistics.PC_NAME.get(i) == null && bitArray[i]) {
-//                        System.out.printf("%3d %s\n", i, CharacterStatistics.PC_NAME.get(i));
-//                    }
-//                }
+                if (debugMessage) {
+                    for (int i = 0; i < bitArray.length; i++) {
+                        if (CharacterStatistics.PC_NAME.get(i) == null && bitArray[i]) {
+                            System.out.printf("%3d %s\n", i, CharacterStatistics.PC_NAME.get(i));
+                        }
+                    }
+                }
                 parseStats(reader, bitArray);
             } catch (Exception e) {
                 System.out.println(pcStats);
             }
         }
         updateStats();
-//        System.out.println(flag + " " + pcStats);
-//        for(int i = 0; i < CharacterStatistics.DUNGEON_NAMES.size(); i++) {
-//            if(dungeonStats[i] > 0) System.out.print(CharacterStatistics.DUNGEON_NAMES.get(i) + "=" + dungeonStats[i] + ", ");
-//        }
-//        System.out.println();
+        if (debugMessage) {
+            System.out.println(flag + " " + pcStats);
+            for (int i = 0; i < CharacterStatistics.DUNGEON_NAMES.size(); i++) {
+                if (dungeonStats[i] > 0) {
+                    System.out.print(CharacterStatistics.DUNGEON_NAMES.get(i) + "=" + dungeonStats[i] + ", ");
+                }
+            }
+            System.out.println();
+        }
     }
 
     private void updateStats() {
@@ -231,6 +246,7 @@ public class RealmCharacterStats {
                 secluded_thicket,
                 snake_pit,
                 spider_den,
+                spectral_penitentiary,
                 sprite_world,
                 sulfurous_wetlands,
                 the_crawling_depths,
@@ -556,11 +572,14 @@ public class RealmCharacterStats {
         if (readStat(bitArray, CharacterStatistics.STAT_POTION_CONSUMED.getPcStatId())) {
             stat_potion_consumed = reader.readCompressedInt();
         }
+        if (readStat(bitArray, CharacterStatistics.SPECTRAL_PENITENTIARY.getPcStatId())) {
+            spectral_penitentiary = reader.readCompressedInt();
+        }
     }
 
     public int getDungeonInfoByName(String dungeonName) {
         int index = CharacterStatistics.getDungeonIndex(dungeonName);
-        if(index == -1) return -1;
+        if (index == -1) return -1;
         return dungeonStats[index];
     }
 
@@ -652,6 +671,7 @@ public class RealmCharacterStats {
                 "\n   secluded_thicket=" + secluded_thicket +
                 "\n   snake_pit=" + snake_pit +
                 "\n   spider_den=" + spider_den +
+                "\n   spectral_penitentiary=" + spectral_penitentiary +
                 "\n   sprite_world=" + sprite_world +
                 "\n   sulfurous_wetlands=" + sulfurous_wetlands +
                 "\n   the_crawling_depths=" + the_crawling_depths +
