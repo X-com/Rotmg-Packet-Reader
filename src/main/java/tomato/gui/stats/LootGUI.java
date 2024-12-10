@@ -102,6 +102,12 @@ public class LootGUI extends JPanel {
         if (Sound.playRedBagSound && isRedBag(bag)) {
             Sound.redbag.play();
         }
+        if (Sound.playGoldBagSound && isGoldBag(bag)) {
+            Sound.goldbag.play();
+        }
+        if (Sound.playEggBagSound && isEggBag(bag)) {
+            Sound.eggbag.play();
+        }
         JPanel panel = createMainBox(map, bag, dropper, player, time);
         lootPanel.add(panel, 0);
         INSTANCE.guiUpdate();
@@ -121,6 +127,16 @@ public class LootGUI extends JPanel {
     }
 
     private boolean isRedBag(Entity bag) {
+        int id = bag.objectType;
+        return id == LootBags.RED.getId() || id == LootBags.BOOSTED_RED.getId();
+    }
+
+    private boolean isGoldBag(Entity bag) {
+        int id = bag.objectType;
+        return id == LootBags.GOLD.getId() || id == LootBags.BOOSTED_GOLD.getId();
+    }
+
+    private boolean isEggBag(Entity bag) {
         int id = bag.objectType;
         return id == LootBags.RED.getId() || id == LootBags.BOOSTED_RED.getId();
     }
