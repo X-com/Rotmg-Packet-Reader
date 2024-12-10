@@ -345,7 +345,7 @@ public class SecurityFilterGUI extends JPanel {
             FilterEntity classPoint = new FilterEntity();
             classPoints.add(classPoint);
 
-            JLabel label = new JLabel(CharacterClass.getName(s.id));
+            JLabel label = new JLabel(CharacterClass.getName(s.getId()));
             classPoint.id = s.getId();
             classPoint.field = addTextField(1, classPoint);
             body.add(label);

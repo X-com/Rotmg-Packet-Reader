@@ -1,8 +1,15 @@
 package tomato.realmshark.enums;
 
-import java.util.Arrays;
 import java.util.TreeMap;
 import java.util.TreeSet;
+
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
+import java.util.*;
+import java.util.stream.Collectors;
+
+import util.StringXML;
 
 /**
  * Character class enum to get class name and stats from class id.
@@ -26,14 +33,15 @@ public enum CharacterClass {
     Bard(796, 750, 385, 55, 25, 55, 70, 45, 75, new int[]{775, 802, 796}),
     Summoner(817, 700, 385, 60, 25, 60, 75, 40, 75, new int[]{784, 805, 817}),
     Kensei(818, 800, 252, 65, 25, 60, 65, 60, 50, new int[]{806, 785, 818});
-    public static final CharacterClass[] CHAR_CLASS_LIST;
 
+    private static final String PLAYERS_XML_PATH = "assets/xml/players.xml";
 
-    private final int life, mana, atk, def, spd, dex, vit, wis;
+    private int life, mana, atk, def, spd, dex, vit, wis;
     private final int id;
     private final int[] weaponGroup;
-    private final int[] maxStats;
+    private int[] maxStats;
 
+    public static final CharacterClass[] CHAR_CLASS_LIST;
     private static final TreeMap<Integer, CharacterClass> CHARACTER_CLASS = new TreeMap<>();
     private static final TreeMap<Integer, String> CLASS_NAME = new TreeMap<>();
     private static final TreeMap<Integer, int[]> CLASS_MAX_STATS = new TreeMap<>();
@@ -43,7 +51,12 @@ public enum CharacterClass {
     static {
         CHAR_CLASS_LIST = CharacterClass.values().clone();
         try {
+            FileInputStream file = new FileInputStream(PLAYERS_XML_PATH);
+            populateFromXML(new BufferedReader(new InputStreamReader(file)).lines().collect(Collectors.joining("\n")));
+
             for (CharacterClass o : CharacterClass.values()) {
+                o.maxStats = new int[]{o.life, o.mana, o.atk, o.def, o.spd, o.dex, o.vit, o.wis};
+
                 CHARACTER_IDS.add(o.id);
                 CHARACTER_CLASS.put(o.id, o);
                 CLASS_NAME.put(o.id, o.toString());
@@ -66,7 +79,100 @@ public enum CharacterClass {
         this.vit = vit;
         this.wis = wis;
         this.weaponGroup = weaponGroup;
-        maxStats = new int[]{life, mana, atk, def, spd, dex, vit, wis};
+    }
+
+    private static void populateFromXML(String rawXML) throws Exception {
+        // Parse the XML using StringXML
+        StringXML root = StringXML.getParsedXML(rawXML);
+
+        // Map to group character ids by Equipment's first integer
+        Map<Integer, List<Integer>> weaponGroups = new HashMap<>();
+        Map<Integer, Integer> weaponCharacter = new HashMap<>();
+
+        // Process each Object element
+        for (StringXML object : root) {
+            if (!object.name.equals("Object")) continue; // Skip non-Object nodes
+            // Extract id and name
+            String name = object.children.stream()
+                    .filter(child -> child.name.equals("id"))
+                    .map(child -> child.value)
+                    .findFirst()
+                    .orElse(null);
+
+//            int id = object.children.stream()
+//                    .filter(child -> child.name.equals("type"))
+//                    .mapToInt(child -> Integer.decode(child.value))
+//                    .findFirst()
+//                    .orElseThrow(() -> new IllegalArgumentException("Missing type attribute"));
+
+            CharacterClass cc = null;
+            for(CharacterClass o : CharacterClass.CHAR_CLASS_LIST) {
+                if(o.name().equals(name)) {
+                    cc = o;
+                    break;
+                }
+            }
+            if(cc == null) continue;
+
+            // Extract individual max stats
+            int l = updateValue(object, "MaxHitPoints");
+            if (cc.life != l) {
+                cc.life = l;
+            }
+            int m = updateValue(object, "MaxMagicPoints");
+            if (cc.mana != l) cc.mana = m;
+            int a = updateValue(object, "Attack");
+            if (cc.atk != l) cc.atk = a;
+            int df = updateValue(object, "Defense");
+            if (cc.def != l) cc.def = df;
+            int s = updateValue(object, "Speed");
+            if (cc.spd != l) cc.spd = s;
+            int dx = updateValue(object, "Dexterity");
+            if (cc.dex != l) cc.dex = dx;
+            int v = updateValue(object, "HpRegen");
+            if (cc.vit != l) cc.vit = v;
+            int w = updateValue(object, "MpRegen");
+            if (cc.wis != l) cc.wis = w;
+
+//            // Extract Equipment and determine weapon group
+//            String equipment = "";
+//            for (StringXML child : object.children) {
+//                if (child.name.equals("Equipment")) {
+//                    for (StringXML stringXML : child.children) {
+//                        equipment = stringXML.value;
+//                        break;
+//                    }
+//                    break;
+//                }
+//            }
+//            String[] equipmentItems = equipment.split(",");
+//            int weaponId = Integer.decode(equipmentItems[0].trim());
+//            weaponGroups.computeIfAbsent(weaponId, k -> new ArrayList<>()).add(id);
+//            weaponCharacter.put(id, weaponId);
+
+//            // Create CharacterClass instance
+//            charClassList.add(new CharacterClass(id, name, life, mana, atk, def, spd, dex, vit, wis, new int[0])); // Weapon group will be set later
+        }
+
+//        // Update weapon groups for each CharacterClass
+//        for (CharacterClass character : charClassList) {
+//            List<Integer> group = weaponGroups.get(weaponCharacter.get(character.id));
+//            if (group != null) {
+//                character.weaponGroup = group.stream().mapToInt(Integer::intValue).toArray();
+//            }
+//        }
+    }
+
+    private static int updateValue(StringXML object, String tagName) {
+        return object.children.stream()
+                .filter(child -> child.name.equals(tagName))
+                .map(child -> child.children.stream()
+                        .filter(attr -> attr.name.equals("max"))
+                        .mapToInt(attr -> Integer.parseInt(attr.value))
+                        .findFirst()
+                        .orElse(0))
+                .findFirst()
+                .orElse(0);
     }
 
     /**
