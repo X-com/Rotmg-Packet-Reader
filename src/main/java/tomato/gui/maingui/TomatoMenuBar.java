@@ -601,7 +601,7 @@ public class TomatoMenuBar implements ActionListener {
         } else if (e.getSource() == chatPingMessage) { // chat ping message
             TomatoGUI.openChatPingMessage();
         } else if (e.getSource() == entityIdPingMessage) { // entity id ping message
-            CustomPingGUI.open(entityIdPingMessage);
+            TomatoGUI.openEntityIdPing();
         } else if (e.getSource() == saveChat) { // chat save logs
             boolean b = saveChat.isSelected();
             PropertiesManager.setProperties("saveChat", b ? "true" : "false");

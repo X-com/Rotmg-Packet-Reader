@@ -5,9 +5,7 @@ import tomato.realmshark.Sound;
 import util.PropertiesManager;
 
 import javax.swing.*;
-import javax.swing.text.NumberFormatter;
 import java.awt.*;
-import java.text.NumberFormat;
 import java.util.ArrayList;
 
 public class CustomPingGUI extends JPanel {
@@ -68,10 +66,10 @@ public class CustomPingGUI extends JPanel {
         mainPanel.add(topPanel);
     }
 
-    public static void open(Component component) {
+    public static void open(TomatoData data) {
         Sound.custom.play();
         textFieldNames.clear();
-        CustomPingGUI chatping = new CustomPingGUI(TomatoData.idEntityPing);
+        CustomPingGUI chatping = new CustomPingGUI(data.getEntityIdPings());
 
         JButton close = new JButton("Save");
         JOptionPane pane = new JOptionPane(chatping, JOptionPane.PLAIN_MESSAGE, JOptionPane.OK_CANCEL_OPTION, null, new JButton[]{close}, close);
@@ -82,7 +80,7 @@ public class CustomPingGUI extends JPanel {
                 try {
                     Integer.parseInt(text);
                 } catch (NumberFormatException ignore) {
-                    JOptionPane.showMessageDialog(component, "Entity IDs are not valid. The text fields must only contain numbers.");
+                    JOptionPane.showMessageDialog(null, "Entity IDs are not valid. The text fields must only contain numbers.");
                     return;
                 }
             }
@@ -96,15 +94,15 @@ public class CustomPingGUI extends JPanel {
                     arr.add(e1);
                 }
             }
-            setPingIds(arr);
+            setPingIds(data, arr);
         });
-        JDialog dialog = pane.createDialog(component, "Custom Entity ID Ping");
+        JDialog dialog = pane.createDialog(null, "Custom Entity ID Ping");
 //        dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         dialog.setVisible(true);
     }
 
-    public static void setPingIds(ArrayList<Integer> pingList) {
-        TomatoData.idEntityPing = pingList;
+    public static void setPingIds(TomatoData data, ArrayList<Integer> pingList) {
+        data.setIdEntityPing(pingList);
         if (pingList.isEmpty()) {
             PropertiesManager.setProperties("entityIdPings", "");
             return;
@@ -125,6 +123,6 @@ public class CustomPingGUI extends JPanel {
                 arr.add(Integer.valueOf(s));
             }
         }
-        data.idEntityPing = arr;
+        data.setIdEntityPing(arr);
     }
 }

@@ -70,8 +70,7 @@ public class TomatoData {
     private int moonlightFlames = 0;
     private static final int MOONLIGHT_BOSS_FLAME_ID = 20518;
     private boolean updatedExaltStats = false;
-
-    public static ArrayList<Integer> idEntityPing = new ArrayList<>();
+    private ArrayList<Integer> idEntityPing = new ArrayList<>();
 
     /**
      * Sets the current realm.
@@ -753,5 +752,16 @@ public class TomatoData {
      */
     public void resetMoonlightFlames() {
         moonlightFlames = 0;
+    }
+
+    /** Get and set Entity ID's the player wants to ping when appearing.
+     *
+     * @param a Array of all the entity IDs
+     */
+    public void setIdEntityPing(ArrayList<Integer> a) {
+        idEntityPing = a;
+    }
+    public ArrayList<Integer> getEntityIdPings() {
+        return idEntityPing;
     }
 }
