@@ -59,7 +59,7 @@ public class TcpStreamBuilder {
                 }
             }
         } catch (Exception e) {
-            TcpStreamErrorHandler.INSTANCE.dumpData("Sequence error dumping. \n " + Arrays.toString(e.getStackTrace()));
+            TcpStreamErrorHandler.INSTANCE.dumpData("Logging errors caused (by TCP stream builder). \n " + Arrays.toString(e.getStackTrace()));
         }
     }
 

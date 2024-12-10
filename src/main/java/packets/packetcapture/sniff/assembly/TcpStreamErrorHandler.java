@@ -46,7 +46,7 @@ public class TcpStreamErrorHandler {
                 if (tcpStreamBuilder.packetMap.containsKey(index)) {
                     tcpStreamBuilder.sequenseNumber = index;
                     TcpPacket tempPack = tcpStreamBuilder.packetMap.get(index);
-                    String errorMsg = "Packets missing id:" + (tcpStreamBuilder.idNumber - tempPack.getIp4Packet().getIdentification()) + " seq:" + (tcpStreamBuilder.sequenseNumber - tempPack.getSequenceNumber()) + " outgoing:" + (tempPack.getDstPort() == 2050);
+                    String errorMsg = "Packets missing. id:" + (tcpStreamBuilder.idNumber - tempPack.getIp4Packet().getIdentification()) + " seq:" + (tcpStreamBuilder.sequenseNumber - tempPack.getSequenceNumber()) + " outgoing:" + (tempPack.getDstPort() == 2050);
                     errorMessage(errorMsg, errorMsg);
                     break;
                 }
@@ -63,7 +63,7 @@ public class TcpStreamErrorHandler {
      * Called when to many packets are missing in a TCP stream.
      */
     private void stop() {
-        String errorMsg = "Error! Stream Constructor reached 100 packets. Shutting down.";
+        String errorMsg = "Error! Sniffer lost 100 packets from unknown reasons. Shutting down.";
         String dump = errorMsg + "\n" + getRawPacketDump();
         errorMessage(errorMsg, dump);
         errorStop();
@@ -76,7 +76,7 @@ public class TcpStreamErrorHandler {
      */
     private String getRawPacketDump() {
         StringBuilder sb = new StringBuilder();
-        sb.append("Packet sync error. Dumping packets.\n");
+        sb.append("Packet logger printing logs for possible error handling.\n");
         for (int i = index; i <= (index + size); i++) {
             int j = i % size;
             RawPacket packet = logList[j];
