@@ -85,7 +85,7 @@ public enum CharacterStatistics {
     SECLUDED_THICKET(47, 13983, "Secluded Thicket"), // SecludedThicketsCompleted
     SNAKE_PIT(8, 1816, "Snake Pit"),
     SPIDER_DEN(9, 1817, "Spider Den"),
-    SPECTRAL_PENITENTIARY(-1, 23691, "Spectral Penitentiary"),
+    SPECTRAL_PENITENTIARY(125, 23691, "Spectral Penitentiary"),
     SPRITE_WORLD(10, 1804, "Sprite World"),
     SULFUROUS_WETLANDS(69, 25490, "Sulfurous Wetlands"),
     THE_CRAWLING_DEPTHS(60, 1838, "The Crawling Depths"),
