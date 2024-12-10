@@ -20,6 +20,7 @@ import tomato.gui.stats.LootGUI;
 import tomato.realmshark.HttpCharListRequest;
 import tomato.realmshark.RealmCharacter;
 import tomato.realmshark.RealmCharacterStats;
+import tomato.realmshark.Sound;
 import tomato.realmshark.enums.CharacterClass;
 import tomato.realmshark.enums.LootBags;
 import util.RNG;
@@ -69,6 +70,8 @@ public class TomatoData {
     private int moonlightFlames = 0;
     private static final int MOONLIGHT_BOSS_FLAME_ID = 20518;
     private boolean updatedExaltStats = false;
+
+    public static ArrayList<Integer> idEntityPing = new ArrayList<>();
 
     /**
      * Sets the current realm.
@@ -216,6 +219,7 @@ public class TomatoData {
         if (newObject) {
             moonLightFlameCounter(idType);
             SecurityAbilityUseCheck.decoy(entity);
+            customSoundAlert(idType);
         }
         if (petyard) {
             addPet(object);
@@ -235,6 +239,20 @@ public class TomatoData {
                 entity.isPlayer();
             }
             ParsePanelGUI.addPlayer(id, entity);
+        }
+    }
+
+    /**
+     * Plays sound if user wants alerts when this type of entity shows up.
+     *
+     * @param idType ID of sound alert entity
+     */
+    private void customSoundAlert(int idType) {
+        for(int id : idEntityPing) {
+            if(idType == id) {
+                Sound.custom.play();
+                break;
+            }
         }
     }
 
