@@ -183,13 +183,19 @@ public class SecurityFilterGUI extends JPanel {
 
     private void saveToProfile() {
         StringBuilder str = new StringBuilder();
+        int i = parrent.getFilters().size();
         for (SecurityFilter sf : parrent.getFilters().values()) {
             if (!sf.json.isEmpty()) {
-                str.append("§").append(sf.json);
+                str.append(sf.json);
+
+                // if there's at least one iteration left, add the delimiter
+                if (i > 1) str.append("§");
+
+                --i;
             }
         }
         if (str.length() > 0) {
-            PropertiesManager.setProperties("securityFilters", str.substring(2));
+            PropertiesManager.setProperties("securityFilters", str.toString());
         } else {
             PropertiesManager.setProperties("securityFilters", "");
         }

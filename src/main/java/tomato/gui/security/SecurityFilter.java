@@ -19,6 +19,7 @@ public class SecurityFilter {
             sf.json = json;
             return sf;
         } catch (Exception e) {
+            System.err.printf("Could not load security filters... \n%s%n", e.getMessage());
             return null;
         }
     }
