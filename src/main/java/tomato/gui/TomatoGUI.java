@@ -9,6 +9,7 @@ import tomato.gui.chat.ChatPingGUI;
 import tomato.gui.dps.DpsDisplayOptions;
 import tomato.gui.dps.DpsGUI;
 import tomato.gui.character.CharacterPanelGUI;
+import tomato.gui.maingui.CustomPingGUI;
 import tomato.gui.stats.DungeonStats;
 import tomato.gui.stats.StatisticsGUI;
 import tomato.gui.keypop.KeypopGUI;
@@ -46,7 +47,7 @@ public class TomatoGUI {
     private TomatoMenuBar menuBar;
     private Point center;
     private Image icon;
-    private TomatoData data;
+    private static TomatoData data;
 
     public TomatoGUI(TomatoData data) {
         this.data = data;
@@ -270,5 +271,12 @@ public class TomatoGUI {
      */
     public static void openChatPingMessage(){
         ChatPingGUI.open(chatPanel);
+    }
+
+    /**
+     * Opens entity ID ping window.
+     */
+    public static void openEntityIdPing(){
+        CustomPingGUI.open(data);
     }
 }

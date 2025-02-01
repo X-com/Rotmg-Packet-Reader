@@ -21,13 +21,13 @@ import java.awt.event.ActionListener;
  * Menu bar builder class
  */
 public class TomatoMenuBar implements ActionListener {
-    private JMenuItem about, borders, clearChat, bandwidth, javav, clearDpsLogs, theme, fontMenu, dpsOptions, chat, sound, chatPingMessage;
+    private JMenuItem about, borders, clearChat, bandwidth, javav, clearDpsLogs, theme, fontMenu, dpsOptions, chat, sound, chatPingMessage, entityIdPingMessage;
     private JRadioButtonMenuItem fontSize8, fontSize12, fontSize16, fontSize24, fontSize48, fontSizeCustom;
     private JRadioButtonMenuItem themeDarcula, themeighContrastDark, themeHighContrastLight, themeIntelliJ, themeSolarizedDark, themeSolarizedLight;
     private JRadioButtonMenuItem fontNameMonospaced, fontNameDialog, fontNameDialogInput, fontNameSerif, fontNameSansSerif, fontNameSegoe;
     private JRadioButtonMenuItem dpsEquipmentNone, dpsEquipmentSimple, dpsEquipmentFull, dpsIcon;
     private JRadioButtonMenuItem dpsSortLastHit, dpsSortFirstHit, dpsSortMaxHp, dpsSortFightTimer, dpsSortBossOnly;
-    private JCheckBoxMenuItem fontStyleBold, fontStyleItalic, dpsShowMe, saveChat, chatPing, chatPingGuild, whiteBagSound, chatPingParty, orangeBagSound, redBagSound, tradePing, disableDataSending;
+    private JCheckBoxMenuItem fontStyleBold, fontStyleItalic, dpsShowMe, saveChat, chatPing, chatPingGuild, whiteBagSound, chatPingParty, orangeBagSound, redBagSound, goldBagSound, eggBagSound, tradePing, disableDataSending;
     private JSlider soundSlider;
     private JMenu file, edit, info;
     private JMenuBar jMenuBar;
@@ -97,11 +97,20 @@ public class TomatoMenuBar implements ActionListener {
         orangeBagSound.addActionListener(this);
         redBagSound = new JCheckBoxMenuItem("Ping Red Bag");
         redBagSound.addActionListener(this);
+        goldBagSound = new JCheckBoxMenuItem("Ping Gold Bag");
+        goldBagSound.addActionListener(this);
+        eggBagSound = new JCheckBoxMenuItem("Ping Egg Bag");
+        eggBagSound.addActionListener(this);
         tradePing = new JCheckBoxMenuItem("Trade Ping");
         tradePing.addActionListener(this);
 
+        entityIdPingMessage = new JMenuItem("Entity ID Pings");
+        entityIdPingMessage.addActionListener(this);
+
         sound.add(new JLabel("Volume:"));
         sound.add(soundSlider);
+        sound.add(new JSeparator(SwingConstants.HORIZONTAL));
+        sound.add(entityIdPingMessage);
         sound.add(new JSeparator(SwingConstants.HORIZONTAL));
         sound.add(chatPing);
         sound.add(chatPingParty);
@@ -109,6 +118,8 @@ public class TomatoMenuBar implements ActionListener {
         sound.add(whiteBagSound);
         sound.add(orangeBagSound);
         sound.add(redBagSound);
+        sound.add(goldBagSound);
+        sound.add(eggBagSound);
         sound.add(tradePing);
         setSoundCheckbox();
 
@@ -425,6 +436,22 @@ public class TomatoMenuBar implements ActionListener {
             Sound.playRedBagSound = false;
         }
 
+        String gold = PropertiesManager.getProperty("goldBagSound");
+        if (gold != null) {
+            goldBagSound.setSelected(red.equals("true"));
+            Sound.playGoldBagSound = red.equals("true");
+        } else {
+            Sound.playGoldBagSound = false;
+        }
+
+        String egg = PropertiesManager.getProperty("eggBagSound");
+        if (egg != null) {
+            eggBagSound.setSelected(red.equals("true"));
+            Sound.playEggBagSound = red.equals("true");
+        } else {
+            Sound.playEggBagSound = false;
+        }
+
         String trade = PropertiesManager.getProperty("tradePing");
         if (trade != null) {
             tradePing.setSelected(trade.equals("true"));
@@ -573,6 +600,8 @@ public class TomatoMenuBar implements ActionListener {
             LootGUI.lootSharing(b);
         } else if (e.getSource() == chatPingMessage) { // chat ping message
             TomatoGUI.openChatPingMessage();
+        } else if (e.getSource() == entityIdPingMessage) { // entity id ping message
+            TomatoGUI.openEntityIdPing();
         } else if (e.getSource() == saveChat) { // chat save logs
             boolean b = saveChat.isSelected();
             PropertiesManager.setProperties("saveChat", b ? "true" : "false");
@@ -607,6 +636,16 @@ public class TomatoMenuBar implements ActionListener {
             PropertiesManager.setProperties("redBagSound", b ? "true" : "false");
             Sound.playRedBagSound = b;
             if(b) Sound.redbag.play();
+        } else if (e.getSource() == goldBagSound) { // gold bag sound
+            boolean b = goldBagSound.isSelected();
+            PropertiesManager.setProperties("goldBagSound", b ? "true" : "false");
+            Sound.playGoldBagSound = b;
+            if(b) Sound.goldbag.play();
+        } else if (e.getSource() == eggBagSound) { // egg bag sound
+            boolean b = eggBagSound.isSelected();
+            PropertiesManager.setProperties("eggBagSound", b ? "true" : "false");
+            Sound.playEggBagSound = b;
+            if(b) Sound.eggbag.play();
         } else if (e.getSource() == tradePing) { // trade sound
             boolean b = tradePing.isSelected();
             PropertiesManager.setProperties("tradePing", b ? "true" : "false");

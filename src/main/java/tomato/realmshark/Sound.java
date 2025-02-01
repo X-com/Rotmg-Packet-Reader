@@ -20,6 +20,9 @@ public class Sound {
     public static Sound whitebag;
     public static Sound orangebag;
     public static Sound redbag;
+    public static Sound goldbag;
+    public static Sound eggbag;
+    public static Sound custom;
     public static Sound trade;
 
     public static boolean playPmSound = false;
@@ -28,6 +31,8 @@ public class Sound {
     public static boolean playWhiteBagSound = true;
     public static boolean playOrangeBagSound = false;
     public static boolean playRedBagSound = false;
+    public static boolean playGoldBagSound = false;
+    public static boolean playEggBagSound = false;
     public static boolean playTradeSound = false;
 
     public Sound(String file) {
@@ -45,7 +50,10 @@ public class Sound {
         whitebag = new Sound("sound/whitebag.wav");
         orangebag = new Sound("sound/orangebag.wav");
         redbag = new Sound("sound/redbag.wav");
+        goldbag = new Sound("sound/goldbag.wav");
+        eggbag = new Sound("sound/eggbag.wav");
         trade = new Sound("sound/trade.wav");
+        custom = new Sound("sound/custom.wav");
     }
 
     private static Clip loadSound(String file) {
