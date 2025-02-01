@@ -330,6 +330,8 @@ public class ParsePanelGUI extends JPanel {
         int classPoint = currentFilter.classPoint.get(player.objectType);
         for (int i = 0; i < 4; i++) {
             int item = p.inv[i];
+            // skip non-parsable items
+            if (ParseEquipment.isParseItem(ParseEquipment.getEquipmentById(item))) continue;
             Integer ip = currentFilter.itemPoint.get(item);
             if (ip == null) {
                 missing += "Blacklisted item: " + equipmentNames[i] + "<br>";

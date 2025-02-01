@@ -72,12 +72,18 @@ public class ParseEquipment {
         ArrayList<Equipment> list = new ArrayList<>();
 
         for (Equipment e : EQUIPMENT.values()) {
-            if (e.labels != null && !e.labels.contains("CONSUMABLE") && (e.labels.contains("ST") || e.labels.contains("UT") || e.labels.contains("T" + e.tier))) {
-                list.add(e);
-            }
+            if (isParseItem(e)) list.add(e);
         }
 
         return list;
+    }
+
+    public static Boolean isParseItem(Equipment e) {
+        final boolean isNonConsumable = e.labels != null && !e.labels.contains("CONSUMABLE");
+        final boolean isSTUT = e.labels != null && (e.labels.contains("ST") || e.labels.contains("UT"));
+        final boolean isTieredGear = e.labels != null && (e.labels.contains("T" + e.tier) || (e.labels.contains("ARMOR") && e.labels.contains("T" + (e.tier+1)))); // fix for tiered armor hacked implementation
+
+        return (isNonConsumable && (isSTUT || isTieredGear));
     }
 
     public static Equipment getEquipmentById(int id) {
