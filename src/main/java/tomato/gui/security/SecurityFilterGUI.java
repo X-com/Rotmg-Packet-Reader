@@ -404,7 +404,7 @@ public class SecurityFilterGUI extends JPanel {
             minTier.field = addTextField(1, minTier);
             body.add(label);
             body.add(minTier.field);
-            minTier.field.setText("1");
+            minTier.field.setText("0");
             minTier.field.addFocusListener(new MinTierFocusListener());
         });
 
