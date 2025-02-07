@@ -192,6 +192,9 @@ public class ParsePanelGUI extends JPanel {
         StringBuilder sb = new StringBuilder();
         if (full) sb.append("[\n");
         boolean first = true;
+        int counter = 1;
+        int totalItems = playerDisplay.size();
+
         for (Player player : playerDisplay.values()) {
             // we don't check if player meets filter criteria under default filter
             if (currentFilter != null) {
@@ -209,8 +212,11 @@ public class ParsePanelGUI extends JPanel {
                 first = false;
                 sb.append(player);
             } else {
-                sb.append(player.playerEntity.name()).append(", ");
+                sb.append(player.playerEntity.name());
+                if (counter != totalItems) sb.append(" ");
             }
+
+            counter++;
         }
         if (full) sb.append("\n").append("]");
         copyToClipboard(String.valueOf(sb));
@@ -311,6 +317,7 @@ public class ParsePanelGUI extends JPanel {
             // handle empty gear slots
             if (equipment == null) {
 //                System.out.println(String.format("could not find equipment with id %s", equipmentId));
+                missing += "Gear missing: " + equipmentNames[i] + "<br>";
                 continue;
             }
 
@@ -330,6 +337,8 @@ public class ParsePanelGUI extends JPanel {
         int classPoint = currentFilter.classPoint.get(player.objectType);
         for (int i = 0; i < 4; i++) {
             int item = p.inv[i];
+            // skip empty item slots
+            if (item == -1) continue;
             // skip non-parsable items
             if (ParseEquipment.isParseItem(ParseEquipment.getEquipmentById(item))) continue;
             Integer ip = currentFilter.itemPoint.get(item);
